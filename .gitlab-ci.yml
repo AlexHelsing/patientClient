@@ -1,12 +1,5 @@
 image: node:16.16.0
 
-build:
-  stage: build
-  tags:
-    - docker
-  script:
-    - npm install
-
 
 deploy_preview:
   stage: deploy
@@ -22,6 +15,8 @@ deploy_preview:
 
 deploy_production:
   stage: deploy
+  tags:
+    - docker
   only:
     - main
   script:
