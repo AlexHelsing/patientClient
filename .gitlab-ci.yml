@@ -1,5 +1,13 @@
 image: node:16.16.0
 
+build:
+  stage: build
+  tags:
+    - docker
+  script:
+    - npm install
+
+
 deploy_preview:
   stage: deploy
   tags:
