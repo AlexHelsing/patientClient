@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import AuthPage from './views/AuthPage.vue';
+import DashboardPage from './views/DashboardPage.vue';
 
 // routes
 const routes: Array<RouteRecordRaw> = [
@@ -8,10 +9,15 @@ const routes: Array<RouteRecordRaw> = [
     name: 'Auth',
     component: AuthPage,
   },
+  {
+    path: '/dashboard',
+    name: 'Dashboard',
+    component: DashboardPage,
+  },
   // fallback route
   {
     path: '/:pathMatch(.*)*',
-    redirect: '/auth',
+    redirect: '/dashboard',
   },
 ];
 
