@@ -17,7 +17,7 @@ const password = ref('');
             <label for="Email address" class="block text-sm font-medium text-gray-700">Email address</label>
             <div class="mt-1 relative rounded-md shadow-sm">
                 <input v-model="email" id="Email" type="Email"
-                    class="form-input block w-full py-4 pl-4 pr-10 bg-gray-200 border-gray-300 rounded-md focus:outline-none sm:text-sm"
+                    class="form-input block w-full py-2 md:py-4 pl-4 pr-10 bg-gray-200 border-gray-300 rounded-md focus:outline-none sm:text-sm"
                     placeholder="Enter your Email">
 
             </div>
@@ -26,7 +26,7 @@ const password = ref('');
             <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
             <div class="mt-1 relative rounded-md shadow-sm">
                 <input v-model="password" id="password" type="password"
-                    class="form-input block w-full py-4 pl-4 pr-10 bg-gray-200 border-gray-300 rounded-md focus:outline-none sm:text-sm"
+                    class="form-input block w-full py-2 md:py-4 pl-4 pr-10 bg-gray-200 border-gray-300 rounded-md focus:outline-none sm:text-sm"
                     placeholder="Enter your password">
 
             </div>
@@ -36,11 +36,11 @@ const password = ref('');
             <label for="name" class="block text-sm font-medium text-gray-700">Full name</label>
             <div class="mt-1 flex justify-between gap-5">
                 <input id="fname" name="fname" type="text"
-                    class="form-input block w-full py-4 px-4 bg-gray-200 border-gray-300 rounded-md focus:outline-none sm:text-sm"
+                    class="form-input block w-full py-2 md:py-4 px-4 bg-gray-200 border-gray-300 rounded-md focus:outline-none sm:text-sm"
                     placeholder="Firstname">
 
                 <input id="lname" name="lname" type="text"
-                    class="form-input block w-full py-4 px-4 bg-gray-200 border-gray-300 rounded-md focus:outline-none sm:text-sm"
+                    class="form-input block w-full py-2 md:py-4 px-4 bg-gray-200 border-gray-300 rounded-md focus:outline-none sm:text-sm"
                     placeholder="Lastname">
             </div>
         </div>
@@ -49,7 +49,7 @@ const password = ref('');
             <label for="name" class="block text-sm font-medium text-gray-700">Phone number</label>
             <div class="mt-1 flex justify-between gap-5">
                 <input id="name" name="name" type="text"
-                    class="form-input block w-full py-4 px-4 bg-gray-200 border-gray-300 rounded-md focus:outline-none sm:text-sm"
+                    class="form-input block w-full py-2 md:py-4 px-4 bg-gray-200 border-gray-300 rounded-md focus:outline-none sm:text-sm"
                     placeholder="Enter your phone number">
             </div>
         </div>
@@ -58,15 +58,15 @@ const password = ref('');
             <label for="name" class="block text-sm font-medium text-gray-700">Date of birth</label>
             <div class="mt-1 flex justify-between gap-5">
                 <input id="name" name="name" type="text"
-                    class="form-input block w-full py-4 px-4 bg-gray-200 border-gray-300 rounded-md focus:outline-none sm:text-sm"
+                    class="form-input block w-full py-2 md:py-4 px-4 bg-gray-200 border-gray-300 rounded-md focus:outline-none sm:text-sm"
                     placeholder="Year">
 
                 <input id="name" name="name" type="text"
-                    class="form-input block w-full py-4 px-4 bg-gray-200 border-gray-300 rounded-md focus:outline-none sm:text-sm"
+                    class="form-input block w-full py-2 md:py-4 px-4 bg-gray-200 border-gray-300 rounded-md focus:outline-none sm:text-sm"
                     placeholder="Month">
 
                 <input id="name" name="name" type="text"
-                    class="form-input block w-full py-4 px-4 bg-gray-200 border-gray-300 rounded-md focus:outline-none sm:text-sm"
+                    class="form-input block w-full py-2 md:py-4 px-4 bg-gray-200 border-gray-300 rounded-md focus:outline-none sm:text-sm"
                     placeholder="Day">
             </div>
         </div>
