@@ -1,5 +1,5 @@
 <template>
-    <div class="p-4 flex flex-col md:flex-row gap-6 bg-gray-300">
+    <div class="p-4 shadow-lg flex flex-col md:flex-row gap-6 bg-gray-200">
         <Dropdown v-model="selectedType" :options="types" optionLabel="name" placeholder="Type?" class="md:w-14rem" />
         <Dropdown v-model="selectedRadius" :options="radiusOptions" optionLabel="name" placeholder="Search Radius"
             class="md:w-14rem " />
