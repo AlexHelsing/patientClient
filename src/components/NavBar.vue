@@ -45,10 +45,10 @@
             <RouterLink to="/dashboard"
                 class="text-gray-700 hover:text-cyan-700 font-semibold   relative text-2xl w-fit block after:block after:content-[''] after:absolute after:h-[3px] after:bg-black after:w-full after:scale-x-0 after:hover:scale-x-100 after:transition after:duration-300 after:origin-center">
                 Appointments</RouterLink>
-            <RouterLink to="/dashboard"
+            <RouterLink to="/mapview"
                 class="text-gray-600 hover:text-cyan-700 font-semibold   relative text-2xl w-fit block after:block after:content-[''] after:absolute after:h-[3px] after:bg-black after:w-full after:scale-x-0 after:hover:scale-x-100 after:transition after:duration-300 after:origin-center">
                 Dentistries</RouterLink>
-            <RouterLink to="/dashboard"
+            <RouterLink to="/settings"
                 class="text-gray-600 hover:text-cyan-700 font-semibold   relative text-2xl w-fit block after:block after:content-[''] after:absolute after:h-[3px] after:bg-black after:w-full after:scale-x-0 after:hover:scale-x-100 after:transition after:duration-300 after:origin-center">
                 Settings</RouterLink>
             <!-- <h1 class="text-blue-600 hover:text-blue-700 font-semibold">Payments</h1>
