@@ -1,5 +1,6 @@
 <template>
-    <div class="bg-gray-200 hover:bg-gray-300 cursor-pointer flex p-4 justify-between rounded-lg ">
+    <RouterLink :to="`/dentistry/${dentistry.id}`"
+        class="bg-gray-200 hover:bg-gray-300 cursor-pointer flex p-4 justify-between rounded-lg ">
         <div class="flex items-center gap-3 ">
             <span
                 class="bg-blue-700 w-32 h-20 rounded-lg text-center text-white flex justify-center items-center">IMG</span>
@@ -13,22 +14,11 @@
             <h1 class="font-bold"> 5 minutes away </h1>
         </div>
 
-    </div>
+    </RouterLink>
 </template>
 <script setup lang="ts">
 import { PropType } from 'vue';
 import Rating from 'primevue/rating';
-
-interface Dentistry {
-    name: string;
-    id: string;
-    rating: number;
-    type: string;
-    coordinates: {
-        lat: number;
-        lng: number;
-    }
-}
 
 defineProps({
     dentistry: {
