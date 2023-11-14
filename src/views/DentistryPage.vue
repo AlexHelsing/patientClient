@@ -10,13 +10,13 @@
             <stepperComponent />
         </div>
     </div>
-    <main class="flex flex-1 bg-red-600">
-        <div class="flex flex-col px-8 py-6 space-y-6 bg-green-500 w-1/3">
+    <main class="flex flex-1 md:flex-row flex-col">
+        <div class="flex flex-col px-8 py-9 space-y-6 bg-gray-400 shadow-lg md:w-1/3">
             <span class="flex flex-col gap-1">
                 <h2 class="text-lg font-bold"> {{ dentistry.name }}</h2>
                 <p>Make an appointment</p>
             </span>
-            <img class="h-36 w-40" src="../assets/sampleDentistryImage.jpg" alt="Dentistry image">
+            <img class="h-60 w-60 object-contain" src="../assets/sampleDentistryImage.jpg" alt="Dentistry image">
 
             <span>
                 <p><span class="font-bold">Address:</span> {{ dentistry.address }}</p>
@@ -27,14 +27,15 @@
             </span>
         </div>
 
-        <div class="bg-gray-300 w-2/3">
-            TIMESLOT COMPONENT
+        <div class="bg-gray-300 md:w-2/3 flex flex-col justify-between  ">
+            <TimeSlotComponent />
         </div>
     </main>
 </template>
 <script setup lang="ts">
 import { ref } from "vue";
 import dentistryData from "../mockupdata";
+import TimeSlotComponent from "../components/TimeSlotComponent.vue";
 
 import stepperComponent from "../components/stepperComponent.vue";
 import { useRoute } from "vue-router";
