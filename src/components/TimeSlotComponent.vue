@@ -12,7 +12,14 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-7 gap-3 justify-items-center text-2xl font-bold">
+        <div v-if="viewingTimes" class="grid grid-cols-4 gap-3 justify-items-center text-2xl font-bold">
+            <!-- Display time slots for the selected day -->
+            <div v-for="time in availableTimes['2023-11-02']" :key="time"
+                class="bg-white rounded-lg text-black hover:cursor-pointer text-xl transition hover:-translate-y-1 duration-300 hover:scale-110 ease-in-out font-bold w-16 h-16 flex justify-center items-center shadow-lg">
+                {{ time }}
+            </div>
+        </div>
+        <div v-else class="grid grid-cols-7 gap-3 justify-items-center text-2xl font-bold">
             <!-- Day Headers -->
             <div>Sun</div>
             <div>Mon</div>
@@ -24,7 +31,7 @@
             <!-- If first day is not sunday we do blanks -->
             <div v-for="blank in getBlanksForFirstDayOfMonth(2023, 10)" :key="`blank-${blank}`"></div>
             <!-- Display all days in the month -->
-            <div v-for="day in getDaysInMonth(2023, 10)" :key="day"
+            <div @click="selectDay(day)" v-for="day in getDaysInMonth(2023, 10)" :key="day"
                 :class="{ 'bg-gray-200/95 cursor-default text-gray-400/80 ': isPastDay(2023, 10, day), 'current-day': isToday(2023, 10, day) }"
                 class="bg-white rounded-lg text-black hover:cursor-pointer text-xl transition hover:-translate-y-1 duration-300 hover:scale-110 ease-in-out font-bold w-16 h-16 flex justify-center items-center shadow-lg">
                 {{ day }}
@@ -33,7 +40,11 @@
 
     </div>
 
-    <div class="px-14 py-4 justify-end flex">
+    <div v-if="viewingTimes" class="px-14 py-4 justify-between flex">
+        <button @click="backToCalendar"
+            class="transition py-3 px-6 text-xl ease-in-out delay-150 rounded-lg bg-red-600 text-white font-bold hover:-translate-y-1 hover:scale-110 hover:bg-red-500 duration-100">
+            Back to days
+        </button>
         <button
             class="transition py-3 px-6 text-xl ease-in-out delay-150 rounded-lg bg-cyan-600 text-white font-bold hover:-translate-y-1 hover:scale-110 hover:bg-cyan-500 duration-300">
             Continue
@@ -44,8 +55,31 @@
 
 <script setup lang="ts">
 import { ArrowRightCircleIcon, ArrowLeftCircleIcon } from '@heroicons/vue/24/outline'
+import { ref } from 'vue';
+const viewingTimes = ref(false);
+const selectedDay = ref('');
 
 
+const availableTimes = ref({
+    '2023-11-01': ['9:00', '10:00', '11:00', '12:00', '13:00', '14:00'],
+    '2023-11-02': ['9:00', '10:00', '11:00', '12:00', '13:00', '14:00'],
+    '2023-11-03': ['9:00', '10:00', '11:00', '12:00', '13:00', '14:00'],
+    '2023-11-04': ['9:00', '10:00', '11:00', '12:00', '13:00', '14:00'],
+    '2023-11-05': ['9:00', '10:00', '11:00', '12:00', '13:00', '14:00'],
+    '2023-11-06': ['9:00', '10:00', '11:00', '12:00', '13:00', '14:00'],
+    '2023-11-07': ['9:00', '10:00', '11:00', '12:00', '13:00', '14:00'],
+    '2023-11-08': ['9:00', '10:00', '11:00', '12:00', '13:00', '14:00'],
+    '2023-11-09': ['9:00', '10:00', '11:00', '12:00', '13:00', '14:00'],
+});
+
+function selectDay(day: number) {
+    selectedDay.value = `2023-11-${day.toString().padStart(2, '0')}`;
+    viewingTimes.value = true;
+}
+
+function backToCalendar() {
+    viewingTimes.value = false;
+}
 
 // get all days in month
 function getDaysInMonth(year: number, month: number) {
