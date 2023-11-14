@@ -7,7 +7,7 @@ const route = useRoute();
 const showNavBar = computed(() => route.path !== '/auth');
 </script>
 <template>
-  <div class="min-h-screen text-gray-900 bg-gray-100">
+  <div class="min-h-screen flex flex-col text-gray-900 bg-gray-100">
     <NavBar v-if="showNavBar" />
 
     <router-view />
