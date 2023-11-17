@@ -1,18 +1,38 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRouter } from 'vue-router';
+import API from '../utils/apiConfig';
+import axios from 'axios';
 
-const handleLogin = () => {
-    alert('logging in with ' + email.value + ' and ' + password.value);
+const router = useRouter();
+
+async function handleSignIn(e: Event) {
+    e.preventDefault();
+    axios.post(`${API}/patients/login`, {
+        email: email.value,
+        password: password.value,
+    }).then((response) => {
+        console.log(response);
+        const token = response.data.token;
+        // set session token
+        document.cookie = `token=${token}`;
+
+        //redirect to dashboard
+        router.push('/dashboard');
+
+    }
+    ).catch((error) => {
+        console.log(error);
+    });
+
 }
-
 const email = ref('');
 const password = ref('');
 
-// export the component
 
 </script>
 <template>
-    <form @submit="handleLogin" class="space-y-6">
+    <form @submit="handleSignIn" class="space-y-6">
         <div class="relative">
             <label for="Email address" class="block text-sm font-medium text-gray-700">Email address</label>
             <div class="mt-1 relative rounded-md shadow-sm">
