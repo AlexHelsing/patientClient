@@ -3,11 +3,20 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router';
 import API from '../utils/apiConfig';
 import axios from 'axios';
+import { useUserStore } from '../stateStores/userStore';
+import { setCookie } from '../utils/cookieHandler';
 
 const router = useRouter();
+const userStore = useUserStore();
 
 async function handleSignIn(e: Event) {
     e.preventDefault();
+
+    if (!email.value || !password.value) {
+        alert('Please enter your email and password');
+        return;
+    }
+
     axios.post(`${API}/patients/login`, {
         email: email.value,
         password: password.value,
@@ -15,19 +24,31 @@ async function handleSignIn(e: Event) {
         console.log(response);
         const token = response.data.token;
         // set session token
-        document.cookie = `token=${token}`;
+        setCookie('token', token);
+
+        // update user state
+        userStore.setUser({
+            email: response.data.patient.email,
+            firstname: response.data.patient.firstname,
+            lastname: response.data.patient.lastname,
+            phone_number: response.data.patient.phone_number,
+            DOB: response.data.patient.DOB,
+            id: response.data.patient._id,
+        });
 
         //redirect to dashboard
         router.push('/dashboard');
 
     }
     ).catch((error) => {
-        console.log(error);
+        console.log(error.response.data.message);
+        alert(error.response.data.message);
     });
 
 }
 const email = ref('');
 const password = ref('');
+
 
 
 </script>
@@ -36,7 +57,7 @@ const password = ref('');
         <div class="relative">
             <label for="Email address" class="block text-sm font-medium text-gray-700">Email address</label>
             <div class="mt-1 relative rounded-md shadow-sm">
-                <input v-model="email" id="Email" type="Email"
+                <input autocomplete="email" v-model="email" id="Email" type="Email"
                     class="form-input block w-full py-4 pl-4 pr-10 bg-gray-200 border-gray-300 rounded-md focus:outline-none sm:text-sm"
                     placeholder="Enter your Email">
                 <div class="absolute inset-y-0 cursor-default bg-cyan-500 px-4 right-0 flex justify-center items-center ">
@@ -47,7 +68,7 @@ const password = ref('');
         <div class="relative">
             <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
             <div class="mt-1 relative rounded-md shadow-sm">
-                <input v-model="password" id="password" type="password"
+                <input autocomplete="current-password" v-model="password" id="password" type="password"
                     class="form-input block w-full py-4 pl-4 pr-10 bg-gray-200 border-gray-300 rounded-md focus:outline-none sm:text-sm"
                     placeholder="Enter your password">
                 <div class="absolute inset-y-0 cursor-default bg-cyan-500 px-4 right-0 flex justify-center items-center ">

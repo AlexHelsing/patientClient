@@ -3,36 +3,51 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router';
 import axios from 'axios';
 import API from '../utils/apiConfig';
+import { setCookie } from '../utils/cookieHandler';
+import { useUserStore } from '../stateStores/userStore';
 
 const router = useRouter();
 
-async function handleSignup(e: Event) {
+function handleSignup(e: Event) {
     e.preventDefault();
-    try {
-        const response = await axios.post(`${API}/patients`, {
-            email: email.value,
-            password: password.value,
-            firstname: fname.value,
-            lastname: lname.value,
-            phone_number: Number(phone.value),
-            DOB: `${DOB.value.year}-${DOB.value.month}-${DOB.value.day}`
-        });
 
-        const data = response.data;
-
-        const token = data.token;
-
-        // set session token
-        document.cookie = `token=${token}`;
-
-        console.log(data);
-
-        //  redirect to dashboard
-        router.push('/dashboard');
-
-    } catch (error) {
-        console.error(error);
+    if (!email.value || !password.value || !fname.value || !lname.value || !phone.value || !DOB.value.year || !DOB.value.month || !DOB.value.day) {
+        alert('Please fill in all fields');
+        return;
     }
+
+    axios.post(`${API}/patients`, {
+        email: email.value,
+        password: password.value,
+        firstname: fname.value,
+        lastname: lname.value,
+        phone_number: Number(phone.value),
+        DOB: `${DOB.value.year}-${DOB.value.month}-${DOB.value.day}`
+    })
+        .then(response => {
+            const data = response.data;
+            const token = data.token;
+
+            // set session token
+            setCookie('token', token);
+
+            // update user state
+            userStore.setUser({
+                email: data.patient.email,
+                firstname: data.patient.firstname,
+                lastname: data.patient.lastname,
+                phone_number: data.patient.phone_number,
+                DOB: data.patient.DOB,
+                id: data.patient.id,
+            });
+
+            // redirect to dashboard
+            router.push('/dashboard');
+        })
+        .catch(error => {
+            console.error(error.response.data.message);
+            alert(error.response && error.response.data.message ? error.response.data.message : 'An error occurred during signup.');
+        });
 }
 
 const email = ref('');
@@ -46,13 +61,15 @@ const DOB = ref({
     day: ''
 });
 
+const userStore = useUserStore();
+
 </script>
 <template>
     <form @submit="handleSignup" class="space-y-6">
         <div class="relative">
             <label for="Email address" class="block text-sm font-medium text-gray-700">Email address</label>
             <div class="mt-1 relative rounded-md shadow-sm">
-                <input v-model="email" id="Email" type="Email"
+                <input autocomplete="email" v-model="email" id="Email" type="Email"
                     class="form-input block w-full py-2 md:py-4 pl-4 pr-10 bg-gray-200 border-gray-300 rounded-md focus:outline-none sm:text-sm"
                     placeholder="Enter your Email">
 
@@ -61,7 +78,7 @@ const DOB = ref({
         <div class="relative">
             <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
             <div class="mt-1 relative rounded-md shadow-sm">
-                <input v-model="password" id="password" type="password"
+                <input autocomplete="new-password" v-model="password" id="password" type="password"
                     class="form-input block w-full py-2 md:py-4 pl-4 pr-10 bg-gray-200 border-gray-300 rounded-md focus:outline-none sm:text-sm"
                     placeholder="Enter your password">
 
@@ -71,11 +88,11 @@ const DOB = ref({
         <div>
             <label for="name" class="block text-sm font-medium text-gray-700">Full name</label>
             <div class="mt-1 flex justify-between gap-5">
-                <input v-model="fname" id="fname" name="fname" type="text"
+                <input autocomplete="nickname" v-model="fname" id="fname" name="fname" type="text"
                     class="form-input block w-full py-2 md:py-4 px-4 bg-gray-200 border-gray-300 rounded-md focus:outline-none sm:text-sm"
                     placeholder="Firstname">
 
-                <input id="lname" name="lname" type="text" v-model="lname"
+                <input autocomplete="cc-additional-name" id="lname" name="lname" type="text" v-model="lname"
                     class="form-input block w-full py-2 md:py-4 px-4 bg-gray-200 border-gray-300 rounded-md focus:outline-none sm:text-sm"
                     placeholder="Lastname">
             </div>
@@ -84,7 +101,7 @@ const DOB = ref({
         <div>
             <label for="phone" class="block text-sm font-medium text-gray-700">Phone number</label>
             <div class="mt-1 flex justify-between gap-5">
-                <input id="phone" name="name" type="text" v-model="phone"
+                <input autocomplete="tel-local" id="phone" name="name" type="text" v-model="phone"
                     class="form-input block w-full py-2 md:py-4 px-4 bg-gray-200 border-gray-300 rounded-md focus:outline-none sm:text-sm"
                     placeholder="Enter your phone number">
             </div>
@@ -93,15 +110,15 @@ const DOB = ref({
         <div>
             <label for="DOB" class="block text-sm font-medium text-gray-700">Date of birth</label>
             <div class="mt-1 flex justify-between gap-5">
-                <input id="year" name="name" type="text" v-model="DOB.year"
+                <input autocomplete="bday-year" id="year" name="name" type="text" v-model="DOB.year"
                     class="form-input block w-full py-2 md:py-4 px-4 bg-gray-200 border-gray-300 rounded-md focus:outline-none sm:text-sm"
                     placeholder="Year">
 
-                <input id="month" name="name" type="text" v-model="DOB.month"
+                <input autocomplete="bday-month" id="month" name="name" type="text" v-model="DOB.month"
                     class="form-input block w-full py-2 md:py-4 px-4 bg-gray-200 border-gray-300 rounded-md focus:outline-none sm:text-sm"
                     placeholder="Month">
 
-                <input id="day" name="name" type="text" v-model="DOB.day"
+                <input autocomplete="bday-day" id="day" name="name" type="text" v-model="DOB.day"
                     class="form-input block w-full py-2 md:py-4 px-4 bg-gray-200 border-gray-300 rounded-md focus:outline-none sm:text-sm"
                     placeholder="Day">
             </div>

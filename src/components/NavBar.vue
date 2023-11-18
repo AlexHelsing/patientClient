@@ -22,7 +22,11 @@
 
             </div>
 
+
+
             <div class="md:flex gap-4 items-center hidden">
+                <button class="bg-gray-800 text-white font-bold p-2 rounded-lg hover:bg-gray-700"
+                    @click="logout">LOGOUT</button>
                 <BellAlertIcon class="h-12 w-12 text-cyan-500 cursor-pointer hover:text-cyan-700" />
                 <span class="rounded-full bg-purple-600 h-12 w-12" alt="" />
             </div>
@@ -60,18 +64,20 @@
 </template>
 <script setup lang="ts">
 import { BellAlertIcon } from '@heroicons/vue/24/outline'
-
 import { ref } from 'vue'
-
 import { RouterLink } from 'vue-router'
+import { useUserStore } from '../stateStores/userStore'
 
 const hamburgerToggle = ref(false)
+const userStore = useUserStore()
 
 const toggleHamburger = () => {
     hamburgerToggle.value = !hamburgerToggle.value
 }
 
-
+function logout() {
+    userStore.logout();
+}
 
 </script>
 <style lang="">
