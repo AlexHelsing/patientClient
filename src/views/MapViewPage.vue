@@ -1,6 +1,6 @@
 <template>
     <div class="md:flex flex-1   md:overflow-auto flex-row ">
-        <div class=" md:w-1/3  p-4 flex flex-col justify-between">
+        <div v-if="!DentistryInfoToggle" class=" md:w-1/3  p-4 flex flex-col justify-between">
             <div class="py-4 px-2">
                 <h1 class="text-lg font-bold py-1">Over x results...</h1>
                 <div class="flex flex-col listofitems space-y-2 py-2 ">
@@ -9,7 +9,20 @@
             </div>
             <Paginator :rows="2" :totalRecords="dentistries.length" class="p-4   " />
         </div>
-        <div class="md:w-2/3 p-4 rounded-xl  text-center items-center text-5xl text-white fontb-bold justify-center flex">
+        <div v-else class="md:w-1/3 p-4 flex flex-col">
+            <div class="flex flex-col justify-between">
+                <div class="flex flex-col space-y-2">
+                    <div class="flex flex-row justify-between">
+                        <h1 class="text-lg font-bold py-1">{{ toggledDentistry.name }}</h1>
+                        <button @click="DentistryInfoToggle = false" class="text-lg font-bold py-1">X</button>
+                    </div>
+          
+                </div>
+            </div>
+
+        </div>
+        <div class=" md:w-2/3 p-4 rounded-xl text-center items-center text-5xl text-white fontb-bold justify-center
+                            flex">
             <l-map class="" ref="map" v-model:zoom="zoom" v-model:center="center" :useGlobalLeaflet="false">
                 <l-tile-layer url="https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png"
                     layer-type="base" name="Stadia Maps Basemap"></l-tile-layer>
@@ -18,7 +31,8 @@
                     </l-popup>
                 </l-marker>
 
-                <l-marker v-for="dentistry in dentistries" :key="dentistry.id" :lat-lng="dentistry.coordinates">
+                <l-marker @click="handleMarkerClick(dentistry)" v-for="dentistry in dentistries" :key="dentistry.id"
+                    :lat-lng="dentistry.coordinates">
                     <l-popup :content="`<h1>${dentistry.name}</h1>`" :lat-lng="dentistry.coordinates">
                     </l-popup>
                 </l-marker>
@@ -44,6 +58,9 @@ const zoom = ref(13);
 console.log(zoom.value);
 const campusMarker = ref([57.7066, 11.9367]);
 
+const DentistryInfoToggle = ref(false);
+const toggledDentistry = ref({} as Dentistry);
+
 // Access the map instance
 const map = ref(null);
 
@@ -65,6 +82,11 @@ const map = ref(null);
 //     });
 // });
 
+
+function handleMarkerClick(dentistry: Dentistry) {
+    DentistryInfoToggle.value = true;
+    toggledDentistry.value = dentistry;
+}
 
 </script>
 
