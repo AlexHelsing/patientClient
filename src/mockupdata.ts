@@ -6,8 +6,8 @@ const dentistries = [
 
     type: 'tooth',
     coordinates: {
-      lat: 1,
-      lng: 1,
+      lat: 57.70887,
+      lng: 11.97456,
     },
   },
   {
@@ -16,8 +16,8 @@ const dentistries = [
     rating: 4.5,
     type: 'tooth',
     coordinates: {
-      lat: 1,
-      lng: 1,
+      lat: 57.70777,
+      lng: 11.97456,
     },
   },
   {
