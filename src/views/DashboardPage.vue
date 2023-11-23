@@ -68,10 +68,19 @@
                         here</span> to make an appointment</p>
             </div>
             <div v-else class="">
+                <Dialog v-model:visible="visibleAppointmentModal" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }"
+                    :modal="true" :draggable="false">
+                    <template #footer>
+                        <div class="flex gap-2 justify-end">
 
+                            <button class=" bg-red-500 p-3 text-white font-bold rounded-lg
+                                ">Cancel Appointment</button>
+                        </div>
+                    </template>
+                </Dialog>
                 <div class="flex flex-col gap-4 ">
-                    <div v-for="appointment in appointments" :key="appointment.id"
-                        class="border border-gray-300 rounded-lg p-4 shadow-md">
+                    <div @click="visibleAppointmentModal = true" v-for="appointment in appointments" :key="appointment.id"
+                        class="border cursor-pointer border-gray-300 rounded-lg p-4 shadow-md">
                         <h3 class="text-xl font-semibold">{{ appointment.title }}</h3>
                         <p class="text-gray-500">{{ appointment.description }}</p>
                         <div class="flex justify-between items-center mt-2">
@@ -116,6 +125,7 @@ const date = ref(null);
 const showPast = ref(false);
 
 const visible = ref(false);
+const visibleAppointmentModal = ref(false);
 
 const userStore = useUserStore();
 
