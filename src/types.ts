@@ -3,10 +3,20 @@ interface Dentistry {
   id: string;
   rating: number;
   type: string;
+  slots: Slot[];
   coordinates: {
     lat: number;
     lng: number;
   };
+}
+
+interface Slot {
+  id: string;
+  patientId: string;
+  dentistId: string;
+  start: Date;
+  end: Date;
+  date: Date;
 }
 
 interface User {

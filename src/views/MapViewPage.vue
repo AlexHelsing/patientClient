@@ -2,9 +2,9 @@
     <div class="md:flex flex-1   md:overflow-auto flex-row ">
         <div v-if="!DentistryInfoToggle" class=" md:w-1/3  p-4 flex flex-col justify-between">
             <div class="py-4 px-2">
-                <h1 class="text-lg font-bold py-1">Over x results...</h1>
+                <h1 class="text-lg font-bold py-1"> {{ dentistries.length }} results</h1>
                 <div class="flex flex-col listofitems space-y-2 py-2 ">
-                    <DentistryListItem v-for="dentistry in dentistries" :dentistry="dentistry" />
+                    <DentistryListItem v-for="dentistry in dentistries" :dentistry="dentistry" @viewOnMap="focusOnMap" />
                 </div>
             </div>
             <Paginator :rows="2" :totalRecords="dentistries.length" class="p-4   " />
@@ -16,7 +16,7 @@
                         <h1 class="text-lg font-bold py-1">{{ toggledDentistry.name }}</h1>
                         <button @click="DentistryInfoToggle = false" class="text-lg font-bold py-1">X</button>
                     </div>
-          
+
                 </div>
             </div>
 
@@ -26,10 +26,10 @@
             <l-map class="" ref="map" v-model:zoom="zoom" v-model:center="center" :useGlobalLeaflet="false">
                 <l-tile-layer url="https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png"
                     layer-type="base" name="Stadia Maps Basemap"></l-tile-layer>
-                <l-marker :lat-lng="campusMarker">
+                <!-- <l-marker :lat-lng="campusMarker">
                     <l-popup :content="`<h1>Chalmers University of Technology</h1>`" :lat-lng="campusMarker">
                     </l-popup>
-                </l-marker>
+                </l-marker> -->
 
                 <l-marker @click="handleMarkerClick(dentistry)" v-for="dentistry in dentistries" :key="dentistry.id"
                     :lat-lng="dentistry.coordinates">
@@ -53,10 +53,12 @@ import { LMap, LTileLayer, LMarker, LPopup } from '@vue-leaflet/vue-leaflet';
 import 'leaflet/dist/leaflet.css';
 
 const dentistries = ref(dentistryData);
+
+
 const center = ref([57.7089, 11.9746]); // Coordinates for Gothenburg
 const zoom = ref(13);
 console.log(zoom.value);
-const campusMarker = ref([57.7066, 11.9367]);
+
 
 const DentistryInfoToggle = ref(false);
 const toggledDentistry = ref({} as Dentistry);
@@ -64,23 +66,39 @@ const toggledDentistry = ref({} as Dentistry);
 // Access the map instance
 const map = ref(null);
 
+
 // watch(center, (newCenter) => {
-//     console.log(newCenter);
+//     // console.log(newCenter);
 //     // find all dentistries with long lat within the bounds
 //     const lat = newCenter.lat;
 //     const lng = newCenter.lng;
-//     console.log(lat, lng);
 
 //     dentistries.value.filter((dentistry) => {
 //         const dentistryLat = dentistry.coordinates.lat;
 //         const dentistryLng = dentistry.coordinates.lng;
-//         console.log(dentistryLat, dentistryLng);
 //         if (dentistryLat > lat - 0.1 && dentistryLat < lat + 0.1 && dentistryLng > lng - 0.1 && dentistryLng < lng + 0.1) {
 //             console.log(dentistry);
-//             console.log(map.value.bounds);
+
+//             // if the dentistries are already in the list, do nothing else refetch
+//             if (dentistries.value.includes(dentistry)) {
+//                 console.log("already in list");
+//             } else {
+//                 // replace the entire list with the new list
+//                 console.log(" replacing list with " + dentistry);
+//                 dentistries.value = dentistries.value.concat(dentistry);
+//             }
 //         }
 //     });
 // });
+
+function focusOnMap(dentistry: Dentistry) {
+    center.value = [dentistry.coordinates.lat, dentistry.coordinates.lng];
+    zoom.value = 16;
+}
+
+
+// watch the breakpoint long lats and console log the bounds
+
 
 
 function handleMarkerClick(dentistry: Dentistry) {
