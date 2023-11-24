@@ -59,8 +59,8 @@
 
 
             <div class="py-4 px-2">
-                <h1 class="text-lg font-bold py-1"> {{ dentistries.length }} results</h1>
-                <div class="flex flex-col listofitems space-y-2 py-2 ">
+                <!-- <h1 class="text-lg font-bold py-1"> {{ dentistries.length }} results</h1> -->
+                <div class="flex flex-col listofitems space-y-2 p-2 ">
                     <DentistryListItem v-for="dentistry in dentistries" :dentistry="dentistry" @viewOnMap="focusOnMap" />
                 </div>
             </div>
@@ -109,8 +109,6 @@
 import { ref } from 'vue';
 // import mapViewSearchBar from '../components/mapViewSearchBar.vue';
 import Calendar from 'primevue/calendar';
-
-import Paginator from 'primevue/paginator';
 
 import 'primevue/resources/themes/lara-light-teal/theme.css';
 import DentistryListItem from '../components/DentistryListItem.vue';
@@ -208,6 +206,4 @@ function handleMarkerClick(dentistry: Dentistry) {
 }
 
 </script>
-
-
 

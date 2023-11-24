@@ -2,8 +2,8 @@ interface Dentistry {
   name: string;
   id: string;
   rating: number;
-  address: string;
-  phone: string;
+  address?: string;
+  phone?: string;
   type: string;
   slots: Slot[];
   coordinates: {

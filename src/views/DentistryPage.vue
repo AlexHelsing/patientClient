@@ -19,11 +19,11 @@
             <img class="h-60 w-60 object-contain" src="../assets/sampleDentistryImage.jpg" alt="Dentistry image">
 
             <span>
-                <p><span class="font-bold">Address:</span> {{ dentistry.address }}</p>
+                <p><span class="font-bold">Address:</span> adress</p>
                 <p class="flex items-center gap-1 font-bold ">
                     <StarIcon class="w-8 h-8" /> {{ dentistry.rating }}
                 </p>
-                <p> <span class="font-bold">Phone: </span>{{ dentistry.phone }}</p>
+                <p> <span class="font-bold">Phone: </span>04412313</p>
             </span>
         </div>
 

@@ -14,11 +14,9 @@
                 <p v-else class="font-bold text-red-500">No Slots Available Today</p>
             </div>
         </RouterLink>
-        <div class="flex gap-2 justify-end self-end">
-            <button @click="emitViewOnMapEvent"
-                class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors">
-                View
-            </button>
+        <div class="justify-end self-end">
+
+            <DentistryCardTimePicker />
         </div>
     </div>
 </template>
@@ -27,6 +25,7 @@
 <script setup lang="ts">
 import { PropType } from 'vue';
 import Rating from 'primevue/rating';
+import DentistryCardTimePicker from './DentistryCardTimePicker.vue';
 
 const props = defineProps({
     dentistry: {
