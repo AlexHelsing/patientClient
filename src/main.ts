@@ -8,5 +8,7 @@ import PrimeVue from 'primevue/config';
 const app = createApp(App);
 app.use(router);
 app.use(createPinia());
-app.use(PrimeVue, { ripple: true });
+app.use(PrimeVue, {
+  ripple: true,
+});
 app.mount('#app');
