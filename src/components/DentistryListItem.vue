@@ -49,9 +49,9 @@ const emit = defineEmits(['viewOnMap']);
 // }
 
 
-const emitViewOnMapEvent = () => {
-    emit('viewOnMap', props.dentistry);
-}
+// const emitViewOnMapEvent = () => {
+//     emit('viewOnMap', props.dentistry);
+// }
 
 
 </script>

@@ -33,15 +33,24 @@
         <!-- Times List or No Available Times Message -->
         <div class="space-y-2 px-4">
             <div class="flex flex-col space-y-2" v-if="selectedTimes.length > 0">
-                <div @click="setActiveTime(time)" v-for="time in selectedTimes" :key="time.id"
-                    :class="{ 'bg-cyan-700 text-white': activeTime === time }"
-                    class="flex border-gray-300  items-center justify-center font-semibold rounded-sm p-3 cursor-pointer border hover:border-transparent hover:border-cyan-700 transition-all duration-300">
+                <div v-for="(time, index) in selectedTimes" :key="time.id" v-show="index < 4 || showAllTimes"
+                    @click="setActiveTime(time)" :class="{ 'bg-cyan-700 text-white': activeTime === time }"
+                    class="flex border-gray-300 items-center justify-center font-semibold rounded-sm p-3 cursor-pointer border hover:border-transparent hover:border-cyan-700 transition-all duration-300">
                     {{ time.start }} - {{ time.end }}
                 </div>
             </div>
-            <div v-else class="text-center text-gray-500">
-                No available times
+            <div v-else class="text-center text-md text-gray-500 max-w-[18rem] mx-auto line-clamp-3">
+                No appointments available on the selected date.
             </div>
+
+            <button v-if="selectedTimes.length > 4 && !showAllTimes" @click="showAllTimes = true"
+                class="flex justify-center w-full text-blue-500 mt-2">
+                Show more
+            </button>
+            <!-- Show Less Button -->
+            <button v-if="showAllTimes" @click="showAllTimes = false" class="flex justify-center w-full text-blue-500 mt-2">
+                Show less
+            </button>
         </div>
     </div>
 </template>
@@ -55,6 +64,10 @@ type DayTimes = { [key: string]: TimeSlot[] };
 
 const activeTime = ref<TimeSlot | null>(null);
 
+// State to control whether all times are shown
+const showAllTimes = ref(false);
+
+
 const setActiveTime = (time: TimeSlot) => {
     activeTime.value = time;
 };
@@ -64,6 +77,18 @@ const timesData: DayTimes = {
     '2023-11-28': [
         { id: 1, start: '09:30', end: '10:00' },
         { id: 2, start: '10:15', end: '10:45' },
+    ],
+    '2023-11-26': [
+        { id: 1, start: '09:30', end: '10:00' },
+        { id: 2, start: '10:15', end: '10:45' },
+        { id: 3, start: '11:00', end: '11:30' },
+        { id: 4, start: '12:45', end: '13:15' },
+        { id: 5, start: '14:00', end: '14:30' },
+        { id: 6, start: '15:15', end: '15:45' },
+        { id: 7, start: '16:00', end: '16:30' },
+        { id: 8, start: '17:15', end: '17:45' },
+
+
     ],
     '2023-03-30': [
         { id: 3, start: '11:00', end: '11:30' },
