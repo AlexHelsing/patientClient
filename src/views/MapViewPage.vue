@@ -5,7 +5,7 @@
 
 
 
-        <div v-if="!DentistryInfoToggle" class="md:w-[40%] flex flex-col justify-between">
+        <div v-if="!DentistryInfoToggle" class="md:w-[40%] flex flex-col justify-between max-h-screen overflow-y-scroll">
             <div class="bg-white flex flex-col px-5 py-7 space-y-6">
                 <h1 class="text-2xl font-bold">Make an appointment </h1>
 
@@ -64,7 +64,7 @@
                     <DentistryListItem v-for="dentistry in dentistries" :dentistry="dentistry" @viewOnMap="focusOnMap" />
                 </div>
             </div>
-            <Paginator :rows="2" :totalRecords="dentistries.length" class="p-4   " />
+            <!-- <Paginator :rows="2" :totalRecords="dentistries.length" class="p-4   " /> -->
         </div>
         <div v-else class="md:w-1/3 p-4 flex flex-col">
             <div class="flex flex-col justify-between">
@@ -78,9 +78,8 @@
             </div>
 
         </div>
-        <div class=" md:w-[65%] rounded-xl text-center items-center text-5xl text-white fontb-bold justify-center
-                            flex">
-            <l-map class="" ref="map" v-model:zoom="zoom" v-model:center="center" :useGlobalLeaflet="false">
+        <div class="md:w-[65%] ">
+            <l-map class="h-full" ref="map" v-model:zoom="zoom" v-model:center="center" :useGlobalLeaflet="false">
                 <l-tile-layer url="https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png"
                     layer-type="base" name="Stadia Maps Basemap"></l-tile-layer>
                 <!-- <l-marker :lat-lng="campusMarker">

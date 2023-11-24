@@ -103,6 +103,94 @@ const dentistries = [
       lng: 11.97456,
     },
   },
+  {
+    name: 'Dentistry 6',
+    id: '6',
+    rating: 4.5,
+    slots: [],
+    type: 'tooth',
+    coordinates: {
+      lat: 57.47777,
+      lng: 11.97456,
+    },
+  },
+  {
+    name: 'Dentistry 7',
+    id: '7',
+    rating: 4.5,
+    slots: [],
+    type: 'tooth',
+    coordinates: {
+      lat: 57.46777,
+      lng: 11.97456,
+    },
+  },
+  {
+    name: 'Dentistry 8',
+    id: '8',
+    rating: 4.5,
+    slots: [],
+    type: 'tooth',
+    coordinates: {
+      lat: 57.45777,
+      lng: 11.97456,
+    },
+  },
+  {
+    name: 'Dentistry 9',
+    id: '9',
+    rating: 4.5,
+    slots: [],
+    type: 'tooth',
+    coordinates: {
+      lat: 57.44777,
+      lng: 11.97456,
+    },
+  },
+  {
+    name: 'Dentistry 10',
+    id: '10',
+    rating: 4.5,
+    slots: [],
+    type: 'tooth',
+    coordinates: {
+      lat: 57.43777,
+      lng: 11.97456,
+    },
+  },
+  {
+    name: 'Dentistry 11',
+    id: '11',
+    rating: 4.5,
+    slots: [],
+    type: 'tooth',
+    coordinates: {
+      lat: 57.42777,
+      lng: 11.97456,
+    },
+  },
+  {
+    name: 'Dentistry 12',
+    id: '12',
+    rating: 4.5,
+    slots: [],
+    type: 'tooth',
+    coordinates: {
+      lat: 57.41777,
+      lng: 11.97456,
+    },
+  },
+  {
+    name: 'Dentistry 13',
+    id: '13',
+    rating: 4.5,
+    slots: [],
+    type: 'tooth',
+    coordinates: {
+      lat: 57.40777,
+      lng: 11.97456,
+    },
+  },
 ];
 
 export default dentistries;
