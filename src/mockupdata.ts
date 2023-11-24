@@ -3,14 +3,16 @@ const dentistries = [
     name: 'Dentistry 1',
     id: '1',
     rating: 3,
+    image:
+      'https://images.squarespace-cdn.com/content/v1/5e29bc191bc1146fbde14230/1647595177138-VSFKCXFMFIGNSU2BKQMI/dental+surgery+design.jpeg',
     slots: [
       {
         id: '1',
         patientId: '1',
         dentistId: '1',
-        start: new Date('2020-01-01T10:00:00'),
-        end: new Date('2020-01-01T11:00:00'),
-        date: new Date('2023-11-23'),
+        start: new Date('2023-11-28T10:00:00'),
+        end: new Date('2023-11-28T11:00:00'),
+        date: new Date('2023-11-28'),
       },
       {
         id: '2',

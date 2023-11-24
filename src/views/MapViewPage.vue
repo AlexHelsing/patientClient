@@ -5,7 +5,7 @@
 
 
 
-        <div v-if="!DentistryInfoToggle" class="md:w-[40%] flex flex-col justify-between max-h-screen overflow-y-scroll">
+        <div v-if="!DentistryInfoToggle" class="md:w-[45%] flex flex-col justify-between max-h-screen overflow-y-scroll">
             <div class="bg-white flex flex-col px-5 py-7 space-y-6">
                 <h1 class="text-2xl font-bold">Make an appointment </h1>
 
@@ -61,7 +61,8 @@
             <div class="py-4 px-2">
                 <!-- <h1 class="text-lg font-bold py-1"> {{ dentistries.length }} results</h1> -->
                 <div class="flex flex-col listofitems space-y-2 p-2 ">
-                    <DentistryListItem v-for="dentistry in dentistries" :dentistry="dentistry" @viewOnMap="focusOnMap" />
+                    <DentistryListItem :far-from-user="farFromUser(dentistry)" v-for="dentistry in dentistries"
+                        :dentistry="dentistry" @viewOnMap="focusOnMap" />
                 </div>
             </div>
             <!-- <Paginator :rows="2" :totalRecords="dentistries.length" class="p-4   " /> -->
@@ -129,8 +130,13 @@ function handleChange(newValue: SearchInput) {
 
 type SearchInput = 'All' | 'Morning' | 'Afternoon';
 
+type location = {
+    lat: number;
+    lng: number;
+};
 
-const usersLocation = ref({ lat: 0, lng: 0 });
+const usersLocation = ref({} as location);
+
 
 async function getUserLocation() {
     navigator.geolocation.getCurrentPosition(async (position) => {
@@ -148,7 +154,17 @@ async function getUserLocation() {
     });
 }
 
+// create a function that returns how far from the user the dentistry is, by using the users location and the dentistry coordinates
+function farFromUser(dentistry: Dentistry) {
+    const dentistryLat = dentistry.coordinates.lat;
+    const dentistryLng = dentistry.coordinates.lng;
+    const userLat = usersLocation.value.lat;
+    const userLng = usersLocation.value.lng;
 
+    const distance = Math.sqrt(Math.pow(dentistryLat - userLat, 2) + Math.pow(dentistryLng - userLng, 2));
+    //return the distance in km
+    return (distance * 100);
+}
 
 
 const dentistries = ref(dentistryData);

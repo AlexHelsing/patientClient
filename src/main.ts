@@ -5,9 +5,13 @@ import router from './router';
 import { createPinia } from 'pinia';
 import PrimeVue from 'primevue/config';
 import { OhVueIcon, addIcons } from 'oh-vue-icons';
-import { MdKeyboardarrowleft, MdKeyboardarrowright } from 'oh-vue-icons/icons';
+import {
+  MdKeyboardarrowleft,
+  MdKeyboardarrowright,
+  IoLocation,
+} from 'oh-vue-icons/icons';
 
-addIcons(MdKeyboardarrowright, MdKeyboardarrowleft);
+addIcons(MdKeyboardarrowright, MdKeyboardarrowleft, IoLocation);
 
 const app = createApp(App);
 app.use(router);

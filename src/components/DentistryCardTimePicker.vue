@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col space-y-4">
+    <div class="flex  flex-col space-y-4">
         <!-- Calendar Navigation -->
         <div class="flex items-center justify-between px-4 gap-7">
             <button @click="navigate(-5)" :disabled="isEarliestWeek"
@@ -34,8 +34,8 @@
         <div class="space-y-2 px-4">
             <div class="flex flex-col space-y-2" v-if="selectedTimes.length > 0">
                 <div @click="setActiveTime(time)" v-for="time in selectedTimes" :key="time.id"
-                :class="{ 'bg-cyan-700 text-white': activeTime === time }"    
-                class="flex border-gray-300  items-center justify-center font-semibold rounded-sm p-3 cursor-pointer border hover:border-transparent hover:border-cyan-700 transition-all duration-300">
+                    :class="{ 'bg-cyan-700 text-white': activeTime === time }"
+                    class="flex border-gray-300  items-center justify-center font-semibold rounded-sm p-3 cursor-pointer border hover:border-transparent hover:border-cyan-700 transition-all duration-300">
                     {{ time.start }} - {{ time.end }}
                 </div>
             </div>

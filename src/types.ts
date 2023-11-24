@@ -4,6 +4,7 @@ interface Dentistry {
   rating: number;
   address?: string;
   phone?: string;
+  image?: string;
   type: string;
   slots: Slot[];
   coordinates: {
