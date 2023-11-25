@@ -1,7 +1,8 @@
 <template>
     <div class="md:flex flex-1 border-t  md:overflow-auto flex-row ">
 
-        <div v-if="!DentistryInfoToggle" class="md:w-[45%] flex flex-col justify-between max-h-screen overflow-y-scroll">
+        <div v-if="!DentistryInfoToggle"
+            class="md:w-[45%] flex flex-col justify-between max-h-screen overflow-y-scroll scrollbar  scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full">
             <div class="bg-white flex flex-col px-5 py-7 space-y-6">
                 <h1 class="text-2xl font-bold">Make an appointment </h1>
 
