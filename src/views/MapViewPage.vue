@@ -6,8 +6,8 @@
             <div class="bg-white flex flex-col px-5 py-7 space-y-6">
                 <h1 class="text-2xl font-bold">Make an appointment </h1>
 
-                <div class="flex w-full items-center gap-10 ">
-                    <div class="relative flex-grow mr-3 md:w-3/5">
+                <div class="flex flex-col md:flex-row w-full items-center gap-5 md:gap-10 ">
+                    <div class="relative flex-grow  w-full md:w-3/5">
                         <input type="text" v-model="adressInput" placeholder="Search by city, postal code or street"
                             class="w-full pl-3 pr-10 py-3 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500" />
                         <MagnifyingGlassIcon
@@ -16,13 +16,13 @@
 
 
                     <Calendar v-model="DateInput"
-                        class="md:w-2/5 pl-3  py-3 border border-gray-300 rounded-md focus:outline-none" :showIcon="true"
-                        placeholder="Date" />
+                        class="md:w-2/5 w-full pl-3  py-3 border border-gray-300 rounded-md focus:outline-none"
+                        :showIcon="true" placeholder="Date" />
 
 
                 </div>
 
-                <div class="flex justify-between">
+                <div class="flex justify-between flex-wrap md:flex-nowrap gap-2 md:gap-0">
                     <button @click="getUserLocation" type="button"
                         class="text-white bg-blue-700 hover:bg-blue-800  focus:outline-none active:outline-none  rounded-xl font-semibold text-sm px-5 py-2.5 text-center me-2 dark:bg-blue-600  inline-flex items-center">
                         <svg v-if="usingCurrentLocation" aria-hidden="true" role="status"
@@ -59,7 +59,7 @@
                 <!-- <h1 class="text-lg font-bold py-1"> {{ dentistries.length }} results</h1> -->
                 <div class="flex flex-col listofitems space-y-2 p-2 ">
                     <DentistryListItem :far-from-user="farFromUser(dentistry)" v-for="dentistry in dentistries"
-                        :key="dentistry.id" :dentistry="dentistry" @click.native="scrollToDentistry(dentistry.id)" />
+                        :key="dentistry.id" :dentistry="dentistry" @time-selected="handleTimeSelection" />
                 </div>
             </div>
             <!-- <Paginator :rows="2" :totalRecords="dentistries.length" class="p-4   " /> -->
@@ -76,8 +76,8 @@
             </div>
 
         </div>
-        <div class="md:w-[65%] ">
-            <l-map class="h-full" ref="map" v-model:zoom="zoom" v-model:center="center" :useGlobalLeaflet="false">
+        <div class="md:w-[65%] z-0  ">
+            <l-map class="h-full z-7" ref="map" v-model:zoom="zoom" v-model:center="center" :useGlobalLeaflet="false">
                 <l-tile-layer url="https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png"
                     layer-type="base" name="Stadia Maps Basemap"></l-tile-layer>
                 <!-- <l-marker :lat-lng="campusMarker">
@@ -100,6 +100,44 @@
         </div>
 
     </div>
+
+    <!-- Confirmation Bar -->
+    <div v-if="showingConfirmationBar"
+        class="fixed inset-x-0 bottom-0 md:flex-nowrap md:gap-0 gap-2 flex-wrap z-50 bg-white shadow-black px-10 p-5 flex justify-between items-center shadow-2xl">
+        <div class="flex items-center">
+            <!-- Appointment Details -->
+            <div class="flex items-center gap-4">
+                <span class="text-md font-bold">
+                    Appointment:
+                    <span class="font-normal">
+                        {{ confirmationBarData.dentistry.name }}
+                    </span>
+                </span>
+                <!-- Divider -->
+                <span class="border-l border-gray-300 h-6"></span>
+                <span class="text-md text-gray-600">
+                    {{ confirmationBarData.data.date }}
+                </span>
+                <!-- Divider -->
+                <span class="border-l border-gray-300 h-6"></span>
+                <span class="text-md text-gray-600">
+                    {{ confirmationBarData.data.start }} - {{ confirmationBarData.data.end }}
+                </span>
+            </div>
+        </div>
+
+        <div class=" items-end md:justify-end flex gap-2">
+            <!-- Cancel Button -->
+            <button @click="showingConfirmationBar = false"
+                class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-xl">
+                Cancel
+            </button>
+            <!-- Continue Button -->
+            <button class="bg-blue-500 w-[20rem] hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-xl">
+                Continue
+            </button>
+        </div>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -115,6 +153,8 @@ import 'leaflet/dist/leaflet.css';
 import { MagnifyingGlassIcon } from '@heroicons/vue/24/outline';
 const adressInput = ref(null);
 const DateInput = ref(null);
+const showingConfirmationBar = ref(false);
+const confirmationBarData = ref({} as any);
 const usingCurrentLocation = ref(false);
 const showingSearchResults = ref({ time: 'All' } as { time: SearchInput });
 
@@ -212,6 +252,20 @@ const scrollToDentistry = (dentistryId: string) => {
         }
     });
 };
+
+
+function handleTimeSelection(data: unknown) {
+    // When time is selected in the child component, toggle the confirmation bar
+    confirmationBarData.value = data as Dentistry & {
+        time: {
+            start: string;
+            end: string;
+            date: Date;
+        }
+    };
+    console.log(data);
+    showingConfirmationBar.value = true;
+}
 
 
 </script>

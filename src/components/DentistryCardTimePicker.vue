@@ -47,7 +47,7 @@
                 class="flex justify-center w-full text-blue-500 mt-2">
                 Show more
             </button>
-            <!-- Show Less Button -->
+
             <button v-if="showAllTimes" @click="showAllTimes = false" class="flex justify-center w-full text-blue-500 mt-2">
                 Show less
             </button>
@@ -58,6 +58,7 @@
 <script setup lang="ts">
 
 import { ref, computed } from 'vue';
+const emit = defineEmits(['time-selected']);
 
 type TimeSlot = { id: number; start: string; end: string; };
 type DayTimes = { [key: string]: TimeSlot[] };
@@ -68,11 +69,16 @@ const activeTime = ref<TimeSlot | null>(null);
 const showAllTimes = ref(false);
 
 
+
+
 const setActiveTime = (time: TimeSlot) => {
     activeTime.value = time;
+    // temporary solution till data is fetched from backend
+    const tempType = { ...time, date: selectedDate.value.toDateString() };
+    emit('time-selected', tempType);
 };
 
-// Define your types and reactive data properties
+// Mock data for the times
 const timesData: DayTimes = {
     '2023-11-28': [
         { id: 1, start: '09:30', end: '10:00' },
@@ -94,7 +100,7 @@ const timesData: DayTimes = {
         { id: 3, start: '11:00', end: '11:30' },
         { id: 4, start: '12:45', end: '13:15' },
     ],
-    // ... other days
+
 };
 
 const initialDate = new Date(); // Store the initial date to compare against
@@ -117,13 +123,13 @@ const navigate = (days: number) => {
 
 const selectDay = (date: Date) => {
     // Format the date as YYYY-MM-DD without converting to UTC
-    const dateString = date.toLocaleDateString('en-CA', { // 'en-CA' uses the YYYY-MM-DD format
+    const dateString = date.toLocaleDateString('en-CA', {
         year: 'numeric',
         month: '2-digit',
         day: '2-digit',
     });
     selectedTimes.value = timesData[dateString] || [];
-    selectedDate.value = new Date(date); // Make sure to set it as a new Date object
+    selectedDate.value = new Date(date);
 };
 
 const hasTimes = (date: Date) => {
@@ -169,7 +175,5 @@ const isEarliestWeek = computed(() => {
 });
 </script>
   
-<style>
-/* You can add your styles here */
-</style>
+<style></style>
   

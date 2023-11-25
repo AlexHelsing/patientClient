@@ -1,6 +1,6 @@
 <template>
     <div :id="`dentistry-${dentistry.id}`"
-        class="bg-white shadow-sm hover:shadow-md rounded-lg p-4 flex justify-between transition-shadow max-w-full">
+        class="bg-white shadow-sm hover:shadow-md rounded-lg p-4 flex flex-col md:flex-row justify-between transition-shadow max-w-full">
         <RouterLink :to="`/dentistry/${dentistry.id}`" class="flex flex-1 max-w-lg gap-3">
 
             <div class="flex flex-col space-y-2">
@@ -14,7 +14,7 @@
             </div>
         </RouterLink>
         <div class="flex-none py-2">
-            <DentistryCardTimePicker />
+            <DentistryCardTimePicker @time-selected="onTimeSelected" />
         </div>
     </div>
 </template>
@@ -24,12 +24,13 @@
 import { PropType } from 'vue';
 import DentistryCardTimePicker from './DentistryCardTimePicker.vue';
 
+const emit = defineEmits(['time-selected']);
 
 
 
 
 
-defineProps({
+const props = defineProps({
     dentistry: {
         type: Object as PropType<Dentistry>,
         required: true
@@ -40,6 +41,10 @@ defineProps({
     }
 });
 
+function onTimeSelected(data: unknown) {
+    // add dentistry data to the payload and re-emit
+    emit('time-selected', { data, dentistry: props.dentistry });
+}
 
 
 
