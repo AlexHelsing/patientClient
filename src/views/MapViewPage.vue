@@ -1,10 +1,6 @@
 <template>
     <div class="md:flex flex-1 border-t  md:overflow-auto flex-row ">
 
-
-
-
-
         <div v-if="!DentistryInfoToggle" class="md:w-[45%] flex flex-col justify-between max-h-screen overflow-y-scroll">
             <div class="bg-white flex flex-col px-5 py-7 space-y-6">
                 <h1 class="text-2xl font-bold">Make an appointment </h1>
@@ -62,7 +58,7 @@
                 <!-- <h1 class="text-lg font-bold py-1"> {{ dentistries.length }} results</h1> -->
                 <div class="flex flex-col listofitems space-y-2 p-2 ">
                     <DentistryListItem :far-from-user="farFromUser(dentistry)" v-for="dentistry in dentistries"
-                        :dentistry="dentistry" @viewOnMap="focusOnMap" />
+                        :key="dentistry.id" :dentistry="dentistry" @click.native="scrollToDentistry(dentistry.id)" />
                 </div>
             </div>
             <!-- <Paginator :rows="2" :totalRecords="dentistries.length" class="p-4   " /> -->
@@ -94,7 +90,7 @@
                     </l-popup>
                 </l-marker>
 
-                <l-marker @click="handleMarkerClick(dentistry)" v-for="dentistry in dentistries" :key="dentistry.id"
+                <l-marker @click="scrollToDentistry(dentistry.id)" v-for="dentistry in dentistries" :key="dentistry.id"
                     :lat-lng="dentistry.coordinates">
                     <l-popup :content="`<h1>${dentistry.name}</h1>`" :lat-lng="dentistry.coordinates">
                     </l-popup>
@@ -107,8 +103,7 @@
 
 <script setup lang="ts">
 
-import { ref } from 'vue';
-// import mapViewSearchBar from '../components/mapViewSearchBar.vue';
+import { nextTick, ref } from 'vue';
 import Calendar from 'primevue/calendar';
 
 import 'primevue/resources/themes/lara-light-teal/theme.css';
@@ -154,7 +149,6 @@ async function getUserLocation() {
     });
 }
 
-// create a function that returns how far from the user the dentistry is, by using the users location and the dentistry coordinates
 function farFromUser(dentistry: Dentistry) {
     const dentistryLat = dentistry.coordinates.lat;
     const dentistryLng = dentistry.coordinates.lng;
@@ -206,20 +200,18 @@ const map = ref(null);
 //     });
 // });
 
-function focusOnMap(dentistry: Dentistry) {
-    center.value = [dentistry.coordinates.lat, dentistry.coordinates.lng];
-    zoom.value = 16;
-}
 
+// create a function that scrolls to the corresponding dentistry when clicking on a marker
+const scrollToDentistry = (dentistryId: string) => {
+    nextTick(() => {
+        const dentistryElement = document.getElementById(`dentistry-${dentistryId}`);
+        if (dentistryElement) {
+            dentistryElement.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
 
-// watch the breakpoint long lats and console log the bounds
+        }
+    });
+};
 
-
-
-function handleMarkerClick(dentistry: Dentistry) {
-    DentistryInfoToggle.value = true;
-    toggledDentistry.value = dentistry;
-}
 
 </script>
 

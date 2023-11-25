@@ -1,5 +1,6 @@
 <template>
-    <div class="bg-white shadow-sm hover:shadow-md rounded-lg p-4 flex justify-between transition-shadow max-w-full">
+    <div :id="`dentistry-${dentistry.id}`"
+        class="bg-white shadow-sm hover:shadow-md rounded-lg p-4 flex justify-between transition-shadow max-w-full">
         <RouterLink :to="`/dentistry/${dentistry.id}`" class="flex flex-1 max-w-lg gap-3">
 
             <div class="flex flex-col space-y-2">
@@ -28,7 +29,7 @@ import DentistryCardTimePicker from './DentistryCardTimePicker.vue';
 
 
 
-const props = defineProps({
+defineProps({
     dentistry: {
         type: Object as PropType<Dentistry>,
         required: true
@@ -38,20 +39,8 @@ const props = defineProps({
         required: false
     }
 });
-console.log(props.farFromUser);
-const emit = defineEmits(['viewOnMap']);
-
-// function hasAvailableSlotsToday(dentistry: Dentistry, date: Date) {
-//     return dentistry.slots.some(slot => {
-//         const slotDate = new Date(slot.date);
-//         return slotDate.getDate() === date.getDate() && slotDate.getMonth() === date.getMonth() && slotDate.getFullYear() === date.getFullYear();
-//     });
-// }
 
 
-// const emitViewOnMapEvent = () => {
-//     emit('viewOnMap', props.dentistry);
-// }
 
 
 </script>

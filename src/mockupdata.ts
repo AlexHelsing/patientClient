@@ -57,7 +57,7 @@ const dentistries = [
     ],
     type: 'tooth',
     coordinates: {
-      lat: 57.70887,
+      lat: 57.69887,
       lng: 11.97456,
     },
   },
@@ -65,6 +65,8 @@ const dentistries = [
     name: 'Dentistry 2',
     id: '2',
     rating: 4.5,
+    image:
+      'https://i1.wp.com/www.indiadesignworld.com/wp-content/uploads/2022/10/1.-House-of-Ruya_32-Smiles-Dental-Clinic_DSC03993-copy-2.jpg?resize=1440%2C960&ssl=1',
     slots: [],
     type: 'tooth',
     coordinates: {
@@ -77,9 +79,12 @@ const dentistries = [
     id: '3',
     rating: 4.5,
     slots: [],
+    image:
+      'https://images.squarespace-cdn.com/content/v1/5e29bc191bc1146fbde14230/1647595177138-VSFKCXFMFIGNSU2BKQMI/dental+surgery+design.jpeg',
+
     type: 'tooth',
     coordinates: {
-      lat: 57.50777,
+      lat: 57.71877,
       lng: 11.97456,
     },
   },
@@ -87,21 +92,27 @@ const dentistries = [
     name: 'Dentistry 4',
     id: '4',
     rating: 4.5,
+    image:
+      'https://i1.wp.com/www.indiadesignworld.com/wp-content/uploads/2022/10/1.-House-of-Ruya_32-Smiles-Dental-Clinic_DSC03993-copy-2.jpg?resize=1440%2C960&ssl=1',
+
     slots: [],
     type: 'tooth',
     coordinates: {
-      lat: 57.49777,
+      lat: 57.72777,
       lng: 11.97456,
     },
   },
   {
     name: 'Dentistry 5',
     id: '5',
+    image:
+      'https://images.squarespace-cdn.com/content/v1/5e29bc191bc1146fbde14230/1647595177138-VSFKCXFMFIGNSU2BKQMI/dental+surgery+design.jpeg',
+
     rating: 4.5,
     slots: [],
     type: 'tooth',
     coordinates: {
-      lat: 57.48777,
+      lat: 57.66777,
       lng: 11.97456,
     },
   },
@@ -109,10 +120,13 @@ const dentistries = [
     name: 'Dentistry 6',
     id: '6',
     rating: 4.5,
+    image:
+      'https://i1.wp.com/www.indiadesignworld.com/wp-content/uploads/2022/10/1.-House-of-Ruya_32-Smiles-Dental-Clinic_DSC03993-copy-2.jpg?resize=1440%2C960&ssl=1',
+
     slots: [],
     type: 'tooth',
     coordinates: {
-      lat: 57.47777,
+      lat: 57.65677,
       lng: 11.97456,
     },
   },
@@ -120,17 +134,23 @@ const dentistries = [
     name: 'Dentistry 7',
     id: '7',
     rating: 4.5,
+    image:
+      'https://images.squarespace-cdn.com/content/v1/5e29bc191bc1146fbde14230/1647595177138-VSFKCXFMFIGNSU2BKQMI/dental+surgery+design.jpeg',
+
     slots: [],
     type: 'tooth',
     coordinates: {
-      lat: 57.46777,
-      lng: 11.97456,
+      lat: 57.64777,
+      lng: 11.96456,
     },
   },
   {
     name: 'Dentistry 8',
     id: '8',
     rating: 4.5,
+    image:
+      'https://i1.wp.com/www.indiadesignworld.com/wp-content/uploads/2022/10/1.-House-of-Ruya_32-Smiles-Dental-Clinic_DSC03993-copy-2.jpg?resize=1440%2C960&ssl=1',
+
     slots: [],
     type: 'tooth',
     coordinates: {
@@ -142,6 +162,9 @@ const dentistries = [
     name: 'Dentistry 9',
     id: '9',
     rating: 4.5,
+    image:
+      'https://images.squarespace-cdn.com/content/v1/5e29bc191bc1146fbde14230/1647595177138-VSFKCXFMFIGNSU2BKQMI/dental+surgery+design.jpeg',
+
     slots: [],
     type: 'tooth',
     coordinates: {
@@ -153,6 +176,9 @@ const dentistries = [
     name: 'Dentistry 10',
     id: '10',
     rating: 4.5,
+    image:
+      'https://i1.wp.com/www.indiadesignworld.com/wp-content/uploads/2022/10/1.-House-of-Ruya_32-Smiles-Dental-Clinic_DSC03993-copy-2.jpg?resize=1440%2C960&ssl=1',
+
     slots: [],
     type: 'tooth',
     coordinates: {
@@ -164,6 +190,9 @@ const dentistries = [
     name: 'Dentistry 11',
     id: '11',
     rating: 4.5,
+    image:
+      'https://images.squarespace-cdn.com/content/v1/5e29bc191bc1146fbde14230/1647595177138-VSFKCXFMFIGNSU2BKQMI/dental+surgery+design.jpeg',
+
     slots: [],
     type: 'tooth',
     coordinates: {
@@ -175,6 +204,9 @@ const dentistries = [
     name: 'Dentistry 12',
     id: '12',
     rating: 4.5,
+    image:
+      'https://i1.wp.com/www.indiadesignworld.com/wp-content/uploads/2022/10/1.-House-of-Ruya_32-Smiles-Dental-Clinic_DSC03993-copy-2.jpg?resize=1440%2C960&ssl=1',
+
     slots: [],
     type: 'tooth',
     coordinates: {
@@ -186,6 +218,9 @@ const dentistries = [
     name: 'Dentistry 13',
     id: '13',
     rating: 4.5,
+    image:
+      'https://images.squarespace-cdn.com/content/v1/5e29bc191bc1146fbde14230/1647595177138-VSFKCXFMFIGNSU2BKQMI/dental+surgery+design.jpeg',
+
     slots: [],
     type: 'tooth',
     coordinates: {
