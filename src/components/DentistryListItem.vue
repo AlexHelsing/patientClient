@@ -1,6 +1,6 @@
 <template>
     <div :id="`dentistry-${dentistry.id}`"
-        class="bg-white shadow-sm hover:shadow-md rounded-lg p-4 flex flex-col md:flex-row justify-between transition-shadow max-w-full">
+        class="bg-white dark:bg-gray-800 shadow-sm hover:shadow-md rounded-lg p-4 flex flex-col md:flex-row justify-between transition-shadow max-w-full">
         <RouterLink :to="`/dentistry/${dentistry.id}`" class="flex flex-1 max-w-lg gap-3">
 
             <div class="flex flex-col space-y-2">

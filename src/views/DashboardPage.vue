@@ -1,8 +1,8 @@
 <template>
-    <div class=" flex flex-1  max-w-5xl ">
-        <div class=" w-1/2 flex flex-col justify-between gap-3 p-6">
+    <div class=" flex flex-col md:flex-row flex-1 dark:border-t border-cyan-900   ">
+        <div class=" md:w-1/4 flex flex-col justify-between gap-3 p-6">
             <div class="flex flex-col space-y-2">
-                <div class="flex bg-gray-300 flex-col rounded-lg items-center p-4 ">
+                <div class="flex bg-gray-300 dark:bg-gray-800 flex-col rounded-lg items-center p-4 ">
                     <span class="rounded-full bg-purple-600 h-12 w-12" alt="" />
                     <h1 class="text-lg font-bold">{{ userStore.getUser?.firstname }} {{ userStore.getUser?.lastname }}</h1>
 
@@ -12,16 +12,16 @@
                 </div>
 
 
-                <div class="flex card  flex-col  bg-gray-300 ">
+                <div class="flex card  flex-col  bg-gray-300 dark:bg-gray-800 ">
                     <span @click="handleToggle('upcoming')"
-                        class="flex gap-2 py-2 px-1 hover:bg-cyan-500 hover:text-white hover:font-bold cursor-pointer"
-                        :class="{ 'bg-cyan-500 text-white font-bold': !showPast }">
+                        class="flex gap-2 py-2 px-1 hover:bg-cyan-500 dark:hover:bg-gray-500 hover:text-white hover:font-bold cursor-pointer"
+                        :class="{ 'bg-cyan-500 text-white font-bold dark:bg-gray-500': !showPast }">
                         <CalendarDaysIcon class="h-8 w-8" />
                         <h1 class="text-lg font-semibold">Upcoming appointments</h1>
                     </span>
                     <span @click="handleToggle('past')"
                         class="flex gap-2 py-2 px-1 hover:text-white hover:font-bold hover:bg-cyan-500 cursor-pointer"
-                        :class="{ 'bg-cyan-500 text-white font-bold': showPast }">
+                        :class="{ 'bg-cyan-500 text-white font-bold dark:bg-gray-500 dark:hover:bg-gray-500': showPast }">
                         <ArchiveBoxIcon class="h-8 w-8" />
                         <h1 class="text-lg font-semibold">Appointment history</h1>
                     </span>
@@ -53,7 +53,7 @@
 
 
 
-        <div v-if="!showPast" class="w-1/2 p-8 gap-4 flex flex-col">
+        <div v-if="!showPast" class="md:w-1/4 p-8 gap-4 flex flex-col">
             <div class="flex gap-4 py-2">
                 <h1 class="text-4xl">Upcoming Appointments</h1>
                 <!-- <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">

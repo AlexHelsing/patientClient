@@ -1,5 +1,5 @@
 <template>
-    <header class="bg-white shadow">
+    <header class="bg-white shadow dark:bg-gray-900">
         <div class="max-w-8xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
             <div class="flex gap-20 items-center">
                 <span class="flex gap-2 items-center cursor-pointer">
@@ -9,13 +9,13 @@
 
                 <nav class="md:flex gap-8 items-center hidden">
                     <RouterLink to="/dashboard"
-                        class="text-gray-700 hover:text-cyan-700 font-semibold   relative text-2xl w-fit block after:block after:content-[''] after:absolute after:h-[3px] after:bg-black after:w-full after:scale-x-0 after:hover:scale-x-100 after:transition after:duration-300 after:origin-center">
+                        class="text-gray-700 hover:text-cyan-700 dark:text-gray-200 dark:hover:text-gray-100  font-semibold   relative text-2xl w-fit block after:block after:content-[''] after:absolute after:h-[3px] after:bg-black dark:after:bg-cyan-400 after:w-full after:scale-x-0 after:hover:scale-x-100 after:transition after:duration-300 after:origin-center">
                         Appointments</RouterLink>
                     <RouterLink to="/mapview"
-                        class="text-gray-600 hover:text-cyan-700 font-semibold   relative text-2xl w-fit block after:block after:content-[''] after:absolute after:h-[3px] after:bg-black after:w-full after:scale-x-0 after:hover:scale-x-100 after:transition after:duration-300 after:origin-center">
+                        class="text-gray-600 hover:text-cyan-700 font-semibold dark:text-gray-200 dark:hover:text-gray-100   relative text-2xl w-fit block after:block after:content-[''] after:absolute after:h-[3px] after:bg-black dark:after:bg-cyan-400 after:w-full after:scale-x-0 after:hover:scale-x-100 after:transition after:duration-300 after:origin-center">
                         Dentistries</RouterLink>
                     <RouterLink to="/Settings"
-                        class="text-gray-600 hover:text-cyan-700 font-semibold   relative text-2xl w-fit block after:block after:content-[''] after:absolute after:h-[3px] after:bg-black after:w-full after:scale-x-0 after:hover:scale-x-100 after:transition after:duration-300 after:origin-center">
+                        class="text-gray-600 hover:text-cyan-700 font-semibold dark:text-gray-200 dark:hover:text-gray-100   relative text-2xl w-fit block after:block after:content-[''] after:absolute after:h-[3px] after:bg-black after:w-full dark:after:bg-cyan-400 after:scale-x-0 after:hover:scale-x-100 after:transition after:duration-300 after:origin-center">
                         Settings</RouterLink>
 
                 </nav>
@@ -28,7 +28,8 @@
                 <InputSwitch v-model="checked" v-on:change="toggleDarkMode" />
 
 
-                <BellAlertIcon class="h-12 w-12 text-gray-800 cursor-pointer hover:text-cyan-700" />
+                <BellAlertIcon
+                    class="h-12 w-12 text-gray-800 dark:text-gray-200 cursor-pointer dark:hover-text-gray-300 hover:text-cyan-700" />
                 <Button class="rounded-full bg-purple-600 h-12 w-12 font-bold text-white" type="button"
                     icon="pi pi-ellipsis-v" @click="toggle" aria-haspopup="true" aria-controls="overlay_menu">{{
                         getInitials() }}</Button>
