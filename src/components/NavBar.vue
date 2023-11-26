@@ -27,10 +27,14 @@
             <div class="md:flex gap-4 items-center hidden">
                 <InputSwitch v-model="checked" v-on:change="toggleDarkMode" />
 
-                <button class="bg-gray-800 text-white font-bold p-2 rounded-lg hover:bg-gray-700"
-                    @click="logout">LOGOUT</button>
-                <BellAlertIcon class="h-12 w-12 text-cyan-500 cursor-pointer hover:text-cyan-700" />
-                <span class="rounded-full bg-purple-600 h-12 w-12" alt="" />
+
+                <BellAlertIcon class="h-12 w-12 text-gray-800 cursor-pointer hover:text-cyan-700" />
+                <Button class="rounded-full bg-purple-600 h-12 w-12 font-bold text-white" type="button"
+                    icon="pi pi-ellipsis-v" @click="toggle" aria-haspopup="true" aria-controls="overlay_menu">{{
+                        getInitials() }}</Button>
+                <Menu ref="menu" id="overlay_menu" :model="items" :popup="true" />
+
+
             </div>
 
             <!-- Mobile menu button -->
@@ -57,6 +61,8 @@
             <RouterLink to="/settings"
                 class="text-gray-600 hover:text-cyan-700 font-semibold   relative text-2xl w-fit block after:block after:content-[''] after:absolute after:h-[3px] after:bg-black after:w-full after:scale-x-0 after:hover:scale-x-100 after:transition after:duration-300 after:origin-center">
                 Settings</RouterLink>
+            <button class="bg-gray-800 text-white font-bold p-2 rounded-lg hover:bg-gray-700"
+                @click="logout">LOGOUT</button>
             <!-- <h1 class="text-blue-600 hover:text-blue-700 font-semibold">Payments</h1>
                     <h1 class="text-blue-600 hover:text-blue-700 font-semibold">Settings</h1> -->
         </nav>
@@ -70,7 +76,10 @@ import { ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useUserStore } from '../stateStores/userStore'
 import InputSwitch from 'primevue/inputswitch';
+import Button from 'primevue/button';
+import Menu from 'primevue/menu';
 const checked = ref(false);
+
 
 const toggleDarkMode = () => {
     if (checked.value) {
@@ -91,6 +100,40 @@ function logout() {
     userStore.logout();
 }
 
+
+function getInitials() {
+    if (userStore.getUser?.firstname && userStore.getUser?.lastname) {
+        const firstInitial = userStore.getUser.firstname.charAt(0).toLocaleUpperCase()
+        const lastInitial = userStore.getUser.lastname.charAt(0).toLocaleUpperCase()
+        return firstInitial + lastInitial
+    } else {
+        return '...'
+
+
+    }
+}
+
+const menu = ref();
+const items = ref([
+    {
+        label: 'User Profile',
+        items: [
+            {
+                label: 'Logout',
+                icon: 'pi pi-upload',
+                command: () => {
+                    logout();
+                }
+
+            }
+        ]
+    }
+]);
+
+const toggle = (event: Event) => {
+    console.log(event);
+    menu.value.toggle(event);
+};
 </script>
 <style lang="">
 
