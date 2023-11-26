@@ -1,5 +1,5 @@
 <template>
-    <div class=" flex flex-col md:flex-row flex-1 dark:border-t border-cyan-900   ">
+    <div class=" flex flex-col md:flex-row flex-1    ">
         <div class=" md:w-1/4 flex flex-col justify-between gap-3 p-6">
             <div class="flex flex-col space-y-2">
                 <div class="flex bg-gray-300 dark:bg-gray-800 flex-col rounded-lg items-center p-4 ">
@@ -20,7 +20,7 @@
                         <h1 class="text-lg font-semibold">Upcoming appointments</h1>
                     </span>
                     <span @click="handleToggle('past')"
-                        class="flex gap-2 py-2 px-1 hover:text-white hover:font-bold hover:bg-cyan-500 cursor-pointer"
+                        class="flex gap-2 py-2 px-1 dark:hover:bg-gray-500 hover:text-white hover:font-bold hover:bg-cyan-500 cursor-pointer"
                         :class="{ 'bg-cyan-500 text-white font-bold dark:bg-gray-500 dark:hover:bg-gray-500': showPast }">
                         <ArchiveBoxIcon class="h-8 w-8" />
                         <h1 class="text-lg font-semibold">Appointment history</h1>
@@ -71,7 +71,7 @@
                 <Dialog v-model:visible="visibleAppointmentModal" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }"
                     :modal="true" :draggable="false">
                     <template #footer>
-                        <div class="flex gap-2 justify-end">
+                        <div class="flex gap-2 justify-end ">
 
                             <button class=" bg-red-500 p-3 text-white font-bold rounded-lg
                                 ">Cancel Appointment</button>
@@ -80,17 +80,17 @@
                 </Dialog>
                 <div class="flex flex-col gap-4 ">
                     <div @click="visibleAppointmentModal = true" v-for="appointment in appointments" :key="appointment.id"
-                        class="border cursor-pointer border-gray-300 rounded-lg p-4 shadow-md">
+                        class="border cursor-pointer border-gray-300 dark:border-gray-600 dark:bg-gray-800  rounded-lg p-4 shadow-md">
                         <h3 class="text-xl font-semibold">{{ appointment.title }}</h3>
-                        <p class="text-gray-500">{{ appointment.description }}</p>
+                        <p class="text-gray-500 dark:text-gray-300">{{ appointment.description }}</p>
                         <div class="flex justify-between items-center mt-2">
                             <div>
-                                <p class="text-gray-600">{{ appointment.date }}</p>
-                                <p class="text-gray-600">{{ appointment.time }}</p>
+                                <p class="text-gray-600 dark:text-gray-400">{{ appointment.date }}</p>
+                                <p class="text-gray-600 dark:text-gray-400">{{ appointment.time }}</p>
                             </div>
                             <div>
-                                <p class="text-gray-600">{{ appointment.duration }}</p>
-                                <p class="text-gray-600">{{ appointment.location }}</p>
+                                <p class="text-gray-600 dark:text-gray-400">{{ appointment.duration }}</p>
+                                <p class="text-gray-600 dark:text-gray-400">{{ appointment.location }}</p>
                             </div>
                         </div>
                     </div>
