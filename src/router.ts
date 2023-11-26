@@ -26,6 +26,12 @@ const routes: Array<RouteRecordRaw> = [
     meta: { requiresAuth: true },
   },
   {
+    path: '/Confirmation/',
+    name: 'Confirmation',
+    component: () => import('./views/ConfirmationPage.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
     path: '/dentistry/:id',
     name: 'Dentistry',
     component: DentistryPageVue,

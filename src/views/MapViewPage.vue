@@ -1,5 +1,5 @@
 <template>
-    <div class="md:flex flex-1 border-t dark:border-cyan-900  md:overflow-auto flex-row ">
+    <div class="md:flex flex-1 border-t dark:border-none   md:overflow-auto flex-row ">
 
         <div v-if="!DentistryInfoToggle"
             class="md:w-[45%] flex flex-col justify-between max-h-screen overflow-y-scroll scrollbar  scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-100 scrollbar-thumb-rounded-full ">
@@ -133,7 +133,7 @@
                 Cancel
             </button>
             <!-- Continue Button -->
-            <button
+            <button @click="handleConfirmationButton"
                 class="bg-blue-500 dark:bg-green-600 w-[20rem] hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-xl">
                 Continue
             </button>
@@ -152,8 +152,11 @@ import dentistryData from "../mockupdata";
 import { LMap, LTileLayer, LMarker, LPopup, LIcon } from '@vue-leaflet/vue-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { MagnifyingGlassIcon } from '@heroicons/vue/24/outline';
+import router from '../router';
+import { useBookingStore } from '../stateStores/bookingStore';
 const adressInput = ref(null);
 const DateInput = ref(null);
+const bookingStore = useBookingStore();
 const showingConfirmationBar = ref(false);
 const confirmationBarData = ref({} as any);
 const usingCurrentLocation = ref(false);
@@ -254,7 +257,6 @@ const scrollToDentistry = (dentistryId: string) => {
     });
 };
 
-
 function handleTimeSelection(data: unknown) {
     // When time is selected in the child component, toggle the confirmation bar
     confirmationBarData.value = data as Dentistry & {
@@ -264,10 +266,23 @@ function handleTimeSelection(data: unknown) {
             date: Date;
         }
     };
+
     console.log(data);
+    bookingStore.setBookingData(data as Dentistry & {
+        time: {
+            start: string;
+            end: string;
+            date: Date;
+        }
+    });
     showingConfirmationBar.value = true;
 }
 
+function handleConfirmationButton() {
+    // push to confirmation and send the data
+    showingConfirmationBar.value = false;
+    router.push({ name: 'Confirmation' });
+}
 // too slow to update so less not use light map
 // function tileLayerUrl() {
 //     // check if darkmode is enabled

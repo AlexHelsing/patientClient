@@ -9,9 +9,17 @@ import {
   MdKeyboardarrowleft,
   MdKeyboardarrowright,
   IoLocation,
+  BiCalendarCheck,
+  FaLocationArrow,
 } from 'oh-vue-icons/icons';
 
-addIcons(MdKeyboardarrowright, MdKeyboardarrowleft, IoLocation);
+addIcons(
+  MdKeyboardarrowright,
+  MdKeyboardarrowleft,
+  IoLocation,
+  BiCalendarCheck,
+  FaLocationArrow
+);
 
 const app = createApp(App);
 app.use(router);
