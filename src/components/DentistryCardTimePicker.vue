@@ -18,8 +18,8 @@
         <div class="flex justify-between px-4">
             <div v-for=" date  in  displayedDates " :key="date.toString()" class="text-center">
                 <div class="text-lg font-bold">{{ dayOfWeek(date) }}</div>
-                <div class="text-lg mt-1 border-gray-400/95 font-semibold flex items-center justify-center w-12 h-12 cursor-pointer rounded-full border  hover:border-blue-500"
-                    :class="{ 'bg-blue-500 text-white': isSelected(date), 'font-bold': isToday(date) }"
+                <div class="text-lg mt-1 border-gray-400/95 font-semibold flex items-center justify-center w-12 h-12 cursor-pointer rounded-full border dark:hover:border-cyan-600  hover:border-blue-500"
+                    :class="{ 'bg-blue-500  text-white': isSelected(date), 'font-bold': isToday(date) }"
                     @click="selectDay(date)">
                     {{ date.getDate() }}
                 </div>
@@ -34,8 +34,8 @@
         <div class="space-y-2 px-4">
             <div class="flex flex-col space-y-2" v-if="selectedTimes.length > 0">
                 <div v-for="(time, index) in selectedTimes" :key="time.id" v-show="index < 4 || showAllTimes"
-                    @click="setActiveTime(time)" :class="{ 'bg-cyan-700 text-white': activeTime === time }"
-                    class="flex border-gray-300 items-center justify-center font-semibold rounded-sm p-3 cursor-pointer border hover:border-transparent hover:border-cyan-700 transition-all duration-300">
+                    @click="setActiveTime(time)" :class="{ 'bg-cyan-700 text-white border-cyan-700': activeTime === time }"
+                    class="flex border-gray-300 items-center justify-center font-semibold rounded-md p-3 cursor-pointer   border-2 hover:border-cyan-700 transition-all duration-300">
                     {{ time.start }} - {{ time.end }}
                 </div>
             </div>

@@ -1,30 +1,30 @@
 <template>
-    <div class="md:flex flex-1 border-t  md:overflow-auto flex-row ">
+    <div class="md:flex flex-1 border-t dark:border-cyan-900  md:overflow-auto flex-row ">
 
         <div v-if="!DentistryInfoToggle"
-            class="md:w-[45%] flex flex-col justify-between max-h-screen overflow-y-scroll scrollbar  scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full">
-            <div class="bg-white flex flex-col px-5 py-7 space-y-6">
+            class="md:w-[45%] flex flex-col justify-between max-h-screen overflow-y-scroll scrollbar  scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-100 scrollbar-thumb-rounded-full ">
+            <div class="bg-white dark:bg-gray-800 flex flex-col px-5 py-7 space-y-6">
                 <h1 class="text-2xl font-bold">Make an appointment </h1>
 
                 <div class="flex flex-col md:flex-row w-full items-center gap-5 md:gap-10 ">
                     <div class="relative flex-grow  w-full md:w-3/5">
                         <input type="text" v-model="adressInput" placeholder="Search by city, postal code or street"
-                            class="w-full pl-3 pr-10 py-3 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500" />
+                            class="w-full pl-3 pr-10 py-3 border border-gray-300 dark:border-gray-900 rounded-md focus:outline-none focus:border-blue-500 dark:bg-gray-700 dark:focus:border-cyan-900" />
                         <MagnifyingGlassIcon
-                            class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-6" />
+                            class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-6 dark:text-gray-200" />
                     </div>
 
 
                     <Calendar v-model="DateInput"
-                        class="md:w-2/5 w-full pl-3  py-3 border border-gray-300 rounded-md focus:outline-none"
-                        :showIcon="true" placeholder="Date" />
+                        class="md:w-2/5 w-full pl-3   py-3 border  border-gray-300 rounded-md active:outline-none focus:outline-none dark:border-gray-900 dark:bg-gray-700 dark:text-gray-900"
+                        :show-icon="true" placeholder="Date" />
 
 
                 </div>
 
                 <div class="flex justify-between flex-wrap md:flex-nowrap gap-2 md:gap-0">
                     <button @click="getUserLocation" type="button"
-                        class="text-white bg-blue-700 hover:bg-blue-800  focus:outline-none active:outline-none  rounded-xl font-semibold text-sm px-5 py-2.5 text-center me-2 dark:bg-blue-600  inline-flex items-center">
+                        class="text-white bg-blue-700 hover:bg-blue-800 dark:bg-cyan-600 dark:hover:bg-cyan-700  focus:outline-none active:outline-none  rounded-xl font-semibold text-sm px-5 py-2.5 text-center me-2   inline-flex items-center">
                         <svg v-if="usingCurrentLocation" aria-hidden="true" role="status"
                             class="inline w-4 h-4 me-3 text-white animate-spin" viewBox="0 0 100 101" fill="none"
                             xmlns="http://www.w3.org/2000/svg">
@@ -39,14 +39,14 @@
                     </button>
 
                     <div class="flex gap-2 items-center">
-                        <button @click="handleChange('All')" class="px-4 py-2 border rounded-full "
-                            :class="{ 'border-cyan-600': showingSearchResults.time == 'All' }">All</button>
+                        <button @click="handleChange('All')" class="px-4 py-2  rounded-full border-2 "
+                            :class="{ 'border-cyan-600 dark:border-cyan-400 ': showingSearchResults.time == 'All' }">All</button>
                         <button @click="handleChange('Morning')"
                             :class="{ 'border-cyan-600': showingSearchResults.time == 'Morning' }"
-                            class="px-4 py-2 border rounded-full">Morning</button>
+                            class="px-4 py-2  rounded-full border-2">Morning</button>
                         <button @click="handleChange('Afternoon')"
                             :class="{ 'border-cyan-600': showingSearchResults.time == 'Afternoon' }"
-                            class="px-4 py-2 border rounded-full">Afternoon</button>
+                            class="px-4 py-2  rounded-full border-2">Afternoon</button>
 
                     </div>
 
@@ -103,7 +103,7 @@
 
     <!-- Confirmation Bar -->
     <div v-if="showingConfirmationBar"
-        class="fixed inset-x-0 bottom-0 md:flex-nowrap md:gap-0 gap-2 flex-wrap z-50 bg-white shadow-black px-10 p-5 flex justify-between items-center shadow-2xl">
+        class="fixed inset-x-0 bottom-0 md:flex-nowrap md:gap-0 gap-2 flex-wrap z-50 bg-white dark:bg-gray-900  shadow-black px-10 p-5 flex justify-between items-center shadow-2xl">
         <div class="flex items-center">
             <!-- Appointment Details -->
             <div class="flex items-center gap-4">
@@ -115,12 +115,12 @@
                 </span>
                 <!-- Divider -->
                 <span class="border-l border-gray-300 h-6"></span>
-                <span class="text-md text-gray-600">
+                <span class="text-md text-gray-600 dark:text-gray-300">
                     {{ confirmationBarData.data.date }}
                 </span>
                 <!-- Divider -->
                 <span class="border-l border-gray-300 h-6"></span>
-                <span class="text-md text-gray-600">
+                <span class="text-md text-gray-600 dark:text-gray-300">
                     {{ confirmationBarData.data.start }} - {{ confirmationBarData.data.end }}
                 </span>
             </div>
@@ -133,7 +133,8 @@
                 Cancel
             </button>
             <!-- Continue Button -->
-            <button class="bg-blue-500 w-[20rem] hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-xl">
+            <button
+                class="bg-blue-500 dark:bg-green-600 w-[20rem] hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-xl">
                 Continue
             </button>
         </div>
@@ -267,6 +268,45 @@ function handleTimeSelection(data: unknown) {
     showingConfirmationBar.value = true;
 }
 
+// too slow to update so less not use light map
+// function tileLayerUrl() {
+//     // check if darkmode is enabled
+//     const darkMode = document.documentElement.classList.contains('dark');
+//     if (darkMode) {
+//         return 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png';
+//     } else {
+//         return 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+//     }
+// }
 
 </script>
 
+<style>
+/* primevue force diff colors */
+.dark .p-calendar .p-inputtext {
+    background-color: rgb(55 65 81);
+    color: #E5E5E5;
+    border-color: #ff0000;
+}
+
+.dark .p-icon {
+    color: #ffffff;
+}
+
+.p-calendar:focus .p-inputtext:focus {
+    border-color: transparent;
+    border: none;
+    outline: none;
+    box-shadow: none !important;
+    ;
+}
+
+.p-calendar:not(.p-calendar-disabled).p-focus>.p-inputtext {
+    border-color: transparent;
+    border: none;
+    outline: none;
+
+    box-shadow: none !important;
+    ;
+}
+</style>
