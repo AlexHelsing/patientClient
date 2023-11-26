@@ -25,6 +25,8 @@
 
 
             <div class="md:flex gap-4 items-center hidden">
+                <InputSwitch v-model="checked" v-on:change="toggleDarkMode" />
+
                 <button class="bg-gray-800 text-white font-bold p-2 rounded-lg hover:bg-gray-700"
                     @click="logout">LOGOUT</button>
                 <BellAlertIcon class="h-12 w-12 text-cyan-500 cursor-pointer hover:text-cyan-700" />
@@ -67,6 +69,16 @@ import { BellAlertIcon } from '@heroicons/vue/24/outline'
 import { ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useUserStore } from '../stateStores/userStore'
+import InputSwitch from 'primevue/inputswitch';
+const checked = ref(false);
+
+const toggleDarkMode = () => {
+    if (checked.value) {
+        document.documentElement.classList.add('dark')
+    } else {
+        document.documentElement.classList.remove('dark')
+    }
+};
 
 const hamburgerToggle = ref(false)
 const userStore = useUserStore()
