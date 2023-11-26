@@ -11,7 +11,7 @@
                         <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300"
                             for="name">firstname</label>
                         <input :value="userStore.user?.firstname" type="text" placeholder="First name *"
-                            class="input-field bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                            class="block w-full p-2.5 bg-gray-50 border border-gray-300 rounded-lg sm:text-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400"
                             required />
                     </div>
                     <div class="">
@@ -43,9 +43,10 @@
                         repellat nobis neque aspernatur, illo eos!
                     </p>
                 </div>
-                <button
-                    class="btn-primary w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Book
-                    appointment</button>
+                <button @click="handleBooking"
+                    class="w-full px-5 py-2.5 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                    Book appointment
+                </button>
             </div>
 
             <!-- Right Section - Appointment Details -->
@@ -64,7 +65,7 @@
                                 </p>
                             </div>
                             <v-icon name="bi-calendar-check"
-                                class="w-10 h-10 bg-cyan-400 mr-1 text-gray-800 rounded-full p-2" />
+                                class="w-10 h-10  mr-1 text-gray-800 rounded-full p-2 dark:text-white" />
                         </div>
                     </div>
                     <div class="p-4 flex justify-between">
@@ -74,7 +75,7 @@
                             471 62
                         </p>
                         <v-icon name="fa-location-arrow"
-                            class="w-10 h-10 self-end mr-1 bg-cyan-400 rounded-full p-2 text-gray-800" />
+                            class="w-10 h-10 self-end mr-1  rounded-full p-2 dark:text-white text-gray-800" />
 
                     </div>
                 </div>
@@ -91,7 +92,9 @@ import { useUserStore } from '../stateStores/userStore';
 const bookingStore = useBookingStore();
 const userStore = useUserStore();
 
-console.log(bookingStore.bookingData?.data.date);
+function handleBooking() {
+    alert('Booking confirmed!');
+}
 </script>
   
 <style lang="css">
@@ -101,20 +104,17 @@ console.log(bookingStore.bookingData?.data.date);
     padding: 0.5rem;
     border: 2px solid #e5e5e5;
     border-radius: 0.25rem;
-    /* Limit the height of the input fields */
     height: 2.5rem;
 }
 
 .input-field:focus {
     outline: 2px solid blue;
-    /* Replace with your brand color */
 }
 
 .btn-primary {
     display: inline-block;
     padding: 0.75rem 1.5rem;
     background-color: blue;
-    /* Replace with your brand color */
     color: white;
     font-weight: bold;
     text-align: center;
@@ -124,7 +124,6 @@ console.log(bookingStore.bookingData?.data.date);
 
 .btn-primary:hover {
     background-color: darkblue;
-    /* A darker variant of your brand color */
 }
 </style>
   

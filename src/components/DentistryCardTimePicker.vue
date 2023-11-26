@@ -80,11 +80,11 @@ const setActiveTime = (time: TimeSlot) => {
 
 // Mock data for the times
 const timesData: DayTimes = {
-    '2023-11-28': [
+    '2023-11-29': [
         { id: 1, start: '09:30', end: '10:00' },
         { id: 2, start: '10:15', end: '10:45' },
     ],
-    '2023-11-26': [
+    '2023-11-27': [
         { id: 1, start: '09:30', end: '10:00' },
         { id: 2, start: '10:15', end: '10:45' },
         { id: 3, start: '11:00', end: '11:30' },
