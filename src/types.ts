@@ -22,8 +22,17 @@ interface Slot {
   date: Date;
 }
 
+interface Appointment {
+  _id: string;
+  patientId: string;
+  dentistId: string;
+  startTime: Date;
+  endTime: Date;
+  date: Date;
+}
+
 interface User {
-  id: string;
+  _id: string;
   firstname: string;
   lastname: string;
   phone_number: Number;

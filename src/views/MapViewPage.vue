@@ -154,6 +154,7 @@ import 'leaflet/dist/leaflet.css';
 import { MagnifyingGlassIcon } from '@heroicons/vue/24/outline';
 import router from '../router';
 import { useBookingStore } from '../stateStores/bookingStore';
+import axios from 'axios';
 const adressInput = ref(null);
 const DateInput = ref(null);
 const bookingStore = useBookingStore();
@@ -166,7 +167,6 @@ function handleChange(newValue: SearchInput) {
     showingSearchResults.value.time = newValue;
     console.log(showingSearchResults.value.time);
 }
-
 
 type SearchInput = 'All' | 'Morning' | 'Afternoon';
 
@@ -293,6 +293,17 @@ function handleConfirmationButton() {
 //         return 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 //     }
 // }
+
+getClinics();
+
+function getClinics() {
+    axios.get('http://localhost:4000/api/v1/clinics').then((response) => {
+        console.log(response.data);
+        // append the new data to the list
+        dentistries.value = dentistries.value.concat(response.data);
+
+    });
+}
 
 </script>
 

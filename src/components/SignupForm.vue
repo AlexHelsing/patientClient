@@ -65,68 +65,59 @@ const userStore = useUserStore();
 
 </script>
 <template>
-    <form @submit="handleSignup" class="space-y-6">
-        <div class="relative">
-            <label for="Email address" class="block text-sm font-medium text-gray-700">Email address</label>
-            <div class="mt-1 relative rounded-md shadow-sm">
-                <input autocomplete="email" v-model="email" id="Email" type="Email"
-                    class="form-input block w-full py-2 md:py-4 pl-4 pr-10 bg-gray-200 border-gray-300 rounded-md focus:outline-none sm:text-sm"
-                    placeholder="Enter your Email">
-
-            </div>
-        </div>
-        <div class="relative">
-            <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-            <div class="mt-1 relative rounded-md shadow-sm">
-                <input autocomplete="new-password" v-model="password" id="password" type="password"
-                    class="form-input block w-full py-2 md:py-4 pl-4 pr-10 bg-gray-200 border-gray-300 rounded-md focus:outline-none sm:text-sm"
-                    placeholder="Enter your password">
-
-            </div>
+    <form @submit="handleSignup" class="space-y-4 md:space-y-6 p-4 md:p-0">
+        <div>
+            <label for="Email" class="block text-sm font-medium text-gray-700">Email address</label>
+            <input autocomplete="email" v-model="email" id="Email" type="email"
+                class="mt-1 block w-full py-2 px-3 bg-gray-200 border-gray-300 rounded-md focus:outline-none sm:text-sm"
+                placeholder="Enter your Email">
         </div>
 
         <div>
-            <label for="name" class="block text-sm font-medium text-gray-700">Full name</label>
-            <div class="mt-1 flex justify-between gap-5">
-                <input autocomplete="nickname" v-model="fname" id="fname" name="fname" type="text"
-                    class="form-input block w-full py-2 md:py-4 px-4 bg-gray-200 border-gray-300 rounded-md focus:outline-none sm:text-sm"
-                    placeholder="Firstname">
+            <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+            <input autocomplete="new-password" v-model="password" id="password" type="password"
+                class="mt-1 block w-full py-2 px-3 bg-gray-200 border-gray-300 rounded-md focus:outline-none sm:text-sm"
+                placeholder="Enter your password">
+        </div>
 
+        <div>
+            <label for="fname" class="block text-sm font-medium text-gray-700">Full name</label>
+            <div class="mt-1 flex flex-col md:flex-row gap-3">
+                <input autocomplete="nickname" v-model="fname" id="fname" name="fname" type="text"
+                    class="form-input block w-full py-2 px-3 bg-gray-200 border-gray-300 rounded-md focus:outline-none sm:text-sm"
+                    placeholder="Firstname">
                 <input autocomplete="cc-additional-name" id="lname" name="lname" type="text" v-model="lname"
-                    class="form-input block w-full py-2 md:py-4 px-4 bg-gray-200 border-gray-300 rounded-md focus:outline-none sm:text-sm"
+                    class="form-input block w-full py-2 px-3 bg-gray-200 border-gray-300 rounded-md focus:outline-none sm:text-sm"
                     placeholder="Lastname">
             </div>
         </div>
 
         <div>
             <label for="phone" class="block text-sm font-medium text-gray-700">Phone number</label>
-            <div class="mt-1 flex justify-between gap-5">
-                <input autocomplete="tel-local" id="phone" name="name" type="text" v-model="phone"
-                    class="form-input block w-full py-2 md:py-4 px-4 bg-gray-200 border-gray-300 rounded-md focus:outline-none sm:text-sm"
-                    placeholder="Enter your phone number">
-            </div>
+            <input autocomplete="tel-local" id="phone" name="phone" type="text" v-model="phone"
+                class="mt-1 block w-full py-2 px-3 bg-gray-200 border-gray-300 rounded-md focus:outline-none sm:text-sm"
+                placeholder="Enter your phone number">
         </div>
 
         <div>
             <label for="DOB" class="block text-sm font-medium text-gray-700">Date of birth</label>
-            <div class="mt-1 flex justify-between gap-5">
-                <input autocomplete="bday-year" id="year" name="name" type="text" v-model="DOB.year"
-                    class="form-input block w-full py-2 md:py-4 px-4 bg-gray-200 border-gray-300 rounded-md focus:outline-none sm:text-sm"
+            <div class="mt-1 flex flex-col md:flex-row gap-3">
+                <input autocomplete="bday-year" id="year" name="year" type="text" v-model="DOB.year"
+                    class="form-input block w-full py-2 px-3 bg-gray-200 border-gray-300 rounded-md focus:outline-none sm:text-sm"
                     placeholder="Year">
-
-                <input autocomplete="bday-month" id="month" name="name" type="text" v-model="DOB.month"
-                    class="form-input block w-full py-2 md:py-4 px-4 bg-gray-200 border-gray-300 rounded-md focus:outline-none sm:text-sm"
+                <input autocomplete="bday-month" id="month" name="month" type="text" v-model="DOB.month"
+                    class="form-input block w-full py-2 px-3 bg-gray-200 border-gray-300 rounded-md focus:outline-none sm:text-sm"
                     placeholder="Month">
-
-                <input autocomplete="bday-day" id="day" name="name" type="text" v-model="DOB.day"
-                    class="form-input block w-full py-2 md:py-4 px-4 bg-gray-200 border-gray-300 rounded-md focus:outline-none sm:text-sm"
+                <input autocomplete="bday-day" id="day" name="day" type="text" v-model="DOB.day"
+                    class="form-input block w-full py-2 px-3 bg-gray-200 border-gray-300 rounded-md focus:outline-none sm:text-sm"
                     placeholder="Day">
             </div>
         </div>
 
         <button type="submit"
-            class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-cyan-500 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500">Create
-            account</button>
+            class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-cyan-500 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500">
+            Create account
+        </button>
     </form>
 </template>
 

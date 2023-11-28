@@ -121,15 +121,28 @@ import Dialog from 'primevue/dialog';
 import Calendar from 'primevue/calendar';
 import Button from 'primevue/button';
 import router from '../router';
+import axios from 'axios';
 const date = ref(null);
 const showPast = ref(false);
+import API from '../utils/apiConfig';
 
 const visible = ref(false);
 const visibleAppointmentModal = ref(false);
 
 const userStore = useUserStore();
 
-console.log(userStore.getUser); // 
+// getUserAppointments();
+
+// async function getUserAppointments() {
+//     axios.get(`${API}/patients/${userStore.user?._id}/appointments/`)
+//         .then((response) => {
+//             console.log(response.data);
+//             appointments.value = response.data;
+//         }, (error) => {
+//             console.log(error);
+//         });
+
+// }
 
 const handleToggle = (pressed: string) => {
     if (pressed === 'upcoming') {
@@ -139,6 +152,7 @@ const handleToggle = (pressed: string) => {
     }
 };
 
+// const appointments = ref([] as Appointment[]);
 
 // create some mockup appointments
 const appointments = ref([
