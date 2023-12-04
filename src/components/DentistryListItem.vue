@@ -1,12 +1,12 @@
 <template>
-    <div :id="`dentistry-${dentistry.id}`"
+    <div :id="`dentistry-${dentistry._id}`"
         class="bg-white dark:bg-gray-800 shadow-sm hover:shadow-md rounded-lg p-4 flex flex-col md:flex-row justify-between transition-shadow max-w-full">
-        <RouterLink :to="`/dentistry/${dentistry.id}`" class="flex flex-1 max-w-lg gap-3">
+        <RouterLink :to="`/dentistry/${dentistry._id}`" class="flex flex-1 max-w-lg gap-3">
 
             <div class="flex flex-col space-y-2">
                 <h1 class="text-xl font-bold">{{ dentistry.name }}</h1>
-                <p class="text-gray-500">Lindholmsgatan 64, 42671 </p>
-                <img :src="dentistry.image" alt="" class="rounded-lg  object-cover" />
+                <p class="text-gray-500">{{ dentistry.address }} </p>
+                <img :src="dentistry.photo" alt="" class="rounded-lg  object-cover" />
                 <span v-if="farFromUser" class="text-md flex items-center ">
                     <v-icon name="io-location" class="h-5 w-5 text-red-600 mr-2" />
                     <p class="text-gray-500 text-lg font-medium">{{ farFromUser.toFixed(2) }} km</p>

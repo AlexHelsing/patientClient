@@ -59,7 +59,7 @@
                 <!-- <h1 class="text-lg font-bold py-1"> {{ dentistries.length }} results</h1> -->
                 <div class="flex flex-col listofitems space-y-2 p-2 ">
                     <DentistryListItem :far-from-user="farFromUser(dentistry)" v-for="dentistry in dentistries"
-                        :key="dentistry.id" :dentistry="dentistry" @time-selected="handleTimeSelection" />
+                        :key="dentistry._id" :dentistry="dentistry" @time-selected="handleTimeSelection" />
                 </div>
             </div>
             <!-- <Paginator :rows="2" :totalRecords="dentistries.length" class="p-4   " /> -->
@@ -91,7 +91,7 @@
                     </l-popup>
                 </l-marker>
 
-                <l-marker @click="scrollToDentistry(dentistry.id)" v-for="dentistry in dentistries" :key="dentistry.id"
+                <l-marker @click="scrollToDentistry(dentistry._id)" v-for="dentistry in dentistries" :key="dentistry._id"
                     :lat-lng="dentistry.coordinates">
                     <l-popup :content="`<h1>${dentistry.name}</h1>`" :lat-lng="dentistry.coordinates">
                     </l-popup>
@@ -148,7 +148,6 @@ import Calendar from 'primevue/calendar';
 
 import 'primevue/resources/themes/lara-light-teal/theme.css';
 import DentistryListItem from '../components/DentistryListItem.vue';
-import dentistryData from "../mockupdata";
 import { LMap, LTileLayer, LMarker, LPopup, LIcon } from '@vue-leaflet/vue-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { MagnifyingGlassIcon } from '@heroicons/vue/24/outline';
@@ -162,6 +161,7 @@ const showingConfirmationBar = ref(false);
 const confirmationBarData = ref({} as any);
 const usingCurrentLocation = ref(false);
 const showingSearchResults = ref({ time: 'All' } as { time: SearchInput });
+const dentistries = ref([] as Dentistry[]);
 
 function handleChange(newValue: SearchInput) {
     showingSearchResults.value.time = newValue;
@@ -204,9 +204,6 @@ function farFromUser(dentistry: Dentistry) {
     //return the distance in km
     return (distance * 100);
 }
-
-
-const dentistries = ref(dentistryData);
 
 
 const center = ref([57.7089, 11.9746]); // Coordinates for Gothenburg
@@ -300,7 +297,7 @@ function getClinics() {
     axios.get('http://localhost:4000/api/v1/clinics').then((response) => {
         console.log(response.data);
         // append the new data to the list
-        dentistries.value = dentistries.value.concat(response.data);
+        dentistries.value = response.data;
 
     });
 }

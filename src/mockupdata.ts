@@ -3,7 +3,7 @@ const dentistries = [
     name: 'Dentistry 1',
     id: '1',
     rating: 3,
-    image:
+    photo:
       'https://images.squarespace-cdn.com/content/v1/5e29bc191bc1146fbde14230/1647595177138-VSFKCXFMFIGNSU2BKQMI/dental+surgery+design.jpeg',
     slots: [
       {
@@ -65,7 +65,7 @@ const dentistries = [
     name: 'Dentistry 2',
     id: '2',
     rating: 4.5,
-    image:
+    photo:
       'https://i1.wp.com/www.indiadesignworld.com/wp-content/uploads/2022/10/1.-House-of-Ruya_32-Smiles-Dental-Clinic_DSC03993-copy-2.jpg?resize=1440%2C960&ssl=1',
     slots: [],
     type: 'tooth',
@@ -79,7 +79,7 @@ const dentistries = [
     id: '3',
     rating: 4.5,
     slots: [],
-    image:
+    photo:
       'https://images.squarespace-cdn.com/content/v1/5e29bc191bc1146fbde14230/1647595177138-VSFKCXFMFIGNSU2BKQMI/dental+surgery+design.jpeg',
 
     type: 'tooth',
@@ -92,7 +92,7 @@ const dentistries = [
     name: 'Dentistry 4',
     id: '4',
     rating: 4.5,
-    image:
+    photo:
       'https://i1.wp.com/www.indiadesignworld.com/wp-content/uploads/2022/10/1.-House-of-Ruya_32-Smiles-Dental-Clinic_DSC03993-copy-2.jpg?resize=1440%2C960&ssl=1',
 
     slots: [],
@@ -105,7 +105,7 @@ const dentistries = [
   {
     name: 'Dentistry 5',
     id: '5',
-    image:
+    photo:
       'https://images.squarespace-cdn.com/content/v1/5e29bc191bc1146fbde14230/1647595177138-VSFKCXFMFIGNSU2BKQMI/dental+surgery+design.jpeg',
 
     rating: 4.5,
@@ -120,7 +120,7 @@ const dentistries = [
     name: 'Dentistry 6',
     id: '6',
     rating: 4.5,
-    image:
+    photo:
       'https://i1.wp.com/www.indiadesignworld.com/wp-content/uploads/2022/10/1.-House-of-Ruya_32-Smiles-Dental-Clinic_DSC03993-copy-2.jpg?resize=1440%2C960&ssl=1',
 
     slots: [],
@@ -134,7 +134,7 @@ const dentistries = [
     name: 'Dentistry 7',
     id: '7',
     rating: 4.5,
-    image:
+    photo:
       'https://images.squarespace-cdn.com/content/v1/5e29bc191bc1146fbde14230/1647595177138-VSFKCXFMFIGNSU2BKQMI/dental+surgery+design.jpeg',
 
     slots: [],
@@ -148,7 +148,7 @@ const dentistries = [
     name: 'Dentistry 8',
     id: '8',
     rating: 4.5,
-    image:
+    photo:
       'https://i1.wp.com/www.indiadesignworld.com/wp-content/uploads/2022/10/1.-House-of-Ruya_32-Smiles-Dental-Clinic_DSC03993-copy-2.jpg?resize=1440%2C960&ssl=1',
 
     slots: [],
@@ -162,7 +162,7 @@ const dentistries = [
     name: 'Dentistry 9',
     id: '9',
     rating: 4.5,
-    image:
+    photo:
       'https://images.squarespace-cdn.com/content/v1/5e29bc191bc1146fbde14230/1647595177138-VSFKCXFMFIGNSU2BKQMI/dental+surgery+design.jpeg',
 
     slots: [],
@@ -176,7 +176,7 @@ const dentistries = [
     name: 'Dentistry 10',
     id: '10',
     rating: 4.5,
-    image:
+    photo:
       'https://i1.wp.com/www.indiadesignworld.com/wp-content/uploads/2022/10/1.-House-of-Ruya_32-Smiles-Dental-Clinic_DSC03993-copy-2.jpg?resize=1440%2C960&ssl=1',
 
     slots: [],
@@ -190,7 +190,7 @@ const dentistries = [
     name: 'Dentistry 11',
     id: '11',
     rating: 4.5,
-    image:
+    photo:
       'https://images.squarespace-cdn.com/content/v1/5e29bc191bc1146fbde14230/1647595177138-VSFKCXFMFIGNSU2BKQMI/dental+surgery+design.jpeg',
 
     slots: [],
@@ -204,7 +204,7 @@ const dentistries = [
     name: 'Dentistry 12',
     id: '12',
     rating: 4.5,
-    image:
+    photo:
       'https://i1.wp.com/www.indiadesignworld.com/wp-content/uploads/2022/10/1.-House-of-Ruya_32-Smiles-Dental-Clinic_DSC03993-copy-2.jpg?resize=1440%2C960&ssl=1',
 
     slots: [],
@@ -218,7 +218,7 @@ const dentistries = [
     name: 'Dentistry 13',
     id: '13',
     rating: 4.5,
-    image:
+    photo:
       'https://images.squarespace-cdn.com/content/v1/5e29bc191bc1146fbde14230/1647595177138-VSFKCXFMFIGNSU2BKQMI/dental+surgery+design.jpeg',
 
     slots: [],

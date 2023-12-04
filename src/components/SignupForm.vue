@@ -38,7 +38,7 @@ function handleSignup(e: Event) {
                 lastname: data.patient.lastname,
                 phone_number: data.patient.phone_number,
                 DOB: data.patient.DOB,
-                id: data.patient.id,
+                _id: data.patient.id,
             });
 
             // redirect to dashboard

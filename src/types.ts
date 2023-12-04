@@ -1,10 +1,10 @@
 interface Dentistry {
   name: string;
-  id: string;
+  _id: string;
   rating: number;
   address?: string;
   phone?: string;
-  image?: string;
+  photo?: string;
   type: string;
   slots: Slot[];
   coordinates: {

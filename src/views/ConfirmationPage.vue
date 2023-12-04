@@ -52,7 +52,7 @@
             <!-- Right Section - Appointment Details -->
             <div class="w-full lg:w-1/3 px-4">
                 <div class="bg-white rounded-lg shadow-lg dark:bg-gray-700">
-                    <img :src="bookingStore.bookingData?.dentistry.image" alt="Office Interior"
+                    <img :src="bookingStore.bookingData?.dentistry.photo" alt="Office Interior"
                         class="rounded-t-lg object-cover w-full h-48" />
                     <div class="p-4 border-b">
                         <h3 class="text-lg font-semibold mb-2">{{ bookingStore.bookingData?.dentistry.name }}</h3>
