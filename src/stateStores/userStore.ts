@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
-import API from '../utils/apiConfig';
+import { PATIENT_API } from '../utils/apiConfig';
 import { deleteCookie, getCookie } from '../utils/cookieHandler';
 import router from '../router'; // Import your router
 
@@ -44,11 +44,14 @@ export const useUserStore = defineStore('user', {
     async getCurrentUserFromDB() {
       try {
         const token = getCookie('token');
-        const response = await axios.get(`${API}/patients/current-user`, {
-          headers: {
-            'x-access-token': token,
-          },
-        });
+        const response = await axios.get(
+          `${PATIENT_API}/patients/current-user`,
+          {
+            headers: {
+              'x-access-token': token,
+            },
+          }
+        );
         const user = response.data as User;
         this.setUser(user);
         console.log(this.user);

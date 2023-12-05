@@ -1,18 +1,14 @@
 import { defineStore } from 'pinia';
 
 interface Booking {
-  data: {
-    id: string;
-    start: string;
-    end: string;
-    date: string;
-  };
+  data: TimeSlot;
   dentistry: Dentistry;
 }
 
 export const useBookingStore = defineStore('booking', {
   state: () => ({
     bookingData: null as Booking | null,
+    activeTime: null as TimeSlot | null,
   }),
   actions: {
     setBookingData(data: any) {
@@ -20,6 +16,9 @@ export const useBookingStore = defineStore('booking', {
     },
     clearBookingData() {
       this.bookingData = null;
+    },
+    setActiveTime(data: any) {
+      this.activeTime = data;
     },
   },
 });

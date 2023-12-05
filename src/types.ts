@@ -47,3 +47,8 @@ type TimeSlot = {
   date: string;
   isBooked: boolean;
 };
+
+interface Booking {
+  data: TimeSlot;
+  dentistry: Dentistry;
+}

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router';
-import API from '../utils/apiConfig';
+import { PATIENT_API } from '../utils/apiConfig';
 import axios from 'axios';
 import { useUserStore } from '../stateStores/userStore';
 import { setCookie } from '../utils/cookieHandler';
@@ -17,7 +17,7 @@ async function handleSignIn(e: Event) {
         return;
     }
 
-    axios.post(`${API}/patients/login`, {
+    axios.post(`${PATIENT_API}/patients/login`, {
         email: email.value,
         password: password.value,
     }).then((response) => {

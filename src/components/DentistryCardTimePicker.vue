@@ -37,9 +37,12 @@
             <div class="space-y-2 px-4">
                 <div class="flex flex-col space-y-2" v-if="selectedTimes.length > 0">
                     <div v-for="(time, index) in selectedTimes" v-show="index < 4 || showAllTimes"
-                        @click="setActiveTime(time)"
-                        :class="{ 'bg-cyan-700 text-white border-cyan-700': activeTime === time }"
-                        class="flex border-gray-300 items-center justify-center font-semibold rounded-md p-3 cursor-pointer   border-2 hover:border-cyan-700 transition-all duration-300">
+                        @click="time.isBooked ? null : setActiveTime(time)" :class="{
+                            'bg-cyan-700 text-white border-cyan-700': bookingStore.$state.activeTime === time && !time.isBooked,
+                            'bg-gray-400 text-gray-500 cursor-not-allowed border-gray-400': time.isBooked,
+                            'hover:border-cyan-700': !time.isBooked
+                        }"
+                        class="flex border-gray-300 items-center justify-center font-semibold rounded-md p-3 cursor-pointer border-2 transition-all duration-300">
                         {{ time.startTime }} - {{ time.endTime }}
                     </div>
                 </div>
@@ -63,8 +66,11 @@
   
 <script setup lang="ts">
 const isLoading = ref(true);
-
+const bookingStore = useBookingStore();
 import { ref, computed } from 'vue';
+import { useBookingStore } from '../stateStores/bookingStore';
+import { DENTIST_API } from '../utils/apiConfig';
+
 const emit = defineEmits(['time-selected']);
 
 // type TimeSlot = { id: number; start: string; end: string; };
@@ -73,8 +79,6 @@ const emit = defineEmits(['time-selected']);
 // type TimeSlot1 = { dentistId: string; startTime: string; endTime: string; date: string; isBooked: boolean; };
 type DayTimes1 = { [key: string]: TimeSlot[] };
 
-
-const activeTime = ref<TimeSlot | null>(null);
 
 // State to control whether all times are shown
 const showAllTimes = ref(false);
@@ -99,7 +103,7 @@ fetchTimes();
 async function fetchTimes() {
     isLoading.value = true;
     // fetch times from backend
-    const response = await fetch(`http://localhost:4000/api/v1/clinics/${props.dentistryId}/appointment_slots`);
+    const response = await fetch(`${DENTIST_API}/clinics/${props.dentistryId}/appointment_slots`);
     const data = await response.json() as TimeSlot[];
 
     // convert to the dayTimes format
@@ -127,36 +131,12 @@ async function fetchTimes() {
 
 
 const setActiveTime = (time: TimeSlot) => {
-    activeTime.value = time;
+    bookingStore.setActiveTime(time);
     // temporary solution till data is fetched from backend
     const tempType = { ...time, date: selectedDate.value.toDateString() };
     emit('time-selected', tempType);
 };
 
-// Mock data for the times
-// const timesData: DayTimes = {
-//     '2023-11-29': [
-//         { id: 1, start: '09:30', end: '10:00' },
-//         { id: 2, start: '10:15', end: '10:45' },
-//     ],
-//     '2023-12-07': [
-//         { id: 1, start: '09:30', end: '10:00' },
-//         { id: 2, start: '10:15', end: '10:45' },
-//         { id: 3, start: '11:00', end: '11:30' },
-//         { id: 4, start: '12:45', end: '13:15' },
-//         { id: 5, start: '14:00', end: '14:30' },
-//         { id: 6, start: '15:15', end: '15:45' },
-//         { id: 7, start: '16:00', end: '16:30' },
-//         { id: 8, start: '17:15', end: '17:45' },
-
-
-//     ],
-//     '2023-03-30': [
-//         { id: 3, start: '11:00', end: '11:30' },
-//         { id: 4, start: '12:45', end: '13:15' },
-//     ],
-
-// };
 
 const initialDate = new Date(); // Store the initial date to compare against
 initialDate.setHours(0, 0, 0, 0); // Normalize to start of the day for comparison

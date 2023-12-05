@@ -60,8 +60,8 @@
                             <div>
                                 <p class="font-semibold">{{ bookingStore.bookingData?.data.date }}, </p>
                                 <p class="font-semibold">
-                                    {{ bookingStore.bookingData?.data.start }}
-                                    - {{ bookingStore.bookingData?.data.end }}
+                                    {{ bookingStore.bookingData?.data.startTime }}
+                                    - {{ bookingStore.bookingData?.data.endTime }}
                                 </p>
                             </div>
                             <v-icon name="bi-calendar-check"
@@ -70,9 +70,7 @@
                     </div>
                     <div class="p-4 flex justify-between">
                         <p class="text-sm">
-                            Göteborg<br>
-                            Lindholmenstreet<br>
-                            471 62
+                            {{ bookingStore.bookingData?.dentistry.address }}
                         </p>
                         <v-icon name="fa-location-arrow"
                             class="w-10 h-10 self-end mr-1  rounded-full p-2 dark:text-white text-gray-800" />

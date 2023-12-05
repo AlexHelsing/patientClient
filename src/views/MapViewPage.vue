@@ -110,18 +110,18 @@
                 <span class="text-md font-bold">
                     Appointment:
                     <span class="font-normal">
-                        {{ confirmationBarData.dentistry.name }}
+                        {{ bookingStore.bookingData?.dentistry.name }}
                     </span>
                 </span>
                 <!-- Divider -->
                 <span class="border-l border-gray-300 h-6"></span>
                 <span class="text-md text-gray-600 dark:text-gray-300">
-                    {{ confirmationBarData.data.date }}
+                    {{ bookingStore.bookingData?.data.date }}
                 </span>
                 <!-- Divider -->
                 <span class="border-l border-gray-300 h-6"></span>
                 <span class="text-md text-gray-600 dark:text-gray-300">
-                    {{ confirmationBarData.data.startTime }} - {{ confirmationBarData.data.endTime }}
+                    {{ bookingStore.bookingData?.data.startTime }} - {{ bookingStore.bookingData?.data.endTime }}
                 </span>
             </div>
         </div>
@@ -154,11 +154,11 @@ import { MagnifyingGlassIcon } from '@heroicons/vue/24/outline';
 import router from '../router';
 import { useBookingStore } from '../stateStores/bookingStore';
 import axios from 'axios';
+import { DENTIST_API } from '../utils/apiConfig';
 const adressInput = ref(null);
 const DateInput = ref(null);
 const bookingStore = useBookingStore();
 const showingConfirmationBar = ref(false);
-const confirmationBarData = ref({} as any);
 const usingCurrentLocation = ref(false);
 const showingSearchResults = ref({ time: 'All' } as { time: SearchInput });
 const dentistries = ref([] as Dentistry[]);
@@ -255,23 +255,9 @@ const scrollToDentistry = (dentistryId: string) => {
 };
 
 function handleTimeSelection(data: unknown) {
-    // When time is selected in the child component, toggle the confirmation bar
-    confirmationBarData.value = data as Dentistry & {
-        time: {
-            start: string;
-            end: string;
-            date: Date;
-        }
-    };
+    bookingStore.setBookingData(data as Booking);
 
-    console.log(data);
-    bookingStore.setBookingData(data as Dentistry & {
-        time: {
-            start: string;
-            end: string;
-            date: Date;
-        }
-    });
+
     showingConfirmationBar.value = true;
 }
 
@@ -294,7 +280,7 @@ function handleConfirmationButton() {
 getClinics();
 
 function getClinics() {
-    axios.get('http://localhost:4000/api/v1/clinics').then((response) => {
+    axios.get(`${DENTIST_API}/clinics`).then((response) => {
         console.log(response.data);
         // append the new data to the list
         dentistries.value = response.data;

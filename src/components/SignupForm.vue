@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router';
 import axios from 'axios';
-import API from '../utils/apiConfig';
+import { PATIENT_API } from '../utils/apiConfig';
 import { setCookie } from '../utils/cookieHandler';
 import { useUserStore } from '../stateStores/userStore';
 
@@ -16,7 +16,7 @@ function handleSignup(e: Event) {
         return;
     }
 
-    axios.post(`${API}/patients`, {
+    axios.post(`${PATIENT_API}/patients`, {
         email: email.value,
         password: password.value,
         firstname: fname.value,
