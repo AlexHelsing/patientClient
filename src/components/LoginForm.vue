@@ -33,7 +33,7 @@ async function handleSignIn(e: Event) {
             lastname: response.data.patient.lastname,
             phone_number: response.data.patient.phone_number,
             DOB: response.data.patient.DOB,
-            id: response.data.patient._id,
+            _id: response.data.patient._id,
         });
 
         //redirect to dashboard

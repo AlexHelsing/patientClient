@@ -14,7 +14,7 @@
             </div>
         </RouterLink>
         <div class="flex-none py-2">
-            <DentistryCardTimePicker @time-selected="onTimeSelected" />
+            <DentistryCardTimePicker :dentistry-id="dentistry._id" @time-selected="onTimeSelected" />
         </div>
     </div>
 </template>

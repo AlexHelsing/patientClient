@@ -39,3 +39,11 @@ interface User {
   email: string;
   DOB: Date;
 }
+
+type TimeSlot = {
+  dentistId: string;
+  startTime: string;
+  endTime: string;
+  date: string;
+  isBooked: boolean;
+};

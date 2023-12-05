@@ -121,7 +121,7 @@
                 <!-- Divider -->
                 <span class="border-l border-gray-300 h-6"></span>
                 <span class="text-md text-gray-600 dark:text-gray-300">
-                    {{ confirmationBarData.data.start }} - {{ confirmationBarData.data.end }}
+                    {{ confirmationBarData.data.startTime }} - {{ confirmationBarData.data.endTime }}
                 </span>
             </div>
         </div>
