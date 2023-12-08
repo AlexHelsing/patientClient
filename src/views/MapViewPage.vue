@@ -7,12 +7,22 @@
                 <h1 class="text-2xl font-bold">Make an appointment </h1>
 
                 <div class="flex flex-col md:flex-row w-full items-center gap-5 md:gap-10 ">
-                    <div class="relative flex-grow  w-full md:w-3/5">
-                        <input type="text" v-model="adressInput" placeholder="Search by city, postal code or street"
-                            class="w-full pl-3 pr-10 py-3 border border-gray-300 dark:border-gray-900 rounded-md focus:outline-none focus:border-blue-500 dark:bg-gray-700 dark:focus:border-cyan-900" />
+                    <div class="relative flex-grow w-full md:w-3/5 z-[100]">
+                        <input @input="showDropdown = true" type="text" v-model="cityInput" placeholder="Search by city..."
+                            class="w-full pl-3 pr-10 py-3 border border-gray-300 dark:border-gray-900 rounded-t-md focus:outline-none focus:border-blue-500 dark:bg-gray-700 dark:focus:border-cyan-900" />
                         <MagnifyingGlassIcon
                             class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-6 dark:text-gray-200" />
+
+                        <div v-if="cityInput"
+                            class="absolute w-full bg-white dark:bg-gray-600 border dark:border-cyan-900 scrollbar  rounded-b-md  max-h-60 overflow-auto">
+                            <div v-if="showDropdown" v-for="city in filterCities()" :key="city.name"
+                                @click="selectCity(city.name)"
+                                class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
+                                {{ city.name }}
+                            </div>
+                        </div>
                     </div>
+
 
 
                     <Calendar v-model="DateInput" v-on:date-select="handleDateSelection" dateFormat="yy-mm-dd"
@@ -24,7 +34,7 @@
 
                 <div class="flex justify-between flex-wrap md:flex-nowrap gap-2 md:gap-0">
                     <button @click="getUserLocation" type="button"
-                        class="text-white bg-blue-700 hover:bg-blue-800 dark:bg-cyan-600 dark:hover:bg-cyan-700  focus:outline-none active:outline-none  rounded-xl font-semibold text-sm px-5 py-2.5 text-center me-2   inline-flex items-center">
+                        class="z-[10] text-white bg-blue-700 hover:bg-blue-800 dark:bg-cyan-600 dark:hover:bg-cyan-700  focus:outline-none active:outline-none  rounded-xl font-semibold text-sm px-5 py-2.5 text-center me-2   inline-flex items-center">
                         <svg v-if="usingCurrentLocation" aria-hidden="true" role="status"
                             class="inline w-4 h-4 me-3 text-white animate-spin" viewBox="0 0 100 101" fill="none"
                             xmlns="http://www.w3.org/2000/svg">
@@ -161,8 +171,10 @@ import { useBookingStore } from '../stateStores/bookingStore';
 import axios from 'axios';
 import { DENTIST_API } from '../utils/apiConfig';
 import DentistryCardSkeleton from '../components/DentistryCardSkeleton.vue';
-const adressInput = ref(null);
+// city input is one of the sweedish cities in the array
+const cityInput = ref('');
 const DateInput = ref(null);
+const showDropdown = ref(false);
 const bookingStore = useBookingStore();
 const showingConfirmationBar = ref(false);
 const usingCurrentLocation = ref(false);
@@ -176,6 +188,36 @@ function handleChange(newValue: SearchInput) {
 }
 
 type SearchInput = 'All' | 'Morning' | 'Afternoon';
+
+// filtered cities is an array of cities that match the input
+function filterCities() {
+    if (!cityInput.value) {
+        return [];
+    }
+
+    return swedishCities.filter(city =>
+        city.name.toLowerCase().includes(cityInput.value.toLowerCase())
+    );
+}
+
+
+// select city
+function selectCity(city: string) {
+    cityInput.value = city;
+    showDropdown.value = false;
+    console.log(cityInput.value);
+
+    // get the coordinates of the selected city, and set the center of the map to the coordinates
+    const selectedCity = swedishCities.find((c) => c.name === city);
+    if (selectedCity) {
+        center.value = [selectedCity.coordinates.lat, selectedCity.coordinates.lng];
+
+        // wait a bit and then adjust zoom
+        setTimeout(() => {
+            zoom.value = 12;
+        }, 500);
+    }
+}
 
 type location = {
     lat: number;
@@ -307,6 +349,27 @@ function sortDentistriesByAvailableTimes(date: string) {
     return sortedDentistries;
 }
 
+const swedishCities = [
+    { name: "Stockholm", coordinates: { lat: 59.3293, lng: 18.0686 } },
+    { name: "Gothenburg", coordinates: { lat: 57.7089, lng: 11.9746 } },
+    { name: "Borås", coordinates: { lat: 57.7210, lng: 12.9393 } },
+    { name: "Malmö", coordinates: { lat: 55.6049, lng: 13.0038 } },
+    { name: "Uppsala", coordinates: { lat: 59.8586, lng: 17.6389 } },
+    { name: "Västerås", coordinates: { lat: 59.6091, lng: 16.5448 } },
+    { name: "Örebro", coordinates: { lat: 59.2741, lng: 15.2066 } },
+    { name: "Linköping", coordinates: { lat: 58.4108, lng: 15.6214 } },
+    { name: "Helsingborg", coordinates: { lat: 56.0465, lng: 12.6944 } },
+    { name: "Jönköping", coordinates: { lat: 57.7826, lng: 14.1618 } },
+    { name: "Norrköping", coordinates: { lat: 58.5877, lng: 16.1924 } },
+    { name: "Lund", coordinates: { lat: 55.7047, lng: 13.1910 } },
+    { name: "Umeå", coordinates: { lat: 63.8258, lng: 20.2630 } },
+    { name: "Gävle", coordinates: { lat: 60.6749, lng: 17.1419 } },
+    { name: "Borlänge", coordinates: { lat: 60.4857, lng: 15.4371 } },
+    { name: "Sundsvall", coordinates: { lat: 62.3908, lng: 17.3069 } },
+    { name: "Eskilstuna", coordinates: { lat: 59.3713, lng: 16.5077 } },
+    { name: "Södertälje", coordinates: { lat: 59.1952, lng: 17.6256 } },
+    { name: "Karlstad", coordinates: { lat: 59.3793, lng: 13.5036 } }
+];
 
 
 
