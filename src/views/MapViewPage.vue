@@ -15,7 +15,7 @@
                     </div>
 
 
-                    <Calendar v-model="DateInput"
+                    <Calendar v-model="DateInput" v-on:date-select="handleDateSelection" dateFormat="yy-mm-dd"
                         class="md:w-2/5 w-full pl-3   py-3 border  border-gray-300 rounded-md active:outline-none focus:outline-none dark:border-gray-900 dark:bg-gray-700 dark:text-gray-900"
                         :show-icon="true" placeholder="Date" />
 
@@ -278,6 +278,37 @@ async function getClinics() {
         console.error('Error fetching clinics:', error);
     }
 }
+
+function handleDateSelection() {
+    if (!DateInput.value) return;
+    const date = DateInput.value ? new Date(DateInput.value).toLocaleDateString('sv-SE') : '';
+    console.log(date);
+
+
+    sortDentistriesByAvailableTimes(date);
+}
+
+// Function to sort by date
+function sortDentistriesByAvailableTimes(date: string) {
+    const sortedDentistries = dentistries.value;
+
+    // sort the dentistries, the first one will have the most available times on the selected date
+    sortedDentistries.sort((a, b) => {
+        // get the number of available times for the first dentistry
+        const aAvailableTimes = a.slots.filter((slot) => slot.date === date).length;
+        // get the number of available times for the second dentistry
+        const bAvailableTimes = b.slots.filter((slot) => slot.date === date).length;
+
+        // return the difference between the two numbers
+        return bAvailableTimes - aAvailableTimes;
+    });
+
+
+    return sortedDentistries;
+}
+
+
+
 
 </script>
 
