@@ -58,8 +58,13 @@
             <div class="py-4 px-2">
                 <!-- <h1 class="text-lg font-bold py-1"> {{ dentistries.length }} results</h1> -->
                 <div class="flex flex-col listofitems space-y-2 p-2 ">
-                    <DentistryListItem :far-from-user="farFromUser(dentistry)" v-for="dentistry in dentistries"
-                        :key="dentistry._id" :dentistry="dentistry" @time-selected="handleTimeSelection" />
+                    <template v-if="clinicsLoading">
+                        <DentistryCardSkeleton v-for="n in 5" :key="n" />
+                    </template>
+                    <template v-else>
+                        <DentistryListItem :far-from-user="farFromUser(dentistry)" v-for="dentistry in dentistries"
+                            :key="dentistry._id" :dentistry="dentistry" @time-selected="handleTimeSelection" />
+                    </template>
                 </div>
             </div>
             <!-- <Paginator :rows="2" :totalRecords="dentistries.length" class="p-4   " /> -->
@@ -155,6 +160,7 @@ import router from '../router';
 import { useBookingStore } from '../stateStores/bookingStore';
 import axios from 'axios';
 import { DENTIST_API } from '../utils/apiConfig';
+import DentistryCardSkeleton from '../components/DentistryCardSkeleton.vue';
 const adressInput = ref(null);
 const DateInput = ref(null);
 const bookingStore = useBookingStore();
@@ -162,6 +168,7 @@ const showingConfirmationBar = ref(false);
 const usingCurrentLocation = ref(false);
 const showingSearchResults = ref({ time: 'All' } as { time: SearchInput });
 const dentistries = ref([] as Dentistry[]);
+
 
 function handleChange(newValue: SearchInput) {
     showingSearchResults.value.time = newValue;
@@ -218,31 +225,6 @@ const toggledDentistry = ref({} as Dentistry);
 const map = ref(null);
 
 
-// watch(center, (newCenter) => {
-//     // console.log(newCenter);
-//     // find all dentistries with long lat within the bounds
-//     const lat = newCenter.lat;
-//     const lng = newCenter.lng;
-
-//     dentistries.value.filter((dentistry) => {
-//         const dentistryLat = dentistry.coordinates.lat;
-//         const dentistryLng = dentistry.coordinates.lng;
-//         if (dentistryLat > lat - 0.1 && dentistryLat < lat + 0.1 && dentistryLng > lng - 0.1 && dentistryLng < lng + 0.1) {
-//             console.log(dentistry);
-
-//             // if the dentistries are already in the list, do nothing else refetch
-//             if (dentistries.value.includes(dentistry)) {
-//                 console.log("already in list");
-//             } else {
-//                 // replace the entire list with the new list
-//                 console.log(" replacing list with " + dentistry);
-//                 dentistries.value = dentistries.value.concat(dentistry);
-//             }
-//         }
-//     });
-// });
-
-
 // create a function that scrolls to the corresponding dentistry when clicking on a marker
 const scrollToDentistry = (dentistryId: string) => {
     nextTick(() => {
@@ -266,26 +248,35 @@ function handleConfirmationButton() {
     showingConfirmationBar.value = false;
     router.push({ name: 'Confirmation' });
 }
-// too slow to update so less not use light map
-// function tileLayerUrl() {
-//     // check if darkmode is enabled
-//     const darkMode = document.documentElement.classList.contains('dark');
-//     if (darkMode) {
-//         return 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png';
-//     } else {
-//         return 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-//     }
-// }
+
+const clinicsLoading = ref(true);
 
 getClinics();
 
-function getClinics() {
-    axios.get(`${DENTIST_API}/clinics`).then((response) => {
-        console.log(response.data);
-        // append the new data to the list
-        dentistries.value = response.data;
 
-    });
+async function getClinics() {
+    try {
+        // Fetch the list of clinics
+        const response = await axios.get(`${DENTIST_API}/clinics`);
+        const clinics = response.data as Dentistry[];
+
+        // Iterate through each clinic and fetch timeslots
+        const detailedClinics = await Promise.all(clinics.map(async (clinic) => {
+            const clinicDetailsResponse = await axios.get(`${DENTIST_API}/clinics/${clinic._id}/appointment_slots`);
+            // Add the timeslots to the clinic object
+            clinic.slots = clinicDetailsResponse.data as TimeSlot[];
+
+            return clinic;
+        }));
+
+        // Set the dentistries to the detailed clinics
+
+        dentistries.value = detailedClinics;
+        clinicsLoading.value = false;
+        console.log(dentistries.value);
+    } catch (error) {
+        console.error('Error fetching clinics:', error);
+    }
 }
 
 </script>

@@ -14,7 +14,7 @@
             </div>
         </div>
         <div class="flex-none py-2">
-            <DentistryCardTimePicker :dentistry-id="dentistry._id" @time-selected="onTimeSelected" />
+            <DentistryCardTimePicker :time-slots="dentistry.slots" @time-selected="onTimeSelected" />
         </div>
     </div>
 </template>
@@ -38,7 +38,7 @@ const props = defineProps({
     farFromUser: {
         type: Number,
         required: false
-    }
+    },
 });
 
 function onTimeSelected(data: unknown) {

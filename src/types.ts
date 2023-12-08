@@ -6,7 +6,7 @@ interface Dentistry {
   phone?: string;
   photo?: string;
   type: string;
-  slots: Slot[];
+  slots: TimeSlot[];
   coordinates: {
     lat: number;
     lng: number;

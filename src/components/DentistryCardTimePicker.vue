@@ -1,7 +1,6 @@
 <template>
     <div class="flex flex-col h-full">
-        <div v-if="isLoading" class="flex flex-col justify-center items-center h-full">loading</div>
-        <div v-else class="flex  flex-col space-y-4">
+        <div class="flex  flex-col space-y-4">
             <!-- Calendar Navigation -->
             <div class="flex items-center justify-between px-4 gap-7">
                 <button @click="navigate(-5)" :disabled="isEarliestWeek"
@@ -65,11 +64,11 @@
 </template>
   
 <script setup lang="ts">
-const isLoading = ref(true);
+
 const bookingStore = useBookingStore();
-import { ref, computed } from 'vue';
+import { ref, computed, PropType } from 'vue';
 import { useBookingStore } from '../stateStores/bookingStore';
-import { DENTIST_API } from '../utils/apiConfig';
+
 
 const emit = defineEmits(['time-selected']);
 
@@ -86,46 +85,26 @@ const showAllTimes = ref(false);
 
 // props for dentstryId
 const props = defineProps({
-    dentistryId: {
-        type: String,
+    timeSlots: {
+        type: Array as PropType<TimeSlot[]>,
         required: true
-    }
+    },
 });
 
 const timesData1 = ref<DayTimes1>({});
+timesData1.value = convertToDayTimes(props.timeSlots);
 
-console.log(timesData1.value);
 
-
-// fetch times from backend
-fetchTimes();
-
-async function fetchTimes() {
-    isLoading.value = true;
-    // fetch times from backend
-    const response = await fetch(`${DENTIST_API}/clinics/${props.dentistryId}/appointment_slots`);
-    const data = await response.json() as TimeSlot[];
-
-    // convert to the dayTimes format
+function convertToDayTimes(timeslots: TimeSlot[]) {
     const dayTimes: DayTimes1 = {};
-    data.forEach((time) => {
+    timeslots.forEach((time) => {
         if (dayTimes[time.date]) {
             dayTimes[time.date].push(time);
         } else {
             dayTimes[time.date] = [time];
         }
     });
-
-    timesData1.value = dayTimes;
-
-
-    // artificially delay the loading state
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-
-
-    console.log(dayTimes);
-    isLoading.value = false;
+    return dayTimes;
 }
 
 
