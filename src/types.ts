@@ -26,9 +26,10 @@ interface Appointment {
   _id: string;
   patientId: string;
   dentistId: string;
-  startTime: Date;
-  endTime: Date;
+  startTime: string;
+  endTime: string;
   date: Date;
+  isBooked: boolean;
 }
 
 interface User {

@@ -1,6 +1,6 @@
 <template>
     <div class=" flex flex-col md:flex-row flex-1    ">
-        <div class=" md:w-1/4 flex flex-col justify-between gap-3 p-6">
+        <div class=" md:w-[30%] flex flex-col justify-between gap-3 p-6">
             <div class="flex flex-col space-y-2">
                 <div class="flex bg-gray-300 dark:bg-gray-800 flex-col rounded-lg items-center p-4 ">
                     <span class="rounded-full bg-purple-600 h-12 w-12" alt="" />
@@ -53,7 +53,7 @@
 
 
 
-        <div v-if="!showPast" class="md:w-1/4 p-8 gap-4 flex flex-col">
+        <div v-if="!showPast" class="w-full   p-8 gap-4 flex flex-col">
             <div class="flex gap-4 py-2">
                 <h1 class="text-4xl">Upcoming Appointments</h1>
                 <!-- <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
@@ -61,9 +61,10 @@
                     </button> -->
 
             </div>
-            <div v-if="appointments.length == 0" class="border border-gray-400 rounded-lg p-7 ">
-                <img class="items-center flex justify-center" src="/src/assets/kerfin7_nea_2761 1.png" alt="">
-                <p class="text-lg font-medium">Seems you dont have any bookings, click <span @click="visible = true"
+            <div v-if="appointments.length == 0"
+                class="border h-full flex flex-col justify-center items-center  border-gray-300 rounded-lg p-7 ">
+                <img class=" object-contain" src="/src/assets/kerfin7_nea_2761 1.png" alt="">
+                <p class="text-xl font-medium">Seems you dont have any bookings, click <span @click="visible = true"
                         class="font-bold text-xl  cursor-pointer text-blue-600">
                         here</span> to make an appointment</p>
             </div>
@@ -78,19 +79,20 @@
                         </div>
                     </template>
                 </Dialog>
-                <div class="flex flex-col gap-4 ">
-                    <div @click="visibleAppointmentModal = true" v-for="appointment in appointments" :key="appointment.id"
+                <div class="flex flex-col gap-4 md:grid md:grid-cols-2 ">
+                    <div @click="visibleAppointmentModal = true" v-for="appointment in appointments" :key="appointment._id"
                         class="border cursor-pointer border-gray-300 dark:border-gray-600 dark:bg-gray-800  rounded-lg p-4 shadow-md">
-                        <h3 class="text-xl font-semibold">{{ appointment.title }}</h3>
-                        <p class="text-gray-500 dark:text-gray-300">{{ appointment.description }}</p>
+                        <h3 class="text-xl font-semibold">title</h3>
+                        <p class="text-gray-500 dark:text-gray-300">description</p>
                         <div class="flex justify-between items-center mt-2">
                             <div>
                                 <p class="text-gray-600 dark:text-gray-400">{{ appointment.date }}</p>
-                                <p class="text-gray-600 dark:text-gray-400">{{ appointment.time }}</p>
+                                <p class="text-gray-600 dark:text-gray-400"></p>
                             </div>
                             <div>
-                                <p class="text-gray-600 dark:text-gray-400">{{ appointment.duration }}</p>
-                                <p class="text-gray-600 dark:text-gray-400">{{ appointment.location }}</p>
+                                <p class="text-gray-600 dark:text-gray-400">{{ appointment.startTime }} - {{
+                                    appointment.endTime }}</p>
+                                <p class="text-gray-600 dark:text-gray-400"></p>
                             </div>
                         </div>
                     </div>
@@ -99,7 +101,7 @@
         </div>
 
 
-        <div v-else class="w-1/2 p-8 gap-4 flex flex-col">
+        <div v-else class="w-full p-8 gap-4 flex flex-col">
             <div class="flex gap-4">
                 <h1 class="text-4xl">Past Appointments</h1>
                 <!-- <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
@@ -121,6 +123,9 @@ import Dialog from 'primevue/dialog';
 import Calendar from 'primevue/calendar';
 import Button from 'primevue/button';
 import router from '../router';
+import axios from 'axios';
+import { PATIENT_API } from '../utils/apiConfig';
+import { getCookie } from '../utils/cookieHandler';
 
 const date = ref(null);
 const showPast = ref(false);
@@ -131,18 +136,41 @@ const visibleAppointmentModal = ref(false);
 
 const userStore = useUserStore();
 
-// getUserAppointments();
+const appointments = ref([] as Appointment[]);
 
-// async function getUserAppointments() {
-//     axios.get(`${PATIENT_API}/patients/${userStore.user?._id}/appointments/`)
-//         .then((response) => {
-//             console.log(response.data);
-//             appointments.value = response.data;
-//         }, (error) => {
-//             console.log(error);
-//         });
+getUserAppointments();
 
-// }
+async function getUserAppointments() {
+    axios.get(`${PATIENT_API}/patients/${userStore.user?._id}/appointments/`, {
+        headers: {
+            'x-access-token': `${getCookie('token')}`
+        }
+
+    })
+        .then((response) => {
+            console.log(response.data);
+            appointments.value = response.data;
+        }, (error) => {
+            console.log(error);
+        });
+
+}
+
+async function cancelAppointment(appointmentId: string) {
+    axios.delete(`${PATIENT_API}/patients/${userStore.user?._id}/appointments/${appointmentId}`, {
+        headers: {
+            'x-access-token': `${getCookie('token')}`
+        }
+
+    })
+        .then((response) => {
+            console.log(response.data);
+            appointments.value = response.data;
+        }, (error) => {
+            console.log(error);
+        });
+
+}
 
 const handleToggle = (pressed: string) => {
     if (pressed === 'upcoming') {
@@ -155,17 +183,6 @@ const handleToggle = (pressed: string) => {
 // const appointments = ref([] as Appointment[]);
 
 // create some mockup appointments
-const appointments = ref([
-    {
-        id: 1,
-        title: 'Appointment 1',
-        description: 'This is the first appointment',
-        date: '2023-12-10',
-        time: '10:00',
-        duration: '1 hour',
-        location: 'Dentistry 1',
-    }
-]);
 
 const handleSubmitModal = () => {
     console.log('go next step ie mapview');
