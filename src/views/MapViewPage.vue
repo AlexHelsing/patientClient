@@ -206,6 +206,7 @@ function selectCity(city: string) {
     cityInput.value = city;
     showDropdown.value = false;
     console.log(cityInput.value);
+    getClinicsByCity();
 
     // get the coordinates of the selected city, and set the center of the map to the coordinates
     const selectedCity = swedishCities.find((c) => c.name === city);
@@ -299,7 +300,40 @@ getClinics();
 async function getClinics() {
     try {
         // Fetch the list of clinics
-        const response = await axios.get(`${DENTIST_API}/clinics`);
+        const response = await axios.get(`${DENTIST_API}/clinics/`);
+        const clinics = response.data as Dentistry[];
+
+        // Iterate through each clinic and fetch timeslots
+        const detailedClinics = await Promise.all(clinics.map(async (clinic) => {
+            const clinicDetailsResponse = await axios.get(`${DENTIST_API}/clinics/${clinic._id}/appointment_slots`);
+            // Add the timeslots to the clinic object
+            clinic.slots = clinicDetailsResponse.data as TimeSlot[];
+
+            return clinic;
+        }));
+
+        // Set the dentistries to the detailed clinics
+
+        dentistries.value = detailedClinics;
+        clinicsLoading.value = false;
+        console.log(dentistries.value);
+    } catch (error) {
+        console.error('Error fetching clinics:', error);
+    }
+}
+
+async function getClinicsByCity() {
+    try {
+        const city = cityInput.value; // Assuming cityInput is an input element
+        console.log(city);
+
+        const response = await axios.post(`${DENTIST_API}/clinics/city`, {
+            city: city
+        }, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
         const clinics = response.data as Dentistry[];
 
         // Iterate through each clinic and fetch timeslots
