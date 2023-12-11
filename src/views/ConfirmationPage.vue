@@ -1,4 +1,5 @@
 <template>
+    <Toaster />
     <div class="container mx-auto p-12">
         <!-- Contact Details Section -->
         <h2 class="text-4xl font-bold mb-6 ">Confirm appointment details</h2>
@@ -43,10 +44,11 @@
                         repellat nobis neque aspernatur, illo eos!
                     </p>
                 </div>
-                <button @click="handleBooking"
+                <!-- <button @click="handleBooking"
                     class="w-full px-5 py-2.5 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                     Book appointment
-                </button>
+                </button> -->
+                <Button @click="handleBooking" class="w-full"> Book appointment</Button>
             </div>
 
             <!-- Right Section - Appointment Details -->
@@ -83,16 +85,75 @@
 </template>
   
 <script setup lang="ts">
+import Toaster from '@/components/ui/toast/Toaster.vue'
 
 import { useBookingStore } from '../stateStores/bookingStore';
 import { useUserStore } from '../stateStores/userStore';
-
+import { Button } from '@/components/ui/button'
 const bookingStore = useBookingStore();
 const userStore = useUserStore();
 
-function handleBooking() {
-    alert('Booking confirmed!');
+import { useToast } from '@/components/ui/toast/use-toast'
+import { ToastAction } from '@/components/ui/toast'
+import { PATIENT_API } from '@/utils/apiConfig';
+import axios from 'axios';
+import { getCookie } from '@/utils/cookieHandler';
+import { h } from 'vue';
+import router from '@/router';
+const { toast, dismiss } = useToast()
+
+async function handleBooking() {
+    axios.post(`${PATIENT_API}/patients/${userStore.user?._id}/appointments`, {
+        appointment_id: bookingStore.bookingData?.data._id
+    }, {
+        headers: {
+            "x-access-token": `${getCookie('token')}`
+        }
+    }).then(res => {
+        console.log(res.data);
+        // start counter 
+
+        toast({
+            title: 'Appointment Scheduled',
+            description: `Your appointment has been scheduled for ${bookingStore.bookingData?.data.date} at ${bookingStore.bookingData?.data.startTime} - ${bookingStore.bookingData?.data.endTime}`,
+            variant: 'success',
+            action: h(ToastAction, {
+                altText: 'OK',
+                onClick: () => {
+                    dismiss();
+                    router.push('/dashboard');
+                },
+            }, {
+                default: () => 'OK',
+            }),
+        });
+        // Display the initial toast
+
+        // go back to dashboard within 5 seconds
+        setTimeout(() => {
+            dismiss();
+            router.push('/dashboard');
+        }, 5000);
+
+    }
+    ).catch(err => {
+        console.log(err);
+        toast({
+            title: 'Uh oh! Something went wrong.',
+            description: 'There was a problem with your request.',
+            variant: 'destructive',
+            action: h(ToastAction, {
+                altText: 'Try again',
+            }, {
+                default: () => 'Try again',
+            }),
+        });
+    });
+
 }
+
+
+
 </script>
   
 <style lang="css">

@@ -8,6 +8,7 @@ export const useUserStore = defineStore('user', {
   // The state must be a function to return a fresh object
   state: () => ({
     user: null as User | null,
+    jwt: null as string | null,
   }),
 
   // Getters are similar to computed properties and are cached

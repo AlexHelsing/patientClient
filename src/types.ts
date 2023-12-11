@@ -42,6 +42,7 @@ interface User {
 }
 
 type TimeSlot = {
+  _id: string;
   dentistId: string;
   startTime: string;
   endTime: string;
