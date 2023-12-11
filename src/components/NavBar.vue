@@ -27,7 +27,7 @@
             <div class="md:flex gap-4 items-center hidden">
 
 
-                <Switch :checked="checked" @update:checked="toggleDarkMode" />
+                <Switch :checked="userStore.darkMode" @update:checked="toggleDarkMode" />
 
 
                 <!-- <BellAlertIcon
@@ -81,20 +81,15 @@ import { useUserStore } from '../stateStores/userStore'
 import Button from 'primevue/button';
 import { Switch } from '@/components/ui/switch'
 import Menu from 'primevue/menu';
-const checked = ref(false);
+const userStore = useUserStore()
 
 
 const toggleDarkMode = () => {
-    checked.value = !checked.value
-    if (checked.value) {
-        document.documentElement.classList.add('dark')
-    } else {
-        document.documentElement.classList.remove('dark')
-    }
+    userStore.toggleDarkMode();
 };
 
 const hamburgerToggle = ref(false)
-const userStore = useUserStore()
+
 
 const toggleHamburger = () => {
     hamburgerToggle.value = !hamburgerToggle.value

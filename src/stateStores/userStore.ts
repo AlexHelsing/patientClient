@@ -9,6 +9,7 @@ export const useUserStore = defineStore('user', {
   state: () => ({
     user: null as User | null,
     jwt: null as string | null,
+    darkMode: undefined as boolean | undefined,
   }),
 
   // Getters are similar to computed properties and are cached
@@ -35,8 +36,30 @@ export const useUserStore = defineStore('user', {
       router.push('/auth');
     },
 
+    toggleDarkMode() {
+      this.darkMode = !this.darkMode;
+      localStorage.setItem('darkMode', JSON.stringify(this.darkMode));
+      if (this.darkMode === true) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    },
+
     // Init function to check if user is null but has a token => get user from DB
     async init() {
+      // check local storage for darkmode preference
+      const darkMode = localStorage.getItem('darkMode');
+      if (darkMode) {
+        this.darkMode = JSON.parse(darkMode);
+
+        if (this.darkMode === true) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      }
+      console.log(this.darkMode);
       if (!this.user) {
         const token = getCookie('token');
         if (token) {
