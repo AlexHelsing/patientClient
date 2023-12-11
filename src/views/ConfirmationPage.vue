@@ -100,7 +100,7 @@ import axios from 'axios';
 import { getCookie } from '@/utils/cookieHandler';
 import { h } from 'vue';
 import router from '@/router';
-const { toast, dismiss } = useToast()
+const { toast } = useToast()
 
 async function handleBooking() {
     axios.post(`${PATIENT_API}/patients/${userStore.user?._id}/appointments`, {
@@ -120,7 +120,6 @@ async function handleBooking() {
             action: h(ToastAction, {
                 altText: 'OK',
                 onClick: () => {
-                    dismiss();
                     router.push('/dashboard');
                 },
             }, {
@@ -129,9 +128,8 @@ async function handleBooking() {
         });
         // Display the initial toast
 
-        // go back to dashboard within 5 seconds
+        // go back to dashboard within 5 seconds if no actions are taken
         setTimeout(() => {
-            dismiss();
             router.push('/dashboard');
         }, 5000);
 
