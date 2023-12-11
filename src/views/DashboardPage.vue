@@ -108,6 +108,7 @@
                         Make an appointment
                     </button> -->
 
+
             </div>
 
 
@@ -121,7 +122,6 @@ import { ref } from 'vue';
 import { ArchiveBoxIcon, CalendarDaysIcon } from '@heroicons/vue/24/outline'
 import Dialog from 'primevue/dialog';
 import Calendar from 'primevue/calendar';
-import Button from 'primevue/button';
 import router from '../router';
 import axios from 'axios';
 import { PATIENT_API } from '../utils/apiConfig';
@@ -129,6 +129,7 @@ import { getCookie } from '../utils/cookieHandler';
 
 const date = ref(null);
 const showPast = ref(false);
+
 
 
 const visible = ref(false);

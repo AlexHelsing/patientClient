@@ -3,35 +3,35 @@
         <div class="flex flex-1 max-w-lg gap-3">
             <div class="flex flex-col space-y-2">
                 <!-- Skeleton for the Dentistry Name -->
-                <div class="h-6 bg-gray-300 rounded-md w-3/4"></div>
+                <Skeleton class="h-6  rounded-md w-3/4"></Skeleton>
 
                 <!-- Skeleton for the Address -->
-                <div class="h-4 bg-gray-300 rounded-md w-1/2"></div>
+                <Skeleton class="h-4  rounded-md w-1/2"></Skeleton>
 
                 <!-- Skeleton for the Image -->
-                <div class="h-40 w-80 bg-gray-300 rounded-lg"></div>
+                <Skeleton class="h-40 w-80  rounded-lg"></Skeleton>
 
                 <!-- Skeleton for Distance Information -->
                 <div class="flex items-center mt-2">
-                    <div class="h-4 bg-gray-300 rounded-md w-10 mr-2"></div>
-                    <div class="h-4 bg-gray-300 rounded-md w-16"></div>
+                    <Skeleton class="h-4  rounded-md w-10 mr-2"></Skeleton>
+                    <Skeleton class="h-4  rounded-md w-16"></Skeleton>
                 </div>
             </div>
         </div>
 
         <!-- Skeleton for Time Picker -->
         <div class="flex-none py-2 w-48">
-            <div class="h-[25%] bg-gray-300 rounded-md mb-2"></div>
-            <div class="h-[10%] bg-gray-300 rounded-md mt-7 mb-2"></div>
-            <div class="h-[10%] bg-gray-300 rounded-md mb-2"></div>
-            <div class="h-[10%] bg-gray-300 rounded-md mb-2"></div>
-            <div class="h-[10%] bg-gray-300 rounded-md"></div>
+            <Skeleton class="h-[25%] rounded-md mb-2"></Skeleton>
+            <Skeleton class="h-[10%] rounded-md mt-7 mb-2"></Skeleton>
+            <Skeleton class="h-[10%] rounded-md mb-2"></Skeleton>
+            <Skeleton class="h-[10%] rounded-md mb-2"></Skeleton>
+            <Skeleton class="h-[10%] rounded-md"></Skeleton>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-// No script needed for skeleton
+import { Skeleton } from '@/components/ui/skeleton'
 </script>
 
 <style scoped>
