@@ -93,8 +93,8 @@
         </div>
         <div class="md:w-[65%] z-0  ">
             <l-map class="h-full z-7" ref="map" v-model:zoom="zoom" v-model:center="center" :useGlobalLeaflet="false">
-                <l-tile-layer url="https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png"
-                    layer-type="base" name="Stadia Maps Basemap"></l-tile-layer>
+                <l-tile-layer :url="userStore.darkMode ? darkTileUrl : normalTileUrl" layer-type="base"
+                    name="Stadia Maps Basemap"></l-tile-layer>
                 <!-- <l-marker :lat-lng="campusMarker">
                     <l-popup :content="`<h1>Chalmers University of Technology</h1>`" :lat-lng="campusMarker">
                     </l-popup>
@@ -166,6 +166,7 @@ import DentistryListItem from '../components/DentistryListItem.vue';
 import { LMap, LTileLayer, LMarker, LPopup, LIcon } from '@vue-leaflet/vue-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { MagnifyingGlassIcon } from '@heroicons/vue/24/outline';
+import { useUserStore } from '../stateStores/userStore';
 import router from '../router';
 import { useBookingStore } from '../stateStores/bookingStore';
 import axios from 'axios';
@@ -181,6 +182,14 @@ const usingCurrentLocation = ref(false);
 const showingSearchResults = ref({ time: 'All' } as { time: SearchInput });
 const dentistries = ref([] as Dentistry[]);
 
+const userStore = useUserStore();
+
+// we need to watch the state of userstore.darkMode
+// and change the map tiles accordingly
+
+
+const normalTileUrl = 'https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png';
+const darkTileUrl = 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png';
 
 function handleChange(newValue: SearchInput) {
     showingSearchResults.value.time = newValue;
