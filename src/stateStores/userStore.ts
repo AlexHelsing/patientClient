@@ -22,6 +22,9 @@ export const useUserStore = defineStore('user', {
     setUser(user: User | null) {
       this.user = user;
     },
+    setToken(token: string | null) {
+      this.jwt = token;
+    },
 
     logout() {
       // Delete the token cookie
@@ -55,6 +58,7 @@ export const useUserStore = defineStore('user', {
         );
         const user = response.data as User;
         this.setUser(user);
+        this.setToken(token as string);
         console.log(this.user);
       } catch (error) {
         console.error(error);

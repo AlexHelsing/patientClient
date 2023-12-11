@@ -97,7 +97,6 @@ import { useToast } from '@/components/ui/toast/use-toast'
 import { ToastAction } from '@/components/ui/toast'
 import { PATIENT_API } from '@/utils/apiConfig';
 import axios from 'axios';
-import { getCookie } from '@/utils/cookieHandler';
 import { h } from 'vue';
 import router from '@/router';
 const { toast } = useToast()
@@ -107,7 +106,7 @@ async function handleBooking() {
         appointment_id: bookingStore.bookingData?.data._id
     }, {
         headers: {
-            "x-access-token": `${getCookie('token')}`
+            "x-access-token": `${userStore.jwt}`
         }
     }).then(res => {
         console.log(res.data);

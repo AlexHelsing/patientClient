@@ -38,7 +38,7 @@ interface User {
   lastname: string;
   phone_number: Number;
   email: string;
-  DOB: Date;
+  DOB?: Date;
 }
 
 type TimeSlot = {

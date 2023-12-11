@@ -28,21 +28,23 @@ async function handleSignIn(e: Event) {
 
         // update user state
         userStore.setUser({
-            email: response.data.patient.email,
-            firstname: response.data.patient.firstname,
-            lastname: response.data.patient.lastname,
-            phone_number: response.data.patient.phone_number,
-            DOB: response.data.patient.DOB,
-            _id: response.data.patient._id,
+            email: response.data.email,
+            firstname: response.data.firstname,
+            lastname: response.data.lastname,
+            phone_number: response.data.phone_number,
+            _id: response.data._id
         });
+
+        // set user token in state as-well because why not
+        userStore.setToken(token);
 
         //redirect to dashboard
         router.push('/dashboard');
 
     }
     ).catch((error) => {
-        console.log(error.response.data.message);
-        alert(error.response.data.message);
+        console.log(error);
+        alert('Invalid email or password');
     });
 
 }

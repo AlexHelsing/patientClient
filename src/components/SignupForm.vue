@@ -33,20 +33,22 @@ function handleSignup(e: Event) {
 
             // update user state
             userStore.setUser({
-                email: data.patient.email,
-                firstname: data.patient.firstname,
-                lastname: data.patient.lastname,
-                phone_number: data.patient.phone_number,
-                DOB: data.patient.DOB,
-                _id: data.patient.id,
+                email: data.email,
+                firstname: data.firstname,
+                lastname: data.lastname,
+                phone_number: data.phone_number,
+                _id: data._id,
             });
+
+            // set user token in state as-well because why not
+            userStore.setToken(token);
 
             // redirect to dashboard
             router.push('/dashboard');
         })
         .catch(error => {
-            console.error(error.response.data.message);
-            alert(error.response && error.response.data.message ? error.response.data.message : 'An error occurred during signup.');
+            console.log(error);
+            alert('An error occured');
         });
 }
 
