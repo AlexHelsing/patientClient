@@ -238,6 +238,7 @@ const usersLocation = ref({} as location);
 
 async function getUserLocation() {
     navigator.geolocation.getCurrentPosition(async (position) => {
+        cityInput.value = findUsersCity(position.coords.latitude, position.coords.longitude).name;
         usersLocation.value.lat = position.coords.latitude;
         usersLocation.value.lng = position.coords.longitude;
         usingCurrentLocation.value = true;
@@ -246,10 +247,28 @@ async function getUserLocation() {
         center.value = [usersLocation.value.lat, usersLocation.value.lng];
         // wait 0.5 seconds and then zoom
         await new Promise(r => setTimeout(r, 500));
-        zoom.value = 16;
+        zoom.value = 13;
 
 
     });
+}
+
+// function to find the users city based on their location
+function findUsersCity(lat: number, lng: number) {
+    let closestCity = swedishCities[0];
+    let closestDistance = Math.sqrt(Math.pow(lat - closestCity.coordinates.lat, 2) + Math.pow(lng - closestCity.coordinates.lng, 2));
+
+    for (let i = 1; i < swedishCities.length; i++) {
+        const city = swedishCities[i];
+        const distance = Math.sqrt(Math.pow(lat - city.coordinates.lat, 2) + Math.pow(lng - city.coordinates.lng, 2));
+        if (distance < closestDistance) {
+            closestCity = city;
+            closestDistance = distance;
+        }
+    }
+
+
+    return closestCity;
 }
 
 function farFromUser(dentistry: Dentistry) {
