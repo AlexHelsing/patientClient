@@ -1,4 +1,5 @@
 <template>
+    <Toaster />
     <div class=" flex flex-col md:flex-row flex-1    ">
         <div class=" md:w-[30%] flex flex-col justify-between gap-3 p-6">
             <div class="flex flex-col space-y-2">
@@ -62,7 +63,7 @@
 
             </div>
             <div v-if="appointments.length == 0"
-                class="border h-full flex flex-col justify-center items-center  border-gray-300 rounded-lg p-7 ">
+                class="border h-full flex flex-col justify-center items-center  border-gray-300 dark:border-slate-800 rounded-lg p-7 ">
                 <img class=" object-contain" src="/src/assets/kerfin7_nea_2761 1.png" alt="">
                 <p class="text-xl font-medium">Seems you dont have any bookings, click <span @click="visible = true"
                         class="font-bold text-xl  cursor-pointer text-blue-600">
@@ -80,22 +81,8 @@
                     </template>
                 </Dialog>
                 <div class="flex flex-col gap-4 md:grid md:grid-cols-2 ">
-                    <div @click="visibleAppointmentModal = true" v-for="appointment in appointments" :key="appointment._id"
-                        class="border cursor-pointer border-gray-300 dark:border-gray-600 dark:bg-gray-800  rounded-lg p-4 shadow-md">
-                        <h3 class="text-xl font-semibold">title</h3>
-                        <p class="text-gray-500 dark:text-gray-300">description</p>
-                        <div class="flex justify-between items-center mt-2">
-                            <div>
-                                <p class="text-gray-600 dark:text-gray-400">{{ appointment.date }}</p>
-                                <p class="text-gray-600 dark:text-gray-400"></p>
-                            </div>
-                            <div>
-                                <p class="text-gray-600 dark:text-gray-400">{{ appointment.startTime }} - {{
-                                    appointment.endTime }}</p>
-                                <p class="text-gray-600 dark:text-gray-400"></p>
-                            </div>
-                        </div>
-                    </div>
+                    <AppointmentListItemVue @handle-cancel-appointment="handleCancelEmit" :Appointment="appointment"
+                        v-for="appointment in appointments" :key="appointment._id" />
                 </div>
             </div>
         </div>
@@ -112,11 +99,15 @@
             </div>
 
 
+
         </div>
     </div>
 </template>
   
 <script setup lang="ts">
+import AppointmentListItemVue from "../components/AppointmentListItem.vue";
+import { useToast } from '@/components/ui/toast/use-toast'
+import Toaster from '@/components/ui/toast/Toaster.vue'
 import { useUserStore } from '../stateStores/userStore';
 import { ref } from 'vue';
 import { ArchiveBoxIcon, CalendarDaysIcon } from '@heroicons/vue/24/outline'
@@ -130,6 +121,7 @@ import { getCookie } from '../utils/cookieHandler';
 const date = ref(null);
 const showPast = ref(false);
 
+const { toast } = useToast()
 
 
 const visible = ref(false);
@@ -151,6 +143,7 @@ async function getUserAppointments() {
         .then((response) => {
             console.log(response.data);
             appointments.value = response.data;
+
         }, (error) => {
             console.log(error);
         });
@@ -166,7 +159,16 @@ async function cancelAppointment(appointmentId: string) {
     })
         .then((response) => {
             console.log(response.data);
-            appointments.value = response.data;
+
+            toast({
+                title: 'Appointment cancelled',
+                description: 'Your appointment has been cancelled',
+            })
+
+            // remove the appointment from the list
+            appointments.value = appointments.value.filter((appointment) => {
+                return appointment._id !== appointmentId;
+            });
         }, (error) => {
             console.log(error);
         });
@@ -179,6 +181,11 @@ const handleToggle = (pressed: string) => {
     } else {
         showPast.value = true;
     }
+};
+
+const handleCancelEmit = (appointmentId: string) => {
+    console.log('cancel appointment' + appointmentId)
+    cancelAppointment(appointmentId);
 };
 
 // const appointments = ref([] as Appointment[]);
