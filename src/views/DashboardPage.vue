@@ -10,7 +10,11 @@
 
 
                     <p class="text-gray-500">{{ userStore.getUser?.phone_number }}</p>
+                    <EditProfileComponent @handle-change-password="changePassword" @handle-edit-profile="editProfile"
+                        v-if="userStore.user" :user-details="userStore.user" />
                 </div>
+
+
 
 
                 <div class="flex card  flex-col  bg-gray-300 dark:bg-gray-800 ">
@@ -113,8 +117,7 @@ import Toaster from '@/components/ui/toast/Toaster.vue'
 import { useUserStore } from '../stateStores/userStore';
 import { ref } from 'vue';
 import { ArchiveBoxIcon, CalendarDaysIcon } from '@heroicons/vue/24/outline'
-// import Dialog from 'primevue/dialog';
-// import Calendar from 'primevue/calendar';
+import EditProfileComponent from "@/components/EditProfileComponent.vue";
 import { Button } from '@/components/ui/button'
 import router from '../router';
 import axios from 'axios';
@@ -177,6 +180,83 @@ async function cancelAppointment(appointmentId: string) {
         });
 
 }
+
+async function editProfile(userDetails: User) {
+    try {
+        const response = await axios.put(`${PATIENT_API}/patients/${userStore.user?._id}`, {
+            email: userDetails.email,
+            firstname: userDetails.firstname,
+            lastname: userDetails.lastname,
+            phone_number: userDetails.phone_number,
+        }, {
+            headers: {
+                'x-access-token': `${userStore.jwt}`
+            }
+        });
+
+
+        console.log(response.data);
+
+        // Update user store only if the request is successful and the status code is 200
+        userStore.setUser({
+            email: response.data.email,
+            firstname: response.data.firstname,
+            lastname: response.data.lastname,
+            phone_number: response.data.phone_number,
+            _id: response.data._id
+        });
+
+        toast({
+            title: 'Profile updated',
+            description: 'Your profile has been updated successfully.',
+        });
+
+
+    } catch (error) {
+        console.error(error);
+        // Handle error case here
+        toast({
+            title: 'An error occurred',
+            variant: 'destructive',
+            description: 'Your profile could not be updated. Please try again later.',
+        });
+    }
+}
+
+async function changePassword(password: string) {
+    try {
+        await axios.put(`${PATIENT_API}/patients/${userStore.user?._id}`, {
+            password: password,
+        }, {
+            headers: {
+                'x-access-token': `${userStore.jwt}`
+            }
+        });
+
+
+        toast({
+            title: 'Password updated',
+            description: 'Your password has been updated successfully.',
+        });
+
+
+    }
+
+
+
+
+
+    catch (error) {
+        console.error(error);
+        // Handle error case here
+        toast({
+            title: 'An error occurred',
+            variant: 'destructive',
+            description: 'Your password could not be updated. Please try again later.',
+        });
+    }
+}
+
 
 const handleToggle = (pressed: string) => {
     if (pressed === 'upcoming') {
