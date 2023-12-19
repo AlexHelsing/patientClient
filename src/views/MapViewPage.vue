@@ -16,7 +16,7 @@
                         <div v-if="cityInput"
                             class="absolute w-full bg-white dark:bg-gray-600 border dark:border-cyan-900 scrollbar  rounded-b-md  max-h-60 overflow-auto">
                             <div v-if="showDropdown" v-for="city in filterCities()" :key="city.name"
-                                @click="selectCity(city.name)"
+                                @click="getClinicsByCity(city.name)"
                                 class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
                                 {{ city.name }}
                             </div>
@@ -321,13 +321,17 @@ function handleConfirmationButton() {
 
 const clinicsLoading = ref(true);
 
-getClinics();
 
-
-async function getClinics() {
+async function getClinicsByCity(city: string) {
+    selectCity(city);
     try {
-        // Fetch the list of clinics
-        const response = await axios.get(`${DENTIST_API}/clinics`);
+        const response = await axios.post(`${DENTIST_API}/clinics/city`, {
+            city: city
+        }, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
         const clinics = response.data as Dentistry[];
 
         // Iterate through each clinic and fetch timeslots
@@ -335,7 +339,6 @@ async function getClinics() {
             const clinicDetailsResponse = await axios.get(`${DENTIST_API}/clinics/${clinic._id}/appointment_slots`);
             // Add the timeslots to the clinic object
             clinic.slots = clinicDetailsResponse.data as TimeSlot[];
-
             return clinic;
         }));
 
@@ -343,7 +346,6 @@ async function getClinics() {
 
         dentistries.value = detailedClinics;
         clinicsLoading.value = false;
-        console.log(dentistries.value);
     } catch (error) {
         console.error('Error fetching clinics:', error);
     }
