@@ -1,8 +1,8 @@
 <template>
     <div class="md:flex flex-1 border-t dark:border-none   md:overflow-auto flex-row ">
 
-        <div v-if="!DentistryInfoToggle"
-            class="md:w-[45%] flex flex-col justify-between max-h-screen overflow-y-scroll scrollbar  scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-100 scrollbar-thumb-rounded-full ">
+        <div
+            class="md:w-[45%] flex flex-col  max-h-screen overflow-y-scroll scrollbar  scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-100 scrollbar-thumb-rounded-full ">
             <div class="bg-white dark:bg-gray-800 flex flex-col px-5 py-7 space-y-6">
                 <h1 class="text-2xl font-bold">Make an appointment </h1>
 
@@ -79,18 +79,7 @@
             </div>
             <!-- <Paginator :rows="2" :totalRecords="dentistries.length" class="p-4   " /> -->
         </div>
-        <div v-else class="md:w-1/3 p-4 flex flex-col">
-            <div class="flex flex-col justify-between">
-                <div class="flex flex-col space-y-2">
-                    <div class="flex flex-row justify-between">
-                        <h1 class="text-lg font-bold py-1">{{ toggledDentistry.name }}</h1>
-                        <button @click="DentistryInfoToggle = false" class="text-lg font-bold py-1">X</button>
-                    </div>
-
-                </div>
-            </div>
-
-        </div>
+        
         <div class="md:w-[65%] z-0  ">
             <l-map class="h-full z-7" ref="map" v-model:zoom="zoom" v-model:center="center" :useGlobalLeaflet="false">
                 <l-tile-layer :url="userStore.darkMode ? darkTileUrl : normalTileUrl" layer-type="base"
@@ -287,9 +276,6 @@ const center = ref([57.7089, 11.9746]); // Coordinates for Gothenburg
 const zoom = ref(13);
 console.log(zoom.value);
 
-
-const DentistryInfoToggle = ref(false);
-const toggledDentistry = ref({} as Dentistry);
 
 // Access the map instance
 const map = ref(null);
