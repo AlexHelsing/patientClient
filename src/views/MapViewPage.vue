@@ -367,7 +367,7 @@ function sortDentistriesByAvailableTimes(date: string) {
 
 const swedishCities = [
     { name: "Stockholm", coordinates: { lat: 59.3293, lng: 18.0686 } },
-    { name: "Gothenburg", coordinates: { lat: 57.7089, lng: 11.9746 } },
+    { name: "Göteborg", coordinates: { lat: 57.7089, lng: 11.9746 } },
     { name: "Borås", coordinates: { lat: 57.7210, lng: 12.9393 } },
     { name: "Malmö", coordinates: { lat: 55.6049, lng: 13.0038 } },
     { name: "Uppsala", coordinates: { lat: 59.8586, lng: 17.6389 } },
