@@ -1,12 +1,12 @@
 interface Dentistry {
   name: string;
-  id: string;
+  _id: string;
   rating: number;
   address?: string;
   phone?: string;
-  image?: string;
+  photo?: string;
   type: string;
-  slots: Slot[];
+  slots: TimeSlot[];
   coordinates: {
     lat: number;
     lng: number;
@@ -22,11 +22,35 @@ interface Slot {
   date: Date;
 }
 
+interface Appointment {
+  _id: string;
+  patientId: string;
+  dentistId: string;
+  startTime: string;
+  endTime: string;
+  date: Date;
+  isBooked: boolean;
+}
+
 interface User {
-  id: string;
+  _id: string;
   firstname: string;
   lastname: string;
   phone_number: Number;
   email: string;
-  DOB: Date;
+  DOB?: Date;
+}
+
+type TimeSlot = {
+  _id: string;
+  dentistId: string;
+  startTime: string;
+  endTime: string;
+  date: string;
+  isBooked: boolean;
+};
+
+interface Booking {
+  data: TimeSlot;
+  dentistry: Dentistry;
 }

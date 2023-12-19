@@ -4,6 +4,9 @@ import DashboardPage from './views/DashboardPage.vue';
 import MapViewPage from './views/MapViewPage.vue';
 import DentistryPageVue from './views/DentistryPage.vue';
 import { useUserStore } from './stateStores/userStore';
+import { useToast } from '@/components/ui/toast/use-toast';
+
+const { dismiss } = useToast();
 
 // routes
 const routes: Array<RouteRecordRaw> = [
@@ -50,6 +53,9 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, _from, next) => {
+  // dismiss all toasts because they cause errors for some reason
+  dismiss();
+
   const userStore = useUserStore();
 
   // Run the init only if the user state is not already set

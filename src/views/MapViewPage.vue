@@ -7,15 +7,25 @@
                 <h1 class="text-2xl font-bold">Make an appointment </h1>
 
                 <div class="flex flex-col md:flex-row w-full items-center gap-5 md:gap-10 ">
-                    <div class="relative flex-grow  w-full md:w-3/5">
-                        <input type="text" v-model="adressInput" placeholder="Search by city, postal code or street"
-                            class="w-full pl-3 pr-10 py-3 border border-gray-300 dark:border-gray-900 rounded-md focus:outline-none focus:border-blue-500 dark:bg-gray-700 dark:focus:border-cyan-900" />
+                    <div class="relative flex-grow w-full md:w-3/5 z-[100]">
+                        <input @input="showDropdown = true" type="text" v-model="cityInput" placeholder="Search by city..."
+                            class="w-full pl-3 pr-10 py-3 border border-gray-300 dark:border-gray-900 rounded-t-md focus:outline-none focus:border-blue-500 dark:bg-gray-700 dark:focus:border-cyan-900" />
                         <MagnifyingGlassIcon
                             class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-6 dark:text-gray-200" />
+
+                        <div v-if="cityInput"
+                            class="absolute w-full bg-white dark:bg-gray-600 border dark:border-cyan-900 scrollbar  rounded-b-md  max-h-60 overflow-auto">
+                            <div v-if="showDropdown" v-for="city in filterCities()" :key="city.name"
+                                @click="selectCity(city.name)"
+                                class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
+                                {{ city.name }}
+                            </div>
+                        </div>
                     </div>
 
 
-                    <Calendar v-model="DateInput"
+
+                    <Calendar v-model="DateInput" v-on:date-select="handleDateSelection" dateFormat="yy-mm-dd"
                         class="md:w-2/5 w-full pl-3   py-3 border  border-gray-300 rounded-md active:outline-none focus:outline-none dark:border-gray-900 dark:bg-gray-700 dark:text-gray-900"
                         :show-icon="true" placeholder="Date" />
 
@@ -24,7 +34,7 @@
 
                 <div class="flex justify-between flex-wrap md:flex-nowrap gap-2 md:gap-0">
                     <button @click="getUserLocation" type="button"
-                        class="text-white bg-blue-700 hover:bg-blue-800 dark:bg-cyan-600 dark:hover:bg-cyan-700  focus:outline-none active:outline-none  rounded-xl font-semibold text-sm px-5 py-2.5 text-center me-2   inline-flex items-center">
+                        class="z-[10] text-white bg-blue-700 hover:bg-blue-800 dark:bg-cyan-600 dark:hover:bg-cyan-700  focus:outline-none active:outline-none  rounded-xl font-semibold text-sm px-5 py-2.5 text-center me-2   inline-flex items-center">
                         <svg v-if="usingCurrentLocation" aria-hidden="true" role="status"
                             class="inline w-4 h-4 me-3 text-white animate-spin" viewBox="0 0 100 101" fill="none"
                             xmlns="http://www.w3.org/2000/svg">
@@ -58,8 +68,13 @@
             <div class="py-4 px-2">
                 <!-- <h1 class="text-lg font-bold py-1"> {{ dentistries.length }} results</h1> -->
                 <div class="flex flex-col listofitems space-y-2 p-2 ">
-                    <DentistryListItem :far-from-user="farFromUser(dentistry)" v-for="dentistry in dentistries"
-                        :key="dentistry.id" :dentistry="dentistry" @time-selected="handleTimeSelection" />
+                    <template v-if="clinicsLoading">
+                        <DentistryCardSkeleton v-for="n in 5" :key="n" />
+                    </template>
+                    <template v-else>
+                        <DentistryListItem :far-from-user="farFromUser(dentistry)" v-for="dentistry in dentistries"
+                            :key="dentistry._id" :dentistry="dentistry" @time-selected="handleTimeSelection" />
+                    </template>
                 </div>
             </div>
             <!-- <Paginator :rows="2" :totalRecords="dentistries.length" class="p-4   " /> -->
@@ -78,8 +93,8 @@
         </div>
         <div class="md:w-[65%] z-0  ">
             <l-map class="h-full z-7" ref="map" v-model:zoom="zoom" v-model:center="center" :useGlobalLeaflet="false">
-                <l-tile-layer url="https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png"
-                    layer-type="base" name="Stadia Maps Basemap"></l-tile-layer>
+                <l-tile-layer :url="userStore.darkMode ? darkTileUrl : normalTileUrl" layer-type="base"
+                    name="Stadia Maps Basemap"></l-tile-layer>
                 <!-- <l-marker :lat-lng="campusMarker">
                     <l-popup :content="`<h1>Chalmers University of Technology</h1>`" :lat-lng="campusMarker">
                     </l-popup>
@@ -91,7 +106,7 @@
                     </l-popup>
                 </l-marker>
 
-                <l-marker @click="scrollToDentistry(dentistry.id)" v-for="dentistry in dentistries" :key="dentistry.id"
+                <l-marker @click="scrollToDentistry(dentistry._id)" v-for="dentistry in dentistries" :key="dentistry._id"
                     :lat-lng="dentistry.coordinates">
                     <l-popup :content="`<h1>${dentistry.name}</h1>`" :lat-lng="dentistry.coordinates">
                     </l-popup>
@@ -110,18 +125,18 @@
                 <span class="text-md font-bold">
                     Appointment:
                     <span class="font-normal">
-                        {{ confirmationBarData.dentistry.name }}
+                        {{ bookingStore.bookingData?.dentistry.name }}
                     </span>
                 </span>
                 <!-- Divider -->
                 <span class="border-l border-gray-300 h-6"></span>
                 <span class="text-md text-gray-600 dark:text-gray-300">
-                    {{ confirmationBarData.data.date }}
+                    {{ bookingStore.bookingData?.data.date }}
                 </span>
                 <!-- Divider -->
                 <span class="border-l border-gray-300 h-6"></span>
                 <span class="text-md text-gray-600 dark:text-gray-300">
-                    {{ confirmationBarData.data.start }} - {{ confirmationBarData.data.end }}
+                    {{ bookingStore.bookingData?.data.startTime }} - {{ bookingStore.bookingData?.data.endTime }}
                 </span>
             </div>
         </div>
@@ -148,27 +163,70 @@ import Calendar from 'primevue/calendar';
 
 import 'primevue/resources/themes/lara-light-teal/theme.css';
 import DentistryListItem from '../components/DentistryListItem.vue';
-import dentistryData from "../mockupdata";
 import { LMap, LTileLayer, LMarker, LPopup, LIcon } from '@vue-leaflet/vue-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { MagnifyingGlassIcon } from '@heroicons/vue/24/outline';
+import { useUserStore } from '../stateStores/userStore';
 import router from '../router';
 import { useBookingStore } from '../stateStores/bookingStore';
-const adressInput = ref(null);
+import axios from 'axios';
+import { DENTIST_API } from '../utils/apiConfig';
+import DentistryCardSkeleton from '../components/DentistryCardSkeleton.vue';
+// city input is one of the sweedish cities in the array
+const cityInput = ref('');
 const DateInput = ref(null);
+const showDropdown = ref(false);
 const bookingStore = useBookingStore();
 const showingConfirmationBar = ref(false);
-const confirmationBarData = ref({} as any);
 const usingCurrentLocation = ref(false);
 const showingSearchResults = ref({ time: 'All' } as { time: SearchInput });
+const dentistries = ref([] as Dentistry[]);
+
+const userStore = useUserStore();
+
+// we need to watch the state of userstore.darkMode
+// and change the map tiles accordingly
+
+
+const normalTileUrl = 'https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png';
+const darkTileUrl = 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png';
 
 function handleChange(newValue: SearchInput) {
     showingSearchResults.value.time = newValue;
     console.log(showingSearchResults.value.time);
 }
 
-
 type SearchInput = 'All' | 'Morning' | 'Afternoon';
+
+// filtered cities is an array of cities that match the input
+function filterCities() {
+    if (!cityInput.value) {
+        return [];
+    }
+
+    return swedishCities.filter(city =>
+        city.name.toLowerCase().includes(cityInput.value.toLowerCase())
+    );
+}
+
+
+// select city
+function selectCity(city: string) {
+    cityInput.value = city;
+    showDropdown.value = false;
+    console.log(cityInput.value);
+
+    // get the coordinates of the selected city, and set the center of the map to the coordinates
+    const selectedCity = swedishCities.find((c) => c.name === city);
+    if (selectedCity) {
+        center.value = [selectedCity.coordinates.lat, selectedCity.coordinates.lng];
+
+        // wait a bit and then adjust zoom
+        setTimeout(() => {
+            zoom.value = 12;
+        }, 500);
+    }
+}
 
 type location = {
     lat: number;
@@ -180,6 +238,7 @@ const usersLocation = ref({} as location);
 
 async function getUserLocation() {
     navigator.geolocation.getCurrentPosition(async (position) => {
+        cityInput.value = findUsersCity(position.coords.latitude, position.coords.longitude).name;
         usersLocation.value.lat = position.coords.latitude;
         usersLocation.value.lng = position.coords.longitude;
         usingCurrentLocation.value = true;
@@ -188,10 +247,28 @@ async function getUserLocation() {
         center.value = [usersLocation.value.lat, usersLocation.value.lng];
         // wait 0.5 seconds and then zoom
         await new Promise(r => setTimeout(r, 500));
-        zoom.value = 16;
+        zoom.value = 13;
 
 
     });
+}
+
+// function to find the users city based on their location
+function findUsersCity(lat: number, lng: number) {
+    let closestCity = swedishCities[0];
+    let closestDistance = Math.sqrt(Math.pow(lat - closestCity.coordinates.lat, 2) + Math.pow(lng - closestCity.coordinates.lng, 2));
+
+    for (let i = 1; i < swedishCities.length; i++) {
+        const city = swedishCities[i];
+        const distance = Math.sqrt(Math.pow(lat - city.coordinates.lat, 2) + Math.pow(lng - city.coordinates.lng, 2));
+        if (distance < closestDistance) {
+            closestCity = city;
+            closestDistance = distance;
+        }
+    }
+
+
+    return closestCity;
 }
 
 function farFromUser(dentistry: Dentistry) {
@@ -206,9 +283,6 @@ function farFromUser(dentistry: Dentistry) {
 }
 
 
-const dentistries = ref(dentistryData);
-
-
 const center = ref([57.7089, 11.9746]); // Coordinates for Gothenburg
 const zoom = ref(13);
 console.log(zoom.value);
@@ -219,31 +293,6 @@ const toggledDentistry = ref({} as Dentistry);
 
 // Access the map instance
 const map = ref(null);
-
-
-// watch(center, (newCenter) => {
-//     // console.log(newCenter);
-//     // find all dentistries with long lat within the bounds
-//     const lat = newCenter.lat;
-//     const lng = newCenter.lng;
-
-//     dentistries.value.filter((dentistry) => {
-//         const dentistryLat = dentistry.coordinates.lat;
-//         const dentistryLng = dentistry.coordinates.lng;
-//         if (dentistryLat > lat - 0.1 && dentistryLat < lat + 0.1 && dentistryLng > lng - 0.1 && dentistryLng < lng + 0.1) {
-//             console.log(dentistry);
-
-//             // if the dentistries are already in the list, do nothing else refetch
-//             if (dentistries.value.includes(dentistry)) {
-//                 console.log("already in list");
-//             } else {
-//                 // replace the entire list with the new list
-//                 console.log(" replacing list with " + dentistry);
-//                 dentistries.value = dentistries.value.concat(dentistry);
-//             }
-//         }
-//     });
-// });
 
 
 // create a function that scrolls to the corresponding dentistry when clicking on a marker
@@ -258,23 +307,9 @@ const scrollToDentistry = (dentistryId: string) => {
 };
 
 function handleTimeSelection(data: unknown) {
-    // When time is selected in the child component, toggle the confirmation bar
-    confirmationBarData.value = data as Dentistry & {
-        time: {
-            start: string;
-            end: string;
-            date: Date;
-        }
-    };
+    bookingStore.setBookingData(data as Booking);
 
-    console.log(data);
-    bookingStore.setBookingData(data as Dentistry & {
-        time: {
-            start: string;
-            end: string;
-            date: Date;
-        }
-    });
+
     showingConfirmationBar.value = true;
 }
 
@@ -283,16 +318,88 @@ function handleConfirmationButton() {
     showingConfirmationBar.value = false;
     router.push({ name: 'Confirmation' });
 }
-// too slow to update so less not use light map
-// function tileLayerUrl() {
-//     // check if darkmode is enabled
-//     const darkMode = document.documentElement.classList.contains('dark');
-//     if (darkMode) {
-//         return 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png';
-//     } else {
-//         return 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-//     }
-// }
+
+const clinicsLoading = ref(true);
+
+getClinics();
+
+
+async function getClinics() {
+    try {
+        // Fetch the list of clinics
+        const response = await axios.get(`${DENTIST_API}/clinics`);
+        const clinics = response.data as Dentistry[];
+
+        // Iterate through each clinic and fetch timeslots
+        const detailedClinics = await Promise.all(clinics.map(async (clinic) => {
+            const clinicDetailsResponse = await axios.get(`${DENTIST_API}/clinics/${clinic._id}/appointment_slots`);
+            // Add the timeslots to the clinic object
+            clinic.slots = clinicDetailsResponse.data as TimeSlot[];
+
+            return clinic;
+        }));
+
+        // Set the dentistries to the detailed clinics
+
+        dentistries.value = detailedClinics;
+        clinicsLoading.value = false;
+        console.log(dentistries.value);
+    } catch (error) {
+        console.error('Error fetching clinics:', error);
+    }
+}
+
+function handleDateSelection() {
+    if (!DateInput.value) return;
+    const date = DateInput.value ? new Date(DateInput.value).toLocaleDateString('sv-SE') : '';
+    console.log(date);
+
+
+    sortDentistriesByAvailableTimes(date);
+}
+
+// Function to sort by date
+function sortDentistriesByAvailableTimes(date: string) {
+    const sortedDentistries = dentistries.value;
+
+    // sort the dentistries, the first one will have the most available times on the selected date
+    sortedDentistries.sort((a, b) => {
+        // get the number of available times for the first dentistry
+        const aAvailableTimes = a.slots.filter((slot) => slot.date === date).length;
+        // get the number of available times for the second dentistry
+        const bAvailableTimes = b.slots.filter((slot) => slot.date === date).length;
+
+        // return the difference between the two numbers
+        return bAvailableTimes - aAvailableTimes;
+    });
+
+
+    return sortedDentistries;
+}
+
+const swedishCities = [
+    { name: "Stockholm", coordinates: { lat: 59.3293, lng: 18.0686 } },
+    { name: "Gothenburg", coordinates: { lat: 57.7089, lng: 11.9746 } },
+    { name: "Borås", coordinates: { lat: 57.7210, lng: 12.9393 } },
+    { name: "Malmö", coordinates: { lat: 55.6049, lng: 13.0038 } },
+    { name: "Uppsala", coordinates: { lat: 59.8586, lng: 17.6389 } },
+    { name: "Västerås", coordinates: { lat: 59.6091, lng: 16.5448 } },
+    { name: "Örebro", coordinates: { lat: 59.2741, lng: 15.2066 } },
+    { name: "Linköping", coordinates: { lat: 58.4108, lng: 15.6214 } },
+    { name: "Helsingborg", coordinates: { lat: 56.0465, lng: 12.6944 } },
+    { name: "Jönköping", coordinates: { lat: 57.7826, lng: 14.1618 } },
+    { name: "Norrköping", coordinates: { lat: 58.5877, lng: 16.1924 } },
+    { name: "Lund", coordinates: { lat: 55.7047, lng: 13.1910 } },
+    { name: "Umeå", coordinates: { lat: 63.8258, lng: 20.2630 } },
+    { name: "Gävle", coordinates: { lat: 60.6749, lng: 17.1419 } },
+    { name: "Borlänge", coordinates: { lat: 60.4857, lng: 15.4371 } },
+    { name: "Sundsvall", coordinates: { lat: 62.3908, lng: 17.3069 } },
+    { name: "Eskilstuna", coordinates: { lat: 59.3713, lng: 16.5077 } },
+    { name: "Södertälje", coordinates: { lat: 59.1952, lng: 17.6256 } },
+    { name: "Karlstad", coordinates: { lat: 59.3793, lng: 13.5036 } }
+];
+
+
 
 </script>
 

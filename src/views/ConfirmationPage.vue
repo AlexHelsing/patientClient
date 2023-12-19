@@ -1,4 +1,5 @@
 <template>
+    <Toaster />
     <div class="container mx-auto p-12">
         <!-- Contact Details Section -->
         <h2 class="text-4xl font-bold mb-6 ">Confirm appointment details</h2>
@@ -43,16 +44,17 @@
                         repellat nobis neque aspernatur, illo eos!
                     </p>
                 </div>
-                <button @click="handleBooking"
+                <!-- <button @click="handleBooking"
                     class="w-full px-5 py-2.5 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                     Book appointment
-                </button>
+                </button> -->
+                <Button @click="handleBooking" class="w-full"> Book appointment</Button>
             </div>
 
             <!-- Right Section - Appointment Details -->
             <div class="w-full lg:w-1/3 px-4">
                 <div class="bg-white rounded-lg shadow-lg dark:bg-gray-700">
-                    <img :src="bookingStore.bookingData?.dentistry.image" alt="Office Interior"
+                    <img :src="bookingStore.bookingData?.dentistry.photo" alt="Office Interior"
                         class="rounded-t-lg object-cover w-full h-48" />
                     <div class="p-4 border-b">
                         <h3 class="text-lg font-semibold mb-2">{{ bookingStore.bookingData?.dentistry.name }}</h3>
@@ -60,8 +62,8 @@
                             <div>
                                 <p class="font-semibold">{{ bookingStore.bookingData?.data.date }}, </p>
                                 <p class="font-semibold">
-                                    {{ bookingStore.bookingData?.data.start }}
-                                    - {{ bookingStore.bookingData?.data.end }}
+                                    {{ bookingStore.bookingData?.data.startTime }}
+                                    - {{ bookingStore.bookingData?.data.endTime }}
                                 </p>
                             </div>
                             <v-icon name="bi-calendar-check"
@@ -70,9 +72,7 @@
                     </div>
                     <div class="p-4 flex justify-between">
                         <p class="text-sm">
-                            Göteborg<br>
-                            Lindholmenstreet<br>
-                            471 62
+                            {{ bookingStore.bookingData?.dentistry.address }}
                         </p>
                         <v-icon name="fa-location-arrow"
                             class="w-10 h-10 self-end mr-1  rounded-full p-2 dark:text-white text-gray-800" />
@@ -85,16 +85,72 @@
 </template>
   
 <script setup lang="ts">
+import Toaster from '@/components/ui/toast/Toaster.vue'
 
 import { useBookingStore } from '../stateStores/bookingStore';
 import { useUserStore } from '../stateStores/userStore';
-
+import { Button } from '@/components/ui/button'
 const bookingStore = useBookingStore();
 const userStore = useUserStore();
 
-function handleBooking() {
-    alert('Booking confirmed!');
+import { useToast } from '@/components/ui/toast/use-toast'
+import { ToastAction } from '@/components/ui/toast'
+import { PATIENT_API } from '@/utils/apiConfig';
+import axios from 'axios';
+import { h } from 'vue';
+import router from '@/router';
+const { toast } = useToast()
+
+async function handleBooking() {
+    axios.post(`${PATIENT_API}/patients/${userStore.user?._id}/appointments`, {
+        appointment_id: bookingStore.bookingData?.data._id
+    }, {
+        headers: {
+            "x-access-token": `${userStore.jwt}`
+        }
+    }).then(res => {
+        console.log(res.data);
+        // start counter 
+
+        toast({
+            title: 'Appointment Scheduled',
+            description: `Your appointment has been scheduled for ${bookingStore.bookingData?.data.date} at ${bookingStore.bookingData?.data.startTime} - ${bookingStore.bookingData?.data.endTime}`,
+            variant: 'success',
+            action: h(ToastAction, {
+                altText: 'OK',
+                onClick: () => {
+                    router.push('/dashboard');
+                },
+            }, {
+                default: () => 'OK',
+            }),
+        });
+        // Display the initial toast
+
+        // go back to dashboard within 5 seconds if no actions are taken
+        setTimeout(() => {
+            router.push('/dashboard');
+        }, 5000);
+
+    }
+    ).catch(err => {
+        console.log(err);
+        toast({
+            title: 'Uh oh! Something went wrong.',
+            description: 'There was a problem with your request.',
+            variant: 'destructive',
+            action: h(ToastAction, {
+                altText: 'Try again',
+            }, {
+                default: () => 'Try again',
+            }),
+        });
+    });
+
 }
+
+
+
 </script>
   
 <style lang="css">

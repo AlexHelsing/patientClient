@@ -25,11 +25,13 @@
 
 
             <div class="md:flex gap-4 items-center hidden">
-                <InputSwitch v-model="checked" v-on:change="toggleDarkMode" />
 
 
-                <BellAlertIcon
-                    class="h-12 w-12 text-gray-800 dark:text-gray-200 cursor-pointer dark:hover-text-gray-300 hover:text-cyan-700" />
+                <Switch :checked="userStore.darkMode" @update:checked="toggleDarkMode" />
+
+
+                <!-- <BellAlertIcon
+                    class="h-12 w-12 text-gray-800 dark:text-gray-200 cursor-pointer dark:hover-text-gray-300 hover:text-cyan-700" /> -->
                 <Button class="rounded-full bg-purple-600 h-12 w-12 font-bold text-white" type="button"
                     icon="pi pi-ellipsis-v" @click="toggle" aria-haspopup="true" aria-controls="overlay_menu">{{
                         getInitials() }}</Button>
@@ -72,26 +74,22 @@
     </header>
 </template>
 <script setup lang="ts">
-import { BellAlertIcon } from '@heroicons/vue/24/outline'
+// import { BellAlertIcon } from '@heroicons/vue/24/outline'
 import { ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useUserStore } from '../stateStores/userStore'
-import InputSwitch from 'primevue/inputswitch';
 import Button from 'primevue/button';
+import { Switch } from '@/components/ui/switch'
 import Menu from 'primevue/menu';
-const checked = ref(false);
+const userStore = useUserStore()
 
 
 const toggleDarkMode = () => {
-    if (checked.value) {
-        document.documentElement.classList.add('dark')
-    } else {
-        document.documentElement.classList.remove('dark')
-    }
+    userStore.toggleDarkMode();
 };
 
 const hamburgerToggle = ref(false)
-const userStore = useUserStore()
+
 
 const toggleHamburger = () => {
     hamburgerToggle.value = !hamburgerToggle.value

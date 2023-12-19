@@ -1,107 +1,121 @@
 <template>
-    <div class="flex  flex-col space-y-4">
-        <!-- Calendar Navigation -->
-        <div class="flex items-center justify-between px-4 gap-7">
-            <button @click="navigate(-5)" :disabled="isEarliestWeek"
-                class="cursor-pointer border rounded-full  items-center"
-                :class="{ 'opacity-50 cursor-not-allowed': isEarliestWeek }">
-                <v-icon name="md-keyboardarrowleft" class=" h-9 w-9" :class="{ 'text-gray-500': isEarliestWeek }" />
-            </button>
-            <h1 class="text-lg font-bold">{{ displayDate }}</h1>
-            <button @click="navigate(5)" class="cursor-pointer border rounded-full  items-center">
-                <v-icon name="md-keyboardarrowright" class=" h-9 w-9 text-cyan-800" />
-            </button>
+    <div class="flex flex-col h-full">
+        <div class="flex  flex-col space-y-4">
+            <!-- Calendar Navigation -->
+            <div class="flex items-center justify-between px-4 gap-7">
+                <button @click="navigate(-5)" :disabled="isEarliestWeek"
+                    class="cursor-pointer border rounded-full  items-center"
+                    :class="{ 'opacity-50 cursor-not-allowed': isEarliestWeek }">
+                    <v-icon name="md-keyboardarrowleft" class=" h-9 w-9" :class="{ 'text-gray-500': isEarliestWeek }" />
+                </button>
+                <h1 class="text-lg font-bold">{{ displayDate }}</h1>
+                <button @click="navigate(5)" class="cursor-pointer border rounded-full  items-center">
+                    <v-icon name="md-keyboardarrowright" class=" h-9 w-9 text-cyan-800" />
+                </button>
 
-        </div>
-
-        <!-- Days of the Week -->
-        <div class="flex justify-between px-4">
-            <div v-for=" date  in  displayedDates " :key="date.toString()" class="text-center">
-                <div class="text-lg font-bold">{{ dayOfWeek(date) }}</div>
-                <div class="text-lg mt-1 border-gray-400/95 font-semibold flex items-center justify-center w-12 h-12 cursor-pointer rounded-full border dark:hover:border-cyan-600  hover:border-blue-500"
-                    :class="{ 'bg-blue-500  text-white': isSelected(date), 'font-bold': isToday(date) }"
-                    @click="selectDay(date)">
-                    {{ date.getDate() }}
-                </div>
-                <!-- Conditional Dot Color Based on Available Times -->
-                <div
-                    :class="{ 'h-3 w-3 rounded-full mx-auto mt-2': true, 'bg-green-500': hasTimes(date), 'bg-gray-400': !hasTimes(date) }">
-                </div>
-            </div>
-        </div>
-
-        <!-- Times List or No Available Times Message -->
-        <div class="space-y-2 px-4">
-            <div class="flex flex-col space-y-2" v-if="selectedTimes.length > 0">
-                <div v-for="(time, index) in selectedTimes" :key="time.id" v-show="index < 4 || showAllTimes"
-                    @click="setActiveTime(time)" :class="{ 'bg-cyan-700 text-white border-cyan-700': activeTime === time }"
-                    class="flex border-gray-300 items-center justify-center font-semibold rounded-md p-3 cursor-pointer   border-2 hover:border-cyan-700 transition-all duration-300">
-                    {{ time.start }} - {{ time.end }}
-                </div>
-            </div>
-            <div v-else class="text-center text-md text-gray-500 max-w-[18rem] mx-auto line-clamp-3">
-                No appointments available on the selected date.
             </div>
 
-            <button v-if="selectedTimes.length > 4 && !showAllTimes" @click="showAllTimes = true"
-                class="flex justify-center w-full text-blue-500 mt-2">
-                Show more
-            </button>
+            <!-- Days of the Week -->
+            <div class="flex justify-between px-4">
+                {{ timesData1.value }}
+                <div v-for=" date  in  displayedDates " :key="date.toString()" class="text-center">
+                    <div class="text-lg font-bold">{{ dayOfWeek(date) }}</div>
+                    <div class="text-lg mt-1 border-gray-400/95 font-semibold flex items-center justify-center w-12 h-12 cursor-pointer rounded-full border dark:hover:border-cyan-600  hover:border-blue-500"
+                        :class="{ 'bg-blue-500  text-white': isSelected(date), 'font-bold': isToday(date) }"
+                        @click="selectDay(date)">
+                        {{ date.getDate() }}
+                    </div>
+                    <!-- Conditional Dot Color Based on Available Times -->
+                    <div
+                        :class="{ 'h-3 w-3 rounded-full mx-auto mt-2': true, 'bg-green-500': hasTimes(date), 'bg-gray-400': !hasTimes(date) }">
+                    </div>
+                </div>
+            </div>
 
-            <button v-if="showAllTimes" @click="showAllTimes = false" class="flex justify-center w-full text-blue-500 mt-2">
-                Show less
-            </button>
+            <!-- Times List or No Available Times Message -->
+            <div class="space-y-2 px-4">
+                <div class="flex flex-col space-y-2" v-if="selectedTimes.length > 0">
+                    <div v-for="(time, index) in selectedTimes" v-show="index < 4 || showAllTimes"
+                        @click="time.isBooked ? null : setActiveTime(time)" :class="{
+                            'bg-cyan-700 text-white border-cyan-700': bookingStore.$state.activeTime === time && !time.isBooked,
+                            'bg-gray-400 text-gray-500 cursor-not-allowed border-gray-400': time.isBooked,
+                            'hover:border-cyan-700': !time.isBooked
+                        }"
+                        class="flex border-gray-300 items-center justify-center font-semibold rounded-md p-3 cursor-pointer border-2 transition-all duration-300">
+                        {{ time.startTime }} - {{ time.endTime }}
+                    </div>
+                </div>
+                <div v-else class="text-center text-md text-gray-500 max-w-[18rem] mx-auto line-clamp-3">
+                    No appointments available on the selected date.
+                </div>
+
+                <button v-if="selectedTimes.length > 4 && !showAllTimes" @click="showAllTimes = true"
+                    class="flex justify-center w-full text-blue-500 mt-2">
+                    Show more
+                </button>
+
+                <button v-if="showAllTimes" @click="showAllTimes = false"
+                    class="flex justify-center w-full text-blue-500 mt-2">
+                    Show less
+                </button>
+            </div>
         </div>
     </div>
 </template>
   
 <script setup lang="ts">
 
-import { ref, computed } from 'vue';
+const bookingStore = useBookingStore();
+import { ref, computed, PropType } from 'vue';
+import { useBookingStore } from '../stateStores/bookingStore';
+
+
 const emit = defineEmits(['time-selected']);
 
-type TimeSlot = { id: number; start: string; end: string; };
-type DayTimes = { [key: string]: TimeSlot[] };
+// type TimeSlot = { id: number; start: string; end: string; };
+// type DayTimes = { [key: string]: TimeSlot[] };
 
-const activeTime = ref<TimeSlot | null>(null);
+// type TimeSlot1 = { dentistId: string; startTime: string; endTime: string; date: string; isBooked: boolean; };
+type DayTimes1 = { [key: string]: TimeSlot[] };
+
 
 // State to control whether all times are shown
 const showAllTimes = ref(false);
 
 
+// props for dentstryId
+const props = defineProps({
+    timeSlots: {
+        type: Array as PropType<TimeSlot[]>,
+        required: true
+    },
+});
+
+const timesData1 = ref<DayTimes1>({});
+timesData1.value = convertToDayTimes(props.timeSlots);
+
+
+function convertToDayTimes(timeslots: TimeSlot[]) {
+    const dayTimes: DayTimes1 = {};
+    timeslots.forEach((time) => {
+        if (dayTimes[time.date]) {
+            dayTimes[time.date].push(time);
+        } else {
+            dayTimes[time.date] = [time];
+        }
+    });
+    return dayTimes;
+}
+
 
 
 const setActiveTime = (time: TimeSlot) => {
-    activeTime.value = time;
+    bookingStore.setActiveTime(time);
     // temporary solution till data is fetched from backend
     const tempType = { ...time, date: selectedDate.value.toDateString() };
     emit('time-selected', tempType);
 };
 
-// Mock data for the times
-const timesData: DayTimes = {
-    '2023-11-29': [
-        { id: 1, start: '09:30', end: '10:00' },
-        { id: 2, start: '10:15', end: '10:45' },
-    ],
-    '2023-11-27': [
-        { id: 1, start: '09:30', end: '10:00' },
-        { id: 2, start: '10:15', end: '10:45' },
-        { id: 3, start: '11:00', end: '11:30' },
-        { id: 4, start: '12:45', end: '13:15' },
-        { id: 5, start: '14:00', end: '14:30' },
-        { id: 6, start: '15:15', end: '15:45' },
-        { id: 7, start: '16:00', end: '16:30' },
-        { id: 8, start: '17:15', end: '17:45' },
-
-
-    ],
-    '2023-03-30': [
-        { id: 3, start: '11:00', end: '11:30' },
-        { id: 4, start: '12:45', end: '13:15' },
-    ],
-
-};
 
 const initialDate = new Date(); // Store the initial date to compare against
 initialDate.setHours(0, 0, 0, 0); // Normalize to start of the day for comparison
@@ -128,7 +142,7 @@ const selectDay = (date: Date) => {
         month: '2-digit',
         day: '2-digit',
     });
-    selectedTimes.value = timesData[dateString] || [];
+    selectedTimes.value = timesData1.value[dateString] || [];
     selectedDate.value = new Date(date);
 };
 
@@ -138,7 +152,7 @@ const hasTimes = (date: Date) => {
         month: '2-digit',
         day: '2-digit',
     });
-    return timesData[dateString] && timesData[dateString].length > 0;
+    return timesData1.value[dateString] && timesData1.value[dateString].length > 0;
 };
 
 const isSelected = (date: Date) => {
