@@ -173,6 +173,8 @@ const dentistries = ref([] as Dentistry[]);
 
 const userStore = useUserStore();
 
+
+
 // we need to watch the state of userstore.darkMode
 // and change the map tiles accordingly
 
@@ -239,8 +241,12 @@ async function getUserLocation() {
         zoom.value = 13;
 
 
-    });
+        // get the clinics in the users city
+        getClinicsByCity(cityInput.value);
+
+    })
 }
+
 
 // function to find the users city based on their location
 function findUsersCity(lat: number, lng: number) {
@@ -279,6 +285,9 @@ console.log(zoom.value);
 
 // Access the map instance
 const map = ref(null);
+
+
+
 
 
 // create a function that scrolls to the corresponding dentistry when clicking on a marker
@@ -332,6 +341,7 @@ async function getClinicsByCity(city: string) {
 
         dentistries.value = detailedClinics;
         clinicsLoading.value = false;
+      
     } catch (error) {
         console.error('Error fetching clinics:', error);
     }
@@ -387,6 +397,8 @@ const swedishCities = [
     { name: "Karlstad", coordinates: { lat: 59.3793, lng: 13.5036 } }
 ];
 
+// use göteborg as default fow now
+getClinicsByCity("Göteborg");
 
 
 </script>
