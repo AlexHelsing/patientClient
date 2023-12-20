@@ -1,8 +1,8 @@
 <template>
     <div class="md:flex flex-1 border-t dark:border-none   md:overflow-auto flex-row ">
 
-        <div v-if="!DentistryInfoToggle"
-            class="md:w-[45%] flex flex-col justify-between max-h-screen overflow-y-scroll scrollbar  scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-100 scrollbar-thumb-rounded-full ">
+        <div
+            class="md:w-[45%] flex flex-col  max-h-screen overflow-y-scroll scrollbar  scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-100 scrollbar-thumb-rounded-full ">
             <div class="bg-white dark:bg-gray-800 flex flex-col px-5 py-7 space-y-6">
                 <h1 class="text-2xl font-bold">Make an appointment </h1>
 
@@ -16,7 +16,7 @@
                         <div v-if="cityInput"
                             class="absolute w-full bg-white dark:bg-gray-600 border dark:border-cyan-900 scrollbar  rounded-b-md  max-h-60 overflow-auto">
                             <div v-if="showDropdown" v-for="city in filterCities()" :key="city.name"
-                                @click="selectCity(city.name)"
+                                @click="getClinicsByCity(city.name)"
                                 class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
                                 {{ city.name }}
                             </div>
@@ -79,18 +79,7 @@
             </div>
             <!-- <Paginator :rows="2" :totalRecords="dentistries.length" class="p-4   " /> -->
         </div>
-        <div v-else class="md:w-1/3 p-4 flex flex-col">
-            <div class="flex flex-col justify-between">
-                <div class="flex flex-col space-y-2">
-                    <div class="flex flex-row justify-between">
-                        <h1 class="text-lg font-bold py-1">{{ toggledDentistry.name }}</h1>
-                        <button @click="DentistryInfoToggle = false" class="text-lg font-bold py-1">X</button>
-                    </div>
-
-                </div>
-            </div>
-
-        </div>
+        
         <div class="md:w-[65%] z-0  ">
             <l-map class="h-full z-7" ref="map" v-model:zoom="zoom" v-model:center="center" :useGlobalLeaflet="false">
                 <l-tile-layer :url="userStore.darkMode ? darkTileUrl : normalTileUrl" layer-type="base"
@@ -184,6 +173,8 @@ const dentistries = ref([] as Dentistry[]);
 
 const userStore = useUserStore();
 
+
+
 // we need to watch the state of userstore.darkMode
 // and change the map tiles accordingly
 
@@ -250,8 +241,12 @@ async function getUserLocation() {
         zoom.value = 13;
 
 
-    });
+        // get the clinics in the users city
+        getClinicsByCity(cityInput.value);
+
+    })
 }
+
 
 // function to find the users city based on their location
 function findUsersCity(lat: number, lng: number) {
@@ -288,11 +283,11 @@ const zoom = ref(13);
 console.log(zoom.value);
 
 
-const DentistryInfoToggle = ref(false);
-const toggledDentistry = ref({} as Dentistry);
-
 // Access the map instance
 const map = ref(null);
+
+
+
 
 
 // create a function that scrolls to the corresponding dentistry when clicking on a marker
@@ -321,13 +316,17 @@ function handleConfirmationButton() {
 
 const clinicsLoading = ref(true);
 
-getClinics();
 
-
-async function getClinics() {
+async function getClinicsByCity(city: string) {
+    selectCity(city);
     try {
-        // Fetch the list of clinics
-        const response = await axios.get(`${DENTIST_API}/clinics`);
+        const response = await axios.post(`${DENTIST_API}/clinics/city`, {
+            city: city
+        }, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
         const clinics = response.data as Dentistry[];
 
         // Iterate through each clinic and fetch timeslots
@@ -335,7 +334,6 @@ async function getClinics() {
             const clinicDetailsResponse = await axios.get(`${DENTIST_API}/clinics/${clinic._id}/appointment_slots`);
             // Add the timeslots to the clinic object
             clinic.slots = clinicDetailsResponse.data as TimeSlot[];
-
             return clinic;
         }));
 
@@ -343,7 +341,7 @@ async function getClinics() {
 
         dentistries.value = detailedClinics;
         clinicsLoading.value = false;
-        console.log(dentistries.value);
+      
     } catch (error) {
         console.error('Error fetching clinics:', error);
     }
@@ -379,7 +377,7 @@ function sortDentistriesByAvailableTimes(date: string) {
 
 const swedishCities = [
     { name: "Stockholm", coordinates: { lat: 59.3293, lng: 18.0686 } },
-    { name: "Gothenburg", coordinates: { lat: 57.7089, lng: 11.9746 } },
+    { name: "Göteborg", coordinates: { lat: 57.7089, lng: 11.9746 } },
     { name: "Borås", coordinates: { lat: 57.7210, lng: 12.9393 } },
     { name: "Malmö", coordinates: { lat: 55.6049, lng: 13.0038 } },
     { name: "Uppsala", coordinates: { lat: 59.8586, lng: 17.6389 } },
@@ -399,6 +397,8 @@ const swedishCities = [
     { name: "Karlstad", coordinates: { lat: 59.3793, lng: 13.5036 } }
 ];
 
+// use göteborg as default fow now
+getClinicsByCity("Göteborg");
 
 
 </script>

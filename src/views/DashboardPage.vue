@@ -157,7 +157,7 @@ async function getUserAppointments() {
 }
 
 async function cancelAppointment(appointmentId: string) {
-    axios.delete(`${PATIENT_API}/patients/${userStore.user?._id}/appointments/${appointmentId}`, {
+    axios.put(`${PATIENT_API}/patients/${userStore.user?._id}/appointments/${appointmentId}`, {
         headers: {
             'x-access-token': `${getCookie('token')}`
         }
