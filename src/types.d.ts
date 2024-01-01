@@ -54,3 +54,9 @@ interface Booking {
   data: TimeSlot;
   dentistry: Dentistry;
 }
+
+interface UserStore {
+  user: User | null;
+  jwt: string | null;
+  darkMode: boolean | undefined;
+}

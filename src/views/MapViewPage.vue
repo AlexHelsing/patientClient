@@ -86,26 +86,8 @@
         </div>
 
         <div class="md:w-[65%] z-0  ">
-            <l-map class="h-full z-7" ref="map" v-model:zoom="zoom" v-model:center="center" :useGlobalLeaflet="false">
-                <l-tile-layer :url="userStore.darkMode ? darkTileUrl : normalTileUrl" layer-type="base"
-                    name="Stadia Maps Basemap"></l-tile-layer>
-                <!-- <l-marker :lat-lng="campusMarker">
-                    <l-popup :content="`<h1>Chalmers University of Technology</h1>`" :lat-lng="campusMarker">
-                    </l-popup>
-                </l-marker> -->
-                <l-marker v-if="usingCurrentLocation" :lat-lng="usersLocation">
-                    <l-icon icon-url="https://cdn0.iconfinder.com/data/icons/small-n-flat/24/678111-map-marker-512.png"
-                        :icon-size="[40, 40]" :icon-anchor="[20, 40]"></l-icon>
-                    <l-popup content="You are here" :lat-lng="usersLocation" opened>
-                    </l-popup>
-                </l-marker>
-
-                <l-marker @click="scrollToDentistry(dentistry._id)" v-for="dentistry in data" :key="dentistry._id"
-                    :lat-lng="dentistry.coordinates">
-                    <l-popup :content="`<h1>${dentistry.name}</h1>`" :lat-lng="dentistry.coordinates">
-                    </l-popup>
-                </l-marker>
-            </l-map>
+            <DentistryMap :users-location="usersLocation" :using-current-location="usingCurrentLocation" :dentistries="data"
+                :selectedCityCoordinates="selectedCityCoordinates" />
         </div>
 
     </div>
@@ -151,13 +133,12 @@
 </template>
 
 <script setup lang="ts">
-
-import { computed, nextTick, ref, watch } from 'vue';
+import { swedishCities } from '../utils/swedishCities';
+import { provide, ref, watch } from 'vue';
 import Calendar from 'primevue/calendar';
-
+import DentistryMap from '../components/DentistryMap.vue';
 import 'primevue/resources/themes/lara-light-teal/theme.css';
 import DentistryListItem from '../components/DentistryListItem.vue';
-import { LMap, LTileLayer, LMarker, LPopup, LIcon } from '@vue-leaflet/vue-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { MagnifyingGlassIcon } from '@heroicons/vue/24/outline';
 import { useUserStore } from '../stateStores/userStore';
@@ -174,12 +155,20 @@ const DateInput = ref(null);
 const showDropdown = ref(false);
 const bookingStore = useBookingStore();
 const showingConfirmationBar = ref(false);
-const usingCurrentLocation = ref(false);
+
 const showingSearchResults = ref({ time: 'All' } as { time: SearchInput });
 const dentistries = ref([] as Dentistry[]);
 const route = useRoute();
 
+const selectedCityCoordinates = ref({} as location);
+
+
+const usersLocation = ref({} as location);
+const usingCurrentLocation = ref(false);
+
 const userStore = useUserStore();
+
+provide('userStore', userStore);
 
 const city = ref(route.query.city as string);
 
@@ -189,17 +178,28 @@ const { isPending, isError, data, error } = useQuery<Dentistry[]>({
     queryFn: getClinics,
 })
 
-console.log(city.value)
+watch(() => route.query.city, (cityName) => {
+    if (cityName) {
+        const city = swedishCities.find(c => c.name === cityName);
+        if (city) {
+            selectedCityCoordinates.value = city.coordinates;
+            console.log("City selected:", cityName, "with coordinates" + city.coordinates.lat); // Debugging log
+        } else {
+            // Handle the case where the city is not found
+            console.log("City not found:", cityName); // Debugging log
+        }
+    }
+}, { immediate: true });
 
-if (!isPending && !isError) {
-    console.log(data);
-}
 
 watch(() => route.query.city, () => {
     // set the city input to the city in the route
+    console.log(route.query.city);
     city.value = route.query.city as string;
 }
 );
+
+
 
 async function getClinics() {
     // get city from param
@@ -225,14 +225,6 @@ async function getClinics() {
 
 
 
-
-// we need to watch the state of userstore.darkMode
-// and change the map tiles accordingly
-
-
-const normalTileUrl = 'https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png';
-const darkTileUrl = 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png';
-
 function handleChange(newValue: SearchInput) {
     showingSearchResults.value.time = newValue;
     console.log(showingSearchResults.value.time);
@@ -252,54 +244,50 @@ function filterCities() {
 }
 
 
-// select city
-function selectCity(city: string) {
-    cityInput.value = city;
-    showDropdown.value = false;
-    console.log(cityInput.value);
-
-    // set the route param
-    router.push({ query: { city: cityInput.value } });
-
-    // get the coordinates of the selected city, and set the center of the map to the coordinates
-    const selectedCity = swedishCities.find((c) => c.name === city);
-    if (selectedCity) {
-        center.value = [selectedCity.coordinates.lat, selectedCity.coordinates.lng];
-
-        // wait a bit and then adjust zoom
-        setTimeout(() => {
-            zoom.value = 12;
-        }, 500);
+const selectCity = (cityName: string) => {
+    const city = swedishCities.find(c => c.name === cityName);
+    if (city) {
+        selectedCityCoordinates.value = city.coordinates;
     }
-}
+
+    router.push({ query: { city: cityName } });
+
+    /// close the dropdown
+    showDropdown.value = false;
+};
 
 type location = {
     lat: number;
     lng: number;
 };
 
-const usersLocation = ref({} as location);
 
 
-async function getUserLocation() {
-    navigator.geolocation.getCurrentPosition(async (position) => {
-        cityInput.value = findUsersCity(position.coords.latitude, position.coords.longitude).name;
-        usersLocation.value.lat = position.coords.latitude;
-        usersLocation.value.lng = position.coords.longitude;
+const getUserLocation = async () => {
+    try {
+        const position = await new Promise((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(resolve, reject);
+        });
+
+        usersLocation.value = {
+            lat: (position as GeolocationPosition).coords.latitude,
+            lng: (position as GeolocationPosition).coords.longitude
+        };
+
+        // find the users city
+        const usersCity = findUsersCity(usersLocation.value.lat, usersLocation.value.lng);
+        // set the city input to the users city
+        cityInput.value = usersCity.name;
+
+        // set the route
+        router.push({ query: { city: usersCity.name } });
+
         usingCurrentLocation.value = true;
-
-        // Update the center and zoom
-        center.value = [usersLocation.value.lat, usersLocation.value.lng];
-        // wait 0.5 seconds and then zoom
-        await new Promise(r => setTimeout(r, 500));
-        zoom.value = 13;
-
-
-        // set the route param
-        router.push({ query: { city: cityInput.value } });
-
-    })
-}
+    } catch (error) {
+        console.error("Error fetching user location:", error);
+        // Handle error or fallback here
+    }
+};
 
 
 // function to find the users city based on their location
@@ -332,28 +320,6 @@ function farFromUser(dentistry: Dentistry) {
 }
 
 
-const center = ref([57.7089, 11.9746]); // Coordinates for Gothenburg
-const zoom = ref(13);
-console.log(zoom.value);
-
-
-// Access the map instance
-const map = ref(null);
-
-
-
-
-
-// create a function that scrolls to the corresponding dentistry when clicking on a marker
-const scrollToDentistry = (dentistryId: string) => {
-    nextTick(() => {
-        const dentistryElement = document.getElementById(`dentistry-${dentistryId}`);
-        if (dentistryElement) {
-            dentistryElement.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
-
-        }
-    });
-};
 
 function handleTimeSelection(data: unknown) {
     bookingStore.setBookingData(data as Booking);
@@ -368,7 +334,7 @@ function handleConfirmationButton() {
     router.push({ name: 'Confirmation' });
 }
 
-const clinicsLoading = ref(true);
+
 
 
 
@@ -400,29 +366,6 @@ function sortDentistriesByAvailableTimes(date: string) {
 
     return sortedDentistries;
 }
-
-const swedishCities = [
-    { name: "Stockholm", coordinates: { lat: 59.3293, lng: 18.0686 } },
-    { name: "Gothenburg", coordinates: { lat: 57.7089, lng: 11.9746 } },
-    { name: "Boras", coordinates: { lat: 57.7210, lng: 12.9393 } },
-    { name: "Malmö", coordinates: { lat: 55.6049, lng: 13.0038 } },
-    { name: "Uppsala", coordinates: { lat: 59.8586, lng: 17.6389 } },
-    { name: "Västerås", coordinates: { lat: 59.6091, lng: 16.5448 } },
-    { name: "Örebro", coordinates: { lat: 59.2741, lng: 15.2066 } },
-    { name: "Linköping", coordinates: { lat: 58.4108, lng: 15.6214 } },
-    { name: "Helsingborg", coordinates: { lat: 56.0465, lng: 12.6944 } },
-    { name: "Jönköping", coordinates: { lat: 57.7826, lng: 14.1618 } },
-    { name: "Norrköping", coordinates: { lat: 58.5877, lng: 16.1924 } },
-    { name: "Lund", coordinates: { lat: 55.7047, lng: 13.1910 } },
-    { name: "Umeå", coordinates: { lat: 63.8258, lng: 20.2630 } },
-    { name: "Gävle", coordinates: { lat: 60.6749, lng: 17.1419 } },
-    { name: "Borlänge", coordinates: { lat: 60.4857, lng: 15.4371 } },
-    { name: "Sundsvall", coordinates: { lat: 62.3908, lng: 17.3069 } },
-    { name: "Eskilstuna", coordinates: { lat: 59.3713, lng: 16.5077 } },
-    { name: "Södertälje", coordinates: { lat: 59.1952, lng: 17.6256 } },
-    { name: "Karlstad", coordinates: { lat: 59.3793, lng: 13.5036 } }
-];
-
 
 
 
