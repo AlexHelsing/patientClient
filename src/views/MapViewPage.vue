@@ -6,31 +6,7 @@
             <div class="bg-white dark:bg-gray-800 flex flex-col px-5 py-7 space-y-6">
                 <h1 class="text-2xl font-bold">Make an appointment </h1>
 
-                <div class="flex flex-col md:flex-row w-full items-center gap-5 md:gap-10 ">
-                    <div class="relative flex-grow w-full md:w-3/5 z-[100]">
-                        <input @input="showDropdown = true" type="text" v-model="cityInput" placeholder="Search by city..."
-                            class="w-full pl-3 pr-10 py-3 border border-gray-300 dark:border-gray-900 rounded-t-md focus:outline-none focus:border-blue-500 dark:bg-gray-700 dark:focus:border-cyan-900" />
-                        <MagnifyingGlassIcon
-                            class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-6 dark:text-gray-200" />
-
-                        <div v-if="cityInput"
-                            class="absolute w-full bg-white dark:bg-gray-600 border dark:border-cyan-900 scrollbar  rounded-b-md  max-h-60 overflow-auto">
-                            <div v-if="showDropdown" v-for="city in filterCities()" :key="city.name"
-                                @click="selectCity(city.name)"
-                                class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
-                                {{ city.name }}
-                            </div>
-                        </div>
-                    </div>
-
-
-
-                    <Calendar v-model="DateInput" v-on:date-select="handleDateSelection" dateFormat="yy-mm-dd"
-                        class="md:w-2/5 w-full pl-3   py-3 border  border-gray-300 rounded-md active:outline-none focus:outline-none dark:border-gray-900 dark:bg-gray-700 dark:text-gray-900"
-                        :show-icon="true" placeholder="Date" />
-
-
-                </div>
+                <CitySearchInput :cities="swedishCities" :initialCity="city" />
 
                 <div class="flex justify-between flex-wrap md:flex-nowrap gap-2 md:gap-0">
                     <button @click="getUserLocation" type="button"
@@ -48,17 +24,7 @@
                         {{ usingCurrentLocation ? 'Using your location ' : 'Use my current location' }}
                     </button>
 
-                    <div class="flex gap-2 items-center">
-                        <button @click="handleChange('All')" class="px-4 py-2  rounded-full border-2 "
-                            :class="{ 'border-cyan-600 dark:border-cyan-400 ': showingSearchResults.time == 'All' }">All</button>
-                        <button @click="handleChange('Morning')"
-                            :class="{ 'border-cyan-600': showingSearchResults.time == 'Morning' }"
-                            class="px-4 py-2  rounded-full border-2">Morning</button>
-                        <button @click="handleChange('Afternoon')"
-                            :class="{ 'border-cyan-600': showingSearchResults.time == 'Afternoon' }"
-                            class="px-4 py-2  rounded-full border-2">Afternoon</button>
-
-                    </div>
+                    <AfternoonMorningToggle />
 
                 </div>
 
@@ -135,12 +101,13 @@
 <script setup lang="ts">
 import { swedishCities } from '../utils/swedishCities';
 import { provide, ref, watch } from 'vue';
-import Calendar from 'primevue/calendar';
+
+import CitySearchInput from '../components/CitySearchInput.vue';
 import DentistryMap from '../components/DentistryMap.vue';
 import 'primevue/resources/themes/lara-light-teal/theme.css';
 import DentistryListItem from '../components/DentistryListItem.vue';
 import 'leaflet/dist/leaflet.css';
-import { MagnifyingGlassIcon } from '@heroicons/vue/24/outline';
+
 import { useUserStore } from '../stateStores/userStore';
 import router from '../router';
 import { useBookingStore } from '../stateStores/bookingStore';
@@ -149,14 +116,14 @@ import { DENTIST_API } from '../utils/apiConfig';
 import DentistryCardSkeleton from '../components/DentistryCardSkeleton.vue';
 import { useRoute } from 'vue-router';
 import { useQuery } from '@tanstack/vue-query';
+import AfternoonMorningToggle from '@/components/AfternoonMorningToggle.vue';
 // city input is one of the sweedish cities in the array
 const cityInput = ref('');
-const DateInput = ref(null);
-const showDropdown = ref(false);
+
 const bookingStore = useBookingStore();
 const showingConfirmationBar = ref(false);
 
-const showingSearchResults = ref({ time: 'All' } as { time: SearchInput });
+
 const dentistries = ref([] as Dentistry[]);
 const route = useRoute();
 
@@ -173,12 +140,14 @@ provide('userStore', userStore);
 const city = ref(route.query.city as string);
 
 
+
 const { isPending, isError, data, error } = useQuery<Dentistry[]>({
     queryKey: ['clinics', city],
     queryFn: getClinics,
 })
 
 watch(() => route.query.city, (cityName) => {
+
     if (cityName) {
         const city = swedishCities.find(c => c.name === cityName);
         if (city) {
@@ -187,7 +156,11 @@ watch(() => route.query.city, (cityName) => {
         } else {
             // Handle the case where the city is not found
             console.log("City not found:", cityName); // Debugging log
+
         }
+    } else {
+        // set it to gothenburg
+        selectedCityCoordinates.value = { lat: 57.7089, lng: 11.9746 };
     }
 }, { immediate: true });
 
@@ -225,44 +198,6 @@ async function getClinics() {
 
 
 
-function handleChange(newValue: SearchInput) {
-    showingSearchResults.value.time = newValue;
-    console.log(showingSearchResults.value.time);
-}
-
-type SearchInput = 'All' | 'Morning' | 'Afternoon';
-
-// filtered cities is an array of cities that match the input
-function filterCities() {
-    if (!cityInput.value) {
-        return [];
-    }
-
-    return swedishCities.filter(city =>
-        city.name.toLowerCase().includes(cityInput.value.toLowerCase())
-    );
-}
-
-
-const selectCity = (cityName: string) => {
-    const city = swedishCities.find(c => c.name === cityName);
-    if (city) {
-        selectedCityCoordinates.value = city.coordinates;
-    }
-
-    router.push({ query: { city: cityName } });
-
-    /// close the dropdown
-    showDropdown.value = false;
-};
-
-type location = {
-    lat: number;
-    lng: number;
-};
-
-
-
 const getUserLocation = async () => {
     try {
         const position = await new Promise((resolve, reject) => {
@@ -280,7 +215,8 @@ const getUserLocation = async () => {
         cityInput.value = usersCity.name;
 
         // set the route
-        router.push({ query: { city: usersCity.name } });
+        const currentQuery = router.currentRoute.value.query;
+        router.push({ query: { ...currentQuery, city: usersCity.name } });
 
         usingCurrentLocation.value = true;
     } catch (error) {
@@ -334,19 +270,6 @@ function handleConfirmationButton() {
     router.push({ name: 'Confirmation' });
 }
 
-
-
-
-
-
-function handleDateSelection() {
-    if (!DateInput.value) return;
-    const date = DateInput.value ? new Date(DateInput.value).toLocaleDateString('sv-SE') : '';
-    console.log(date);
-
-
-    sortDentistriesByAvailableTimes(date);
-}
 
 // Function to sort by date
 function sortDentistriesByAvailableTimes(date: string) {

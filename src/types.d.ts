@@ -60,3 +60,8 @@ interface UserStore {
   jwt: string | null;
   darkMode: boolean | undefined;
 }
+
+type location = {
+  lat: number;
+  lng: number;
+};
