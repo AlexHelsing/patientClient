@@ -1,7 +1,10 @@
 <template>
-    <div class="flex flex-col h-full">
-        <div v-if="isLoading" class="flex flex-col justify-center items-center h-full">loading</div>
-        <div v-else class="flex  flex-col space-y-4">
+    <div v-if="isPending" class=" w-[20rem] h-full flex justify-center items-center">
+        <div class="rounded-md h-12 w-12 border-4 border-t-4 dark:border-slate-200 border-cyan-600 animate-spin "></div>
+    </div>
+    <div v-else-if="isError" class="">error</div>
+    <div v-else class="flex flex-col h-full">
+        <div class="flex  flex-col space-y-4">
             <!-- Calendar Navigation -->
             <div class="flex items-center justify-between px-4 gap-7">
                 <button @click="navigate(-5)" :disabled="isEarliestWeek"
@@ -18,7 +21,7 @@
 
             <!-- Days of the Week -->
             <div class="flex justify-between px-4">
-                {{ timesData1.value }}
+                {{ timesData ? timesData.value : 'no data' }}
                 <div v-for=" date  in  displayedDates " :key="date.toString()" class="text-center">
                     <div class="text-lg font-bold">{{ dayOfWeek(date) }}</div>
                     <div class="text-lg mt-1 border-gray-400/95 font-semibold flex items-center justify-center w-12 h-12 cursor-pointer rounded-full border dark:hover:border-cyan-600  hover:border-blue-500"
@@ -66,19 +69,26 @@
   
 <script setup lang="ts">
 
-const isLoading = ref(true);
 const bookingStore = useBookingStore();
 import { ref, computed } from 'vue';
 import { useBookingStore } from '../stateStores/bookingStore';
 import { DENTIST_API } from '../utils/apiConfig';
+import { useQuery } from '@tanstack/vue-query';
 
 const emit = defineEmits(['time-selected']);
 
-// type TimeSlot = { id: number; start: string; end: string; };
-// type DayTimes = { [key: string]: TimeSlot[] };
+type TimeSlot = {
+    dentistId: string;
+    startTime: string;
+    endTime: string;
+    date: string;
+    isBooked: boolean;
+};
 
-// type TimeSlot1 = { dentistId: string; startTime: string; endTime: string; date: string; isBooked: boolean; };
-type DayTimes1 = { [key: string]: TimeSlot[] };
+type DayTimes = {
+    [key: string]: TimeSlot[];
+};
+
 
 
 // State to control whether all times are shown
@@ -93,42 +103,28 @@ const props = defineProps({
     }
 });
 
-const timesData1 = ref<DayTimes1>({});
 
 
 
 
 // fetch times from backend
-fetchTimes();
-
+const { isPending, isError, data: timesData } = useQuery<DayTimes>({
+    queryKey: ['timeslots', props.dentistryId],
+    queryFn: fetchTimes,
+})
 
 
 async function fetchTimes() {
-    isLoading.value = true;
-    // fetch times from backend
     const response = await fetch(`${DENTIST_API}/clinics/${props.dentistryId}/appointment_slots`);
     const data = await response.json() as TimeSlot[];
-
-    // convert to the dayTimes format
-    const dayTimes: DayTimes1 = {};
+    const dayTimes: DayTimes = {};
     data.forEach((time) => {
-        if (dayTimes[time.date]) {
-            dayTimes[time.date].push(time);
-        } else {
-            dayTimes[time.date] = [time];
+        if (!dayTimes[time.date]) {
+            dayTimes[time.date] = [];
         }
+        dayTimes[time.date].push(time);
     });
-
-    timesData1.value = dayTimes;
-
-
-    // artificially delay the loading state
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-
-
-
-    isLoading.value = false;
+    return dayTimes;
 }
 
 
@@ -160,13 +156,12 @@ const navigate = (days: number) => {
 };
 
 const selectDay = (date: Date) => {
-    // Format the date as YYYY-MM-DD without converting to UTC
     const dateString = date.toLocaleDateString('en-CA', {
         year: 'numeric',
         month: '2-digit',
         day: '2-digit',
     });
-    selectedTimes.value = timesData1.value[dateString] || [];
+    selectedTimes.value = timesData.value?.[dateString] || [];
     selectedDate.value = new Date(date);
 };
 
@@ -176,7 +171,7 @@ const hasTimes = (date: Date) => {
         month: '2-digit',
         day: '2-digit',
     });
-    return timesData1.value[dateString] && timesData1.value[dateString].length > 0;
+    return Boolean(timesData.value?.[dateString]?.length);
 };
 
 const isSelected = (date: Date) => {
