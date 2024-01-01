@@ -39,7 +39,7 @@ const props = defineProps({
     },
 });
 
-console.log(props.dentistry);
+
 function onTimeSelected(data: unknown) {
     // add dentistry data to the payload and re-emit
     emit('time-selected', { data, dentistry: props.dentistry });

@@ -68,11 +68,16 @@
             <div class="py-4 px-2">
                 <!-- <h1 class="text-lg font-bold py-1"> {{ dentistries.length }} results</h1> -->
                 <div class="flex flex-col listofitems space-y-2 p-2 ">
-                    <template v-if="clinicsLoading">
+                    <template v-if="isPending">
                         <DentistryCardSkeleton v-for="n in 5" :key="n" />
                     </template>
+                    <template v-else-if="isError">
+                        <div class="text-center text-md text-gray-500 max-w-[18rem] mx-auto line-clamp-3">
+                            {{ error?.message }}
+                        </div>
+                    </template>
                     <template v-else>
-                        <DentistryListItem :far-from-user="farFromUser(dentistry)" v-for="dentistry in dentistries"
+                        <DentistryListItem :far-from-user="farFromUser(dentistry)" v-for="dentistry in data"
                             :key="dentistry._id" :dentistry="dentistry" @time-selected="handleTimeSelection" />
                     </template>
                 </div>
@@ -95,7 +100,7 @@
                     </l-popup>
                 </l-marker>
 
-                <l-marker @click="scrollToDentistry(dentistry._id)" v-for="dentistry in dentistries" :key="dentistry._id"
+                <l-marker @click="scrollToDentistry(dentistry._id)" v-for="dentistry in data" :key="dentistry._id"
                     :lat-lng="dentistry.coordinates">
                     <l-popup :content="`<h1>${dentistry.name}</h1>`" :lat-lng="dentistry.coordinates">
                     </l-popup>
@@ -147,7 +152,7 @@
 
 <script setup lang="ts">
 
-import { nextTick, ref, watch } from 'vue';
+import { computed, nextTick, ref, watch } from 'vue';
 import Calendar from 'primevue/calendar';
 
 import 'primevue/resources/themes/lara-light-teal/theme.css';
@@ -162,6 +167,7 @@ import axios from 'axios';
 import { DENTIST_API } from '../utils/apiConfig';
 import DentistryCardSkeleton from '../components/DentistryCardSkeleton.vue';
 import { useRoute } from 'vue-router';
+import { useQuery } from '@tanstack/vue-query';
 // city input is one of the sweedish cities in the array
 const cityInput = ref('');
 const DateInput = ref(null);
@@ -175,11 +181,48 @@ const route = useRoute();
 
 const userStore = useUserStore();
 
-// watch the route param, when it changes, fetch again
+const city = ref(route.query.city as string);
+
+
+const { isPending, isError, data, error } = useQuery<Dentistry[]>({
+    queryKey: ['clinics', city],
+    queryFn: getClinics,
+})
+
+console.log(city.value)
+
+if (!isPending && !isError) {
+    console.log(data);
+}
+
 watch(() => route.query.city, () => {
-    getClinics();
+    // set the city input to the city in the route
+    city.value = route.query.city as string;
 }
 );
+
+async function getClinics() {
+    // get city from param
+    let city = route.query.city;
+
+    if (!city) {
+        city = '';
+    }
+
+    try {
+        const response = await axios.get(`${DENTIST_API}/clinics/city?city=${city}`, {
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        return response.data;
+
+    } catch (error) {
+        console.error('Error fetching clinics:', error);
+    }
+}
+
 
 
 
@@ -328,42 +371,7 @@ function handleConfirmationButton() {
 const clinicsLoading = ref(true);
 
 
-async function getClinics() {
-    // get city from param
-    let city = route.query.city;
 
-    if (!city) {
-        city = '';
-    }
-
-    try {
-        const response = await axios.get(`${DENTIST_API}/clinics/city?city=${city}`, {
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        });
-
-        const clinics = response.data as Dentistry[];
-
-        console.log(clinics);
-
-        // // Iterate through each clinic and fetch timeslots
-        // const detailedClinics = await Promise.all(clinics.map(async (clinic) => {
-        //     const clinicDetailsResponse = await axios.get(`${DENTIST_API}/clinics/${clinic._id}/appointment_slots`);
-        //     // Add the timeslots to the clinic object
-        //     clinic.slots = clinicDetailsResponse.data as TimeSlot[];
-        //     return clinic;
-        // }));
-
-        // Set the dentistries to the detailed clinics
-
-        dentistries.value = clinics;
-        clinicsLoading.value = false;
-
-    } catch (error) {
-        console.error('Error fetching clinics:', error);
-    }
-}
 
 function handleDateSelection() {
     if (!DateInput.value) return;
@@ -416,7 +424,7 @@ const swedishCities = [
 ];
 
 
-getClinics();
+
 
 
 </script>

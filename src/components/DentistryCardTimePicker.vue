@@ -95,14 +95,14 @@ const props = defineProps({
 
 const timesData1 = ref<DayTimes1>({});
 
-console.log(timesData1.value);
+
 
 
 // fetch times from backend
 fetchTimes();
 
 
-console.log(timesData1.value);
+
 async function fetchTimes() {
     isLoading.value = true;
     // fetch times from backend
@@ -127,7 +127,7 @@ async function fetchTimes() {
 
 
 
-    console.log(dayTimes);
+
     isLoading.value = false;
 }
 
