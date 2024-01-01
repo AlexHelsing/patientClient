@@ -2,7 +2,7 @@
     <div class="md:flex flex-1 border-t dark:border-none   md:overflow-auto flex-row ">
 
         <div
-            class="md:w-[45%] flex flex-col  max-h-screen overflow-y-scroll scrollbar  scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-100 scrollbar-thumb-rounded-full ">
+            class="md:w-[45%] flex flex-col  max-h-screen overflow-y-scroll scrollbar  scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-100 scrollbar-thumb-rounded-full  ">
             <div class="bg-white dark:bg-gray-800 flex flex-col px-5 py-7 space-y-6">
                 <h1 class="text-2xl font-bold">Make an appointment </h1>
 
@@ -16,7 +16,7 @@
                         <div v-if="cityInput"
                             class="absolute w-full bg-white dark:bg-gray-600 border dark:border-cyan-900 scrollbar  rounded-b-md  max-h-60 overflow-auto">
                             <div v-if="showDropdown" v-for="city in filterCities()" :key="city.name"
-                                @click="getClinicsByCity(city.name)"
+                                @click="selectCity(city.name)"
                                 class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
                                 {{ city.name }}
                             </div>
@@ -79,7 +79,7 @@
             </div>
             <!-- <Paginator :rows="2" :totalRecords="dentistries.length" class="p-4   " /> -->
         </div>
-        
+
         <div class="md:w-[65%] z-0  ">
             <l-map class="h-full z-7" ref="map" v-model:zoom="zoom" v-model:center="center" :useGlobalLeaflet="false">
                 <l-tile-layer :url="userStore.darkMode ? darkTileUrl : normalTileUrl" layer-type="base"
@@ -147,7 +147,7 @@
 
 <script setup lang="ts">
 
-import { nextTick, ref } from 'vue';
+import { nextTick, ref, watch } from 'vue';
 import Calendar from 'primevue/calendar';
 
 import 'primevue/resources/themes/lara-light-teal/theme.css';
@@ -161,6 +161,7 @@ import { useBookingStore } from '../stateStores/bookingStore';
 import axios from 'axios';
 import { DENTIST_API } from '../utils/apiConfig';
 import DentistryCardSkeleton from '../components/DentistryCardSkeleton.vue';
+import { useRoute } from 'vue-router';
 // city input is one of the sweedish cities in the array
 const cityInput = ref('');
 const DateInput = ref(null);
@@ -170,8 +171,15 @@ const showingConfirmationBar = ref(false);
 const usingCurrentLocation = ref(false);
 const showingSearchResults = ref({ time: 'All' } as { time: SearchInput });
 const dentistries = ref([] as Dentistry[]);
+const route = useRoute();
 
 const userStore = useUserStore();
+
+// watch the route param, when it changes, fetch again
+watch(() => route.query.city, () => {
+    getClinics();
+}
+);
 
 
 
@@ -207,6 +215,9 @@ function selectCity(city: string) {
     showDropdown.value = false;
     console.log(cityInput.value);
 
+    // set the route param
+    router.push({ query: { city: cityInput.value } });
+
     // get the coordinates of the selected city, and set the center of the map to the coordinates
     const selectedCity = swedishCities.find((c) => c.name === city);
     if (selectedCity) {
@@ -241,8 +252,8 @@ async function getUserLocation() {
         zoom.value = 13;
 
 
-        // get the clinics in the users city
-        getClinicsByCity(cityInput.value);
+        // set the route param
+        router.push({ query: { city: cityInput.value } });
 
     })
 }
@@ -317,31 +328,38 @@ function handleConfirmationButton() {
 const clinicsLoading = ref(true);
 
 
-async function getClinicsByCity(city: string) {
-    selectCity(city);
+async function getClinics() {
+    // get city from param
+    let city = route.query.city;
+
+    if (!city) {
+        city = '';
+    }
+
     try {
-        const response = await axios.post(`${DENTIST_API}/clinics/city`, {
-            city: city
-        }, {
+        const response = await axios.get(`${DENTIST_API}/clinics/city?city=${city}`, {
             headers: {
                 'Content-Type': 'application/json',
-            },
+            }
         });
+
         const clinics = response.data as Dentistry[];
 
-        // Iterate through each clinic and fetch timeslots
-        const detailedClinics = await Promise.all(clinics.map(async (clinic) => {
-            const clinicDetailsResponse = await axios.get(`${DENTIST_API}/clinics/${clinic._id}/appointment_slots`);
-            // Add the timeslots to the clinic object
-            clinic.slots = clinicDetailsResponse.data as TimeSlot[];
-            return clinic;
-        }));
+        console.log(clinics);
+
+        // // Iterate through each clinic and fetch timeslots
+        // const detailedClinics = await Promise.all(clinics.map(async (clinic) => {
+        //     const clinicDetailsResponse = await axios.get(`${DENTIST_API}/clinics/${clinic._id}/appointment_slots`);
+        //     // Add the timeslots to the clinic object
+        //     clinic.slots = clinicDetailsResponse.data as TimeSlot[];
+        //     return clinic;
+        // }));
 
         // Set the dentistries to the detailed clinics
 
-        dentistries.value = detailedClinics;
+        dentistries.value = clinics;
         clinicsLoading.value = false;
-      
+
     } catch (error) {
         console.error('Error fetching clinics:', error);
     }
@@ -377,8 +395,8 @@ function sortDentistriesByAvailableTimes(date: string) {
 
 const swedishCities = [
     { name: "Stockholm", coordinates: { lat: 59.3293, lng: 18.0686 } },
-    { name: "Göteborg", coordinates: { lat: 57.7089, lng: 11.9746 } },
-    { name: "Borås", coordinates: { lat: 57.7210, lng: 12.9393 } },
+    { name: "Gothenburg", coordinates: { lat: 57.7089, lng: 11.9746 } },
+    { name: "Boras", coordinates: { lat: 57.7210, lng: 12.9393 } },
     { name: "Malmö", coordinates: { lat: 55.6049, lng: 13.0038 } },
     { name: "Uppsala", coordinates: { lat: 59.8586, lng: 17.6389 } },
     { name: "Västerås", coordinates: { lat: 59.6091, lng: 16.5448 } },
@@ -397,8 +415,8 @@ const swedishCities = [
     { name: "Karlstad", coordinates: { lat: 59.3793, lng: 13.5036 } }
 ];
 
-// use göteborg as default fow now
-getClinicsByCity("Göteborg");
+
+getClinics();
 
 
 </script>
