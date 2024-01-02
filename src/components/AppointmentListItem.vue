@@ -65,6 +65,9 @@ const handleContinue = () => {
     emit('handleCancelAppointment', props.Appointment._id); // Emitting the event with the appointment as payload
 };
 
+
+
+
 const props = defineProps({
     Appointment: {
         type: Object as PropType<Appointment>,

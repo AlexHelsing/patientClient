@@ -123,10 +123,10 @@ import router from '../router';
 import axios from 'axios';
 import { PATIENT_API } from '../utils/apiConfig';
 import { getCookie } from '../utils/cookieHandler';
-import { useQuery } from "@tanstack/vue-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
 import { ref } from "vue";
 
-
+const queryClient = useQueryClient()
 // const date = ref(null);
 const showPast = ref(false);
 
@@ -155,6 +155,8 @@ async function getUserAppointments() {
             }
         });
 
+
+
         return response.data;
 
     } catch (error) {
@@ -167,6 +169,7 @@ async function getUserAppointments() {
         });
 
     }
+
 }
 
 async function cancelAppointment(appointmentId: string) {
@@ -184,15 +187,16 @@ async function cancelAppointment(appointmentId: string) {
                 description: 'Your appointment has been cancelled',
             })
 
-            // remove the appointment from the list
-            appointments.value = appointments.value.filter((appointment) => {
-                return appointment._id !== appointmentId;
-            });
+            return response.data;
         }, (error) => {
             console.log(error);
         });
 
 }
+
+const mutation = useMutation({
+    mutationFn: cancelAppointment,
+})
 
 async function editProfile(userDetails: User) {
     try {
@@ -281,7 +285,12 @@ const handleToggle = (pressed: string) => {
 
 const handleCancelEmit = (appointmentId: string) => {
     console.log('cancel appointment' + appointmentId)
-    cancelAppointment(appointmentId);
+    mutation.mutate(appointmentId, {
+        onSuccess: () => {
+            queryClient.invalidateQueries(['appointments'] as any)
+            queryClient.invalidateQueries(['timeslots'] as any)
+        },
+    })
 };
 
 // const appointments = ref([] as Appointment[]);
