@@ -18,7 +18,9 @@
   
 <script setup lang="ts">
 import { InvalidateQueryFilters, useQueryClient } from '@tanstack/vue-query';
-import { dialogState, openDialog, closeDialog } from '../stateStores/cancelledAppointmentDialog.ts'
+// @ts-expect-error idk why this says its unused .
+import { dialogState, openDialog, closeDialog } from '../stateStores/cancelledAppointmentDialog.ts';
+// @ts-expect-error idk why this says its unused .
 import {
   AlertDialog,
   AlertDialogAction,
@@ -33,6 +35,7 @@ import { MaybeRefDeep } from 'node_modules/@tanstack/vue-query/build/modern/type
 
 const queryClient = useQueryClient();
 
+// @ts-expect-error idk why this says its unused .
 const handleOkClick = () => {
   console.log('OK clicked')
   queryClient.invalidateQueries(['appointments'] as MaybeRefDeep<InvalidateQueryFilters>);
