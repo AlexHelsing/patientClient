@@ -17,4 +17,41 @@ export const subscribeToUpdates = (userId: string) => {
     globalSubscriptions[channelName] = channel;
     console.log('subscribed to', channelName);
   }
+
+  // // Subscribe to global timeslot updates
+  // const timeslotChannelName = 'global-channel';
+  // if (!globalSubscriptions[timeslotChannelName]) {
+  //   const timeslotChannel = pusherClient.subscribe(timeslotChannelName);
+  //   timeslotChannel.bind('appointment-event', () => {
+  //     console.log('timeslot updated');
+  //     const event = new Event('timeslot-updated');
+  //     window.dispatchEvent(event);
+  //   });
+  //   globalSubscriptions[timeslotChannelName] = timeslotChannel;
+  //   console.log('subscribed to', timeslotChannelName);
+  // }
+};
+
+export const subscribeToGlobalTimeslotUpdates = () => {
+  // Subscribe to global timeslot updates
+  const timeslotChannelName = 'global-channel';
+  if (!globalSubscriptions[timeslotChannelName]) {
+    const timeslotChannel = pusherClient.subscribe(timeslotChannelName);
+    timeslotChannel.bind('appointment-event', () => {
+      console.log('timeslot updated');
+      const event = new Event('timeslot-updated');
+      window.dispatchEvent(event);
+    });
+    globalSubscriptions[timeslotChannelName] = timeslotChannel;
+    console.log('subscribed to', timeslotChannelName);
+  }
+};
+
+export const unsubscribeFromGlobalTimeslotUpdates = () => {
+  const timeslotChannelName = 'global-channel';
+  if (globalSubscriptions[timeslotChannelName]) {
+    pusherClient.unsubscribe(timeslotChannelName);
+    delete globalSubscriptions[timeslotChannelName];
+    console.log('unsubscribed from', timeslotChannelName);
+  }
 };

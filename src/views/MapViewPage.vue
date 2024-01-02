@@ -100,7 +100,7 @@
 
 <script setup lang="ts">
 import { swedishCities } from '../utils/swedishCities';
-import { provide, ref, watch } from 'vue';
+import { onMounted, onUnmounted, provide, ref, watch } from 'vue';
 
 import CitySearchInput from '../components/CitySearchInput.vue';
 import DentistryMap from '../components/DentistryMap.vue';
@@ -115,8 +115,10 @@ import axios from 'axios';
 import { DENTIST_API } from '../utils/apiConfig';
 import DentistryCardSkeleton from '../components/DentistryCardSkeleton.vue';
 import { useRoute } from 'vue-router';
-import { useQuery } from '@tanstack/vue-query';
+import { InvalidateQueryFilters, useQuery, useQueryClient } from '@tanstack/vue-query';
 import AfternoonMorningToggle from '@/components/AfternoonMorningToggle.vue';
+import { MaybeRefDeep } from 'node_modules/@tanstack/vue-query/build/modern/types';
+import { subscribeToGlobalTimeslotUpdates, unsubscribeFromGlobalTimeslotUpdates } from '@/lib/pusher';
 // city input is one of the sweedish cities in the array
 const cityInput = ref('');
 
@@ -124,7 +126,6 @@ const bookingStore = useBookingStore();
 const showingConfirmationBar = ref(false);
 
 
-const dentistries = ref([] as Dentistry[]);
 const route = useRoute();
 
 const selectedCityCoordinates = ref({} as location);
@@ -146,6 +147,24 @@ const { isPending, isError, data, error } = useQuery<Dentistry[]>({
     queryFn: getClinics,
 })
 
+const queryClient = useQueryClient();
+
+onMounted(() => {
+    const handleTimeslotUpdate = () => {
+        console.log('Timeslot updated in mappage');
+        queryClient.invalidateQueries(['timeslots'] as MaybeRefDeep<InvalidateQueryFilters>)
+    };
+
+    window.addEventListener('timeslot-updated', handleTimeslotUpdate);
+
+    // Setup your pusher subscription
+    subscribeToGlobalTimeslotUpdates();
+
+    onUnmounted(() => {
+        window.removeEventListener('timeslot-updated', handleTimeslotUpdate);
+        unsubscribeFromGlobalTimeslotUpdates();
+    });
+});
 watch(() => route.query.city, (cityName) => {
 
     if (cityName) {
@@ -272,23 +291,23 @@ function handleConfirmationButton() {
 
 
 // Function to sort by date
-function sortDentistriesByAvailableTimes(date: string) {
-    const sortedDentistries = dentistries.value;
+// function sortDentistriesByAvailableTimes(date: string) {
+//     const sortedDentistries = dentistries.value;
 
-    // sort the dentistries, the first one will have the most available times on the selected date
-    sortedDentistries.sort((a, b) => {
-        // get the number of available times for the first dentistry
-        const aAvailableTimes = a.slots.filter((slot) => slot.date === date).length;
-        // get the number of available times for the second dentistry
-        const bAvailableTimes = b.slots.filter((slot) => slot.date === date).length;
+//     // sort the dentistries, the first one will have the most available times on the selected date
+//     sortedDentistries.sort((a, b) => {
+//         // get the number of available times for the first dentistry
+//         const aAvailableTimes = a.slots.filter((slot) => slot.date === date).length;
+//         // get the number of available times for the second dentistry
+//         const bAvailableTimes = b.slots.filter((slot) => slot.date === date).length;
 
-        // return the difference between the two numbers
-        return bAvailableTimes - aAvailableTimes;
-    });
+//         // return the difference between the two numbers
+//         return bAvailableTimes - aAvailableTimes;
+//     });
 
 
-    return sortedDentistries;
-}
+//     return sortedDentistries;
+// }
 
 
 
