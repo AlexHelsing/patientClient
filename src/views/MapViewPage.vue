@@ -3,7 +3,7 @@
 
         <div
             class="md:w-[45%] flex flex-col  max-h-screen overflow-y-scroll scrollbar  scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-100 scrollbar-thumb-rounded-full  ">
-            <div class="bg-white dark:bg-gray-800 flex flex-col px-5 py-7 space-y-6">
+            <div class="bg-white dark:bg-gray-800 flex flex-col px-5 py-7 space-y-6 z-10">
                 <h1 class="text-2xl font-bold">Make an appointment </h1>
 
                 <CitySearchInput :cities="swedishCities" :initialCity="city" />

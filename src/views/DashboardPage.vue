@@ -67,7 +67,7 @@
                     </button> -->
 
             </div>
-            <div v-if="appointments.length == 0"
+            <div v-if="appointments?.length === 0"
                 class="border h-full flex flex-col justify-center items-center  border-gray-300 dark:border-slate-800 rounded-lg p-7 ">
                 <img class=" object-contain" src="/src/assets/kerfin7_nea_2761 1.png" alt="">
                 <p class="text-xl font-medium">Seems you dont have any bookings, click <span @click="() => {
@@ -86,7 +86,8 @@
                         </div>
                     </template>
                 </Dialog> -->
-                <div class="flex flex-col gap-4 md:grid md:grid-cols-2 ">
+                <div v-if="isPending" class="">...</div>
+                <div v-else class="flex flex-col gap-4 md:grid md:grid-cols-2 ">
                     <AppointmentListItemVue @handle-cancel-appointment="handleCancelEmit" :Appointment="appointment"
                         v-for="appointment in appointments" :key="appointment._id" />
                 </div>
@@ -115,7 +116,6 @@ import AppointmentListItemVue from "../components/AppointmentListItem.vue";
 import { useToast } from '@/components/ui/toast/use-toast'
 import Toaster from '@/components/ui/toast/Toaster.vue'
 import { useUserStore } from '../stateStores/userStore';
-import { ref } from 'vue';
 import { ArchiveBoxIcon, CalendarDaysIcon } from '@heroicons/vue/24/outline'
 import EditProfileComponent from "@/components/EditProfileComponent.vue";
 import { Button } from '@/components/ui/button'
@@ -123,6 +123,9 @@ import router from '../router';
 import axios from 'axios';
 import { PATIENT_API } from '../utils/apiConfig';
 import { getCookie } from '../utils/cookieHandler';
+import { useQuery } from "@tanstack/vue-query";
+import { ref } from "vue";
+
 
 // const date = ref(null);
 const showPast = ref(false);
@@ -135,25 +138,35 @@ const { toast } = useToast()
 
 const userStore = useUserStore();
 
-const appointments = ref([] as Appointment[]);
 
-getUserAppointments();
+const { isPending, data: appointments } = useQuery<Appointment[]>({
+    queryKey: ['appointments'],
+    queryFn: getUserAppointments,
+})
+
+
+
 
 async function getUserAppointments() {
-    axios.get(`${PATIENT_API}/patients/${userStore.user?._id}/appointments/`, {
-        headers: {
-            'x-access-token': `${userStore.jwt}`
-        }
-
-    })
-        .then((response) => {
-            console.log(response.data);
-            appointments.value = response.data;
-
-        }, (error) => {
-            console.log(error);
+    try {
+        const response = await axios.get(`${PATIENT_API}/patients/${userStore.user?._id}/appointments/`, {
+            headers: {
+                'x-access-token': `${userStore.jwt}`
+            }
         });
 
+        return response.data;
+
+    } catch (error) {
+        console.error(error);
+        // Handle error case here
+        toast({
+            title: 'An error occurred',
+            variant: 'destructive',
+            description: 'Your appointments could not be fetched. Please try again later.',
+        });
+
+    }
 }
 
 async function cancelAppointment(appointmentId: string) {

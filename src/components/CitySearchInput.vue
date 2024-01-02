@@ -1,6 +1,6 @@
 <template>
-    <div class="flex flex-col md:flex-row w-full items-center gap-5 md:gap-10 ">
-        <div class="relative flex-grow w-full md:w-3/5 z-[100]">
+    <div class="flex flex-col md:flex-row w-full items-center gap-5 md:gap-10 z-[100] ">
+        <div class="relative flex-grow w-full md:w-3/5 ">
             <input @input="showDropdown = true" type="text" v-model="cityInput" placeholder="Search by city..."
                 class="w-full pl-3 pr-10 py-3 border border-gray-300 dark:border-gray-900 rounded-t-md focus:outline-none focus:border-blue-500 dark:bg-gray-700 dark:focus:border-cyan-900" />
             <MagnifyingGlassIcon

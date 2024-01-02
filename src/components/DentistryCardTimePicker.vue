@@ -105,8 +105,6 @@ const props = defineProps({
 
 
 
-
-
 // fetch times from backend
 const { isPending, isError, data: timesData } = useQuery<DayTimes>({
     queryKey: ['timeslots', props.dentistryId],
