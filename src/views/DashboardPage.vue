@@ -123,8 +123,9 @@ import router from '../router';
 import axios from 'axios';
 import { PATIENT_API } from '../utils/apiConfig';
 import { getCookie } from '../utils/cookieHandler';
-import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
+import { InvalidateQueryFilters, useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
 import { ref } from "vue";
+import { MaybeRefDeep } from "node_modules/@tanstack/vue-query/build/modern/types";
 
 const queryClient = useQueryClient()
 // const date = ref(null);
@@ -287,8 +288,9 @@ const handleCancelEmit = (appointmentId: string) => {
     console.log('cancel appointment' + appointmentId)
     mutation.mutate(appointmentId, {
         onSuccess: () => {
-            queryClient.invalidateQueries(['appointments'] as any)
-            queryClient.invalidateQueries(['timeslots'] as any)
+            console.log('success');
+            queryClient.invalidateQueries(['appointments'] as MaybeRefDeep<InvalidateQueryFilters>)
+            queryClient.invalidateQueries(['timeslots'] as MaybeRefDeep<InvalidateQueryFilters>)
         },
     })
 };
