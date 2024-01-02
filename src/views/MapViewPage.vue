@@ -2,35 +2,11 @@
     <div class="md:flex flex-1 border-t dark:border-none   md:overflow-auto flex-row ">
 
         <div
-            class="md:w-[45%] flex flex-col  max-h-screen overflow-y-scroll scrollbar  scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-100 scrollbar-thumb-rounded-full ">
-            <div class="bg-white dark:bg-gray-800 flex flex-col px-5 py-7 space-y-6">
+            class="md:w-[45%] flex flex-col  max-h-screen overflow-y-scroll scrollbar  scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-100 scrollbar-thumb-rounded-full  ">
+            <div class="bg-white dark:bg-gray-800 flex flex-col px-5 py-7 space-y-6 z-10">
                 <h1 class="text-2xl font-bold">Make an appointment </h1>
 
-                <div class="flex flex-col md:flex-row w-full items-center gap-5 md:gap-10 ">
-                    <div class="relative flex-grow w-full md:w-3/5 z-[100]">
-                        <input @input="showDropdown = true" type="text" v-model="cityInput" placeholder="Search by city..."
-                            class="w-full pl-3 pr-10 py-3 border border-gray-300 dark:border-gray-900 rounded-t-md focus:outline-none focus:border-blue-500 dark:bg-gray-700 dark:focus:border-cyan-900" />
-                        <MagnifyingGlassIcon
-                            class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-6 dark:text-gray-200" />
-
-                        <div v-if="cityInput"
-                            class="absolute w-full bg-white dark:bg-gray-600 border dark:border-cyan-900 scrollbar  rounded-b-md  max-h-60 overflow-auto">
-                            <div v-if="showDropdown" v-for="city in filterCities()" :key="city.name"
-                                @click="getClinicsByCity(city.name)"
-                                class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
-                                {{ city.name }}
-                            </div>
-                        </div>
-                    </div>
-
-
-
-                    <Calendar v-model="DateInput" v-on:date-select="handleDateSelection" dateFormat="yy-mm-dd"
-                        class="md:w-2/5 w-full pl-3   py-3 border  border-gray-300 rounded-md active:outline-none focus:outline-none dark:border-gray-900 dark:bg-gray-700 dark:text-gray-900"
-                        :show-icon="true" placeholder="Date" />
-
-
-                </div>
+                <CitySearchInput :cities="swedishCities" :initialCity="city" />
 
                 <div class="flex justify-between flex-wrap md:flex-nowrap gap-2 md:gap-0">
                     <button @click="getUserLocation" type="button"
@@ -48,17 +24,7 @@
                         {{ usingCurrentLocation ? 'Using your location ' : 'Use my current location' }}
                     </button>
 
-                    <div class="flex gap-2 items-center">
-                        <button @click="handleChange('All')" class="px-4 py-2  rounded-full border-2 "
-                            :class="{ 'border-cyan-600 dark:border-cyan-400 ': showingSearchResults.time == 'All' }">All</button>
-                        <button @click="handleChange('Morning')"
-                            :class="{ 'border-cyan-600': showingSearchResults.time == 'Morning' }"
-                            class="px-4 py-2  rounded-full border-2">Morning</button>
-                        <button @click="handleChange('Afternoon')"
-                            :class="{ 'border-cyan-600': showingSearchResults.time == 'Afternoon' }"
-                            class="px-4 py-2  rounded-full border-2">Afternoon</button>
-
-                    </div>
+                    <AfternoonMorningToggle />
 
                 </div>
 
@@ -68,39 +34,26 @@
             <div class="py-4 px-2">
                 <!-- <h1 class="text-lg font-bold py-1"> {{ dentistries.length }} results</h1> -->
                 <div class="flex flex-col listofitems space-y-2 p-2 ">
-                    <template v-if="clinicsLoading">
+                    <template v-if="isPending">
                         <DentistryCardSkeleton v-for="n in 5" :key="n" />
                     </template>
+                    <template v-else-if="isError">
+                        <div class="text-center text-md text-gray-500 max-w-[18rem] mx-auto line-clamp-3">
+                            {{ error?.message }}
+                        </div>
+                    </template>
                     <template v-else>
-                        <DentistryListItem :far-from-user="farFromUser(dentistry)" v-for="dentistry in dentistries"
+                        <DentistryListItem :far-from-user="farFromUser(dentistry)" v-for="dentistry in data"
                             :key="dentistry._id" :dentistry="dentistry" @time-selected="handleTimeSelection" />
                     </template>
                 </div>
             </div>
             <!-- <Paginator :rows="2" :totalRecords="dentistries.length" class="p-4   " /> -->
         </div>
-        
-        <div class="md:w-[65%] z-0  ">
-            <l-map class="h-full z-7" ref="map" v-model:zoom="zoom" v-model:center="center" :useGlobalLeaflet="false">
-                <l-tile-layer :url="userStore.darkMode ? darkTileUrl : normalTileUrl" layer-type="base"
-                    name="Stadia Maps Basemap"></l-tile-layer>
-                <!-- <l-marker :lat-lng="campusMarker">
-                    <l-popup :content="`<h1>Chalmers University of Technology</h1>`" :lat-lng="campusMarker">
-                    </l-popup>
-                </l-marker> -->
-                <l-marker v-if="usingCurrentLocation" :lat-lng="usersLocation">
-                    <l-icon icon-url="https://cdn0.iconfinder.com/data/icons/small-n-flat/24/678111-map-marker-512.png"
-                        :icon-size="[40, 40]" :icon-anchor="[20, 40]"></l-icon>
-                    <l-popup content="You are here" :lat-lng="usersLocation" opened>
-                    </l-popup>
-                </l-marker>
 
-                <l-marker @click="scrollToDentistry(dentistry._id)" v-for="dentistry in dentistries" :key="dentistry._id"
-                    :lat-lng="dentistry.coordinates">
-                    <l-popup :content="`<h1>${dentistry.name}</h1>`" :lat-lng="dentistry.coordinates">
-                    </l-popup>
-                </l-marker>
-            </l-map>
+        <div class="md:w-[65%] z-0  ">
+            <DentistryMap :users-location="usersLocation" :using-current-location="usingCurrentLocation" :dentistries="data"
+                :selectedCityCoordinates="selectedCityCoordinates" />
         </div>
 
     </div>
@@ -146,106 +99,150 @@
 </template>
 
 <script setup lang="ts">
+import { swedishCities } from '../utils/swedishCities';
+import { onMounted, onUnmounted, provide, ref, watch } from 'vue';
 
-import { nextTick, ref } from 'vue';
-import Calendar from 'primevue/calendar';
-
+import CitySearchInput from '../components/CitySearchInput.vue';
+import DentistryMap from '../components/DentistryMap.vue';
 import 'primevue/resources/themes/lara-light-teal/theme.css';
 import DentistryListItem from '../components/DentistryListItem.vue';
-import { LMap, LTileLayer, LMarker, LPopup, LIcon } from '@vue-leaflet/vue-leaflet';
 import 'leaflet/dist/leaflet.css';
-import { MagnifyingGlassIcon } from '@heroicons/vue/24/outline';
+
 import { useUserStore } from '../stateStores/userStore';
 import router from '../router';
 import { useBookingStore } from '../stateStores/bookingStore';
 import axios from 'axios';
 import { DENTIST_API } from '../utils/apiConfig';
 import DentistryCardSkeleton from '../components/DentistryCardSkeleton.vue';
+import { useRoute } from 'vue-router';
+import { InvalidateQueryFilters, useQuery, useQueryClient } from '@tanstack/vue-query';
+import AfternoonMorningToggle from '@/components/AfternoonMorningToggle.vue';
+import { MaybeRefDeep } from 'node_modules/@tanstack/vue-query/build/modern/types';
+import { subscribeToGlobalTimeslotUpdates, unsubscribeFromGlobalTimeslotUpdates } from '@/lib/pusher';
 // city input is one of the sweedish cities in the array
 const cityInput = ref('');
-const DateInput = ref(null);
-const showDropdown = ref(false);
+
 const bookingStore = useBookingStore();
 const showingConfirmationBar = ref(false);
+
+
+const route = useRoute();
+
+const selectedCityCoordinates = ref({} as location);
+
+
+const usersLocation = ref({} as location);
 const usingCurrentLocation = ref(false);
-const showingSearchResults = ref({ time: 'All' } as { time: SearchInput });
-const dentistries = ref([] as Dentistry[]);
 
 const userStore = useUserStore();
 
+provide('userStore', userStore);
+
+const city = ref(route.query.city as string);
 
 
-// we need to watch the state of userstore.darkMode
-// and change the map tiles accordingly
+
+const { isPending, isError, data, error } = useQuery<Dentistry[]>({
+    queryKey: ['clinics', city],
+    queryFn: getClinics,
+})
+
+const queryClient = useQueryClient();
+
+onMounted(() => {
+    const handleTimeslotUpdate = () => {
+        console.log('Timeslot updated in mappage');
+        queryClient.invalidateQueries(['timeslots'] as MaybeRefDeep<InvalidateQueryFilters>)
+    };
+
+    window.addEventListener('timeslot-updated', handleTimeslotUpdate);
+
+    // Setup your pusher subscription
+    subscribeToGlobalTimeslotUpdates();
+
+    onUnmounted(() => {
+        window.removeEventListener('timeslot-updated', handleTimeslotUpdate);
+        unsubscribeFromGlobalTimeslotUpdates();
+    });
+});
+watch(() => route.query.city, (cityName) => {
+
+    if (cityName) {
+        const city = swedishCities.find(c => c.name === cityName);
+        if (city) {
+            selectedCityCoordinates.value = city.coordinates;
+            console.log("City selected:", cityName, "with coordinates" + city.coordinates.lat); // Debugging log
+        } else {
+            // Handle the case where the city is not found
+            console.log("City not found:", cityName); // Debugging log
+
+        }
+    } else {
+        // set it to gothenburg
+        selectedCityCoordinates.value = { lat: 57.7089, lng: 11.9746 };
+    }
+}, { immediate: true });
 
 
-const normalTileUrl = 'https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png';
-const darkTileUrl = 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png';
-
-function handleChange(newValue: SearchInput) {
-    showingSearchResults.value.time = newValue;
-    console.log(showingSearchResults.value.time);
+watch(() => route.query.city, () => {
+    // set the city input to the city in the route
+    console.log(route.query.city);
+    city.value = route.query.city as string;
 }
+);
 
-type SearchInput = 'All' | 'Morning' | 'Afternoon';
 
-// filtered cities is an array of cities that match the input
-function filterCities() {
-    if (!cityInput.value) {
-        return [];
+
+async function getClinics() {
+    // get city from param
+    let city = route.query.city;
+
+    if (!city) {
+        city = '';
     }
 
-    return swedishCities.filter(city =>
-        city.name.toLowerCase().includes(cityInput.value.toLowerCase())
-    );
-}
+    try {
+        const response = await axios.get(`${DENTIST_API}/clinics/city?city=${city}`, {
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
 
+        return response.data;
 
-// select city
-function selectCity(city: string) {
-    cityInput.value = city;
-    showDropdown.value = false;
-    console.log(cityInput.value);
-
-    // get the coordinates of the selected city, and set the center of the map to the coordinates
-    const selectedCity = swedishCities.find((c) => c.name === city);
-    if (selectedCity) {
-        center.value = [selectedCity.coordinates.lat, selectedCity.coordinates.lng];
-
-        // wait a bit and then adjust zoom
-        setTimeout(() => {
-            zoom.value = 12;
-        }, 500);
+    } catch (error) {
+        console.error('Error fetching clinics:', error);
     }
 }
 
-type location = {
-    lat: number;
-    lng: number;
-};
-
-const usersLocation = ref({} as location);
 
 
-async function getUserLocation() {
-    navigator.geolocation.getCurrentPosition(async (position) => {
-        cityInput.value = findUsersCity(position.coords.latitude, position.coords.longitude).name;
-        usersLocation.value.lat = position.coords.latitude;
-        usersLocation.value.lng = position.coords.longitude;
+const getUserLocation = async () => {
+    try {
+        const position = await new Promise((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(resolve, reject);
+        });
+
+        usersLocation.value = {
+            lat: (position as GeolocationPosition).coords.latitude,
+            lng: (position as GeolocationPosition).coords.longitude
+        };
+
+        // find the users city
+        const usersCity = findUsersCity(usersLocation.value.lat, usersLocation.value.lng);
+        // set the city input to the users city
+        cityInput.value = usersCity.name;
+
+        // set the route
+        const currentQuery = router.currentRoute.value.query;
+        router.push({ query: { ...currentQuery, city: usersCity.name } });
+
         usingCurrentLocation.value = true;
-
-        // Update the center and zoom
-        center.value = [usersLocation.value.lat, usersLocation.value.lng];
-        // wait 0.5 seconds and then zoom
-        await new Promise(r => setTimeout(r, 500));
-        zoom.value = 13;
-
-
-        // get the clinics in the users city
-        getClinicsByCity(cityInput.value);
-
-    })
-}
+    } catch (error) {
+        console.error("Error fetching user location:", error);
+        // Handle error or fallback here
+    }
+};
 
 
 // function to find the users city based on their location
@@ -278,28 +275,6 @@ function farFromUser(dentistry: Dentistry) {
 }
 
 
-const center = ref([57.7089, 11.9746]); // Coordinates for Gothenburg
-const zoom = ref(13);
-console.log(zoom.value);
-
-
-// Access the map instance
-const map = ref(null);
-
-
-
-
-
-// create a function that scrolls to the corresponding dentistry when clicking on a marker
-const scrollToDentistry = (dentistryId: string) => {
-    nextTick(() => {
-        const dentistryElement = document.getElementById(`dentistry-${dentistryId}`);
-        if (dentistryElement) {
-            dentistryElement.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
-
-        }
-    });
-};
 
 function handleTimeSelection(data: unknown) {
     bookingStore.setBookingData(data as Booking);
@@ -314,91 +289,27 @@ function handleConfirmationButton() {
     router.push({ name: 'Confirmation' });
 }
 
-const clinicsLoading = ref(true);
-
-
-async function getClinicsByCity(city: string) {
-    selectCity(city);
-    try {
-        const response = await axios.post(`${DENTIST_API}/clinics/city`, {
-            city: city
-        }, {
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
-        const clinics = response.data as Dentistry[];
-
-        // Iterate through each clinic and fetch timeslots
-        const detailedClinics = await Promise.all(clinics.map(async (clinic) => {
-            const clinicDetailsResponse = await axios.get(`${DENTIST_API}/clinics/${clinic._id}/appointment_slots`);
-            // Add the timeslots to the clinic object
-            clinic.slots = clinicDetailsResponse.data as TimeSlot[];
-            return clinic;
-        }));
-
-        // Set the dentistries to the detailed clinics
-
-        dentistries.value = detailedClinics;
-        clinicsLoading.value = false;
-      
-    } catch (error) {
-        console.error('Error fetching clinics:', error);
-    }
-}
-
-function handleDateSelection() {
-    if (!DateInput.value) return;
-    const date = DateInput.value ? new Date(DateInput.value).toLocaleDateString('sv-SE') : '';
-    console.log(date);
-
-
-    sortDentistriesByAvailableTimes(date);
-}
 
 // Function to sort by date
-function sortDentistriesByAvailableTimes(date: string) {
-    const sortedDentistries = dentistries.value;
+// function sortDentistriesByAvailableTimes(date: string) {
+//     const sortedDentistries = dentistries.value;
 
-    // sort the dentistries, the first one will have the most available times on the selected date
-    sortedDentistries.sort((a, b) => {
-        // get the number of available times for the first dentistry
-        const aAvailableTimes = a.slots.filter((slot) => slot.date === date).length;
-        // get the number of available times for the second dentistry
-        const bAvailableTimes = b.slots.filter((slot) => slot.date === date).length;
+//     // sort the dentistries, the first one will have the most available times on the selected date
+//     sortedDentistries.sort((a, b) => {
+//         // get the number of available times for the first dentistry
+//         const aAvailableTimes = a.slots.filter((slot) => slot.date === date).length;
+//         // get the number of available times for the second dentistry
+//         const bAvailableTimes = b.slots.filter((slot) => slot.date === date).length;
 
-        // return the difference between the two numbers
-        return bAvailableTimes - aAvailableTimes;
-    });
+//         // return the difference between the two numbers
+//         return bAvailableTimes - aAvailableTimes;
+//     });
 
 
-    return sortedDentistries;
-}
+//     return sortedDentistries;
+// }
 
-const swedishCities = [
-    { name: "Stockholm", coordinates: { lat: 59.3293, lng: 18.0686 } },
-    { name: "Göteborg", coordinates: { lat: 57.7089, lng: 11.9746 } },
-    { name: "Borås", coordinates: { lat: 57.7210, lng: 12.9393 } },
-    { name: "Malmö", coordinates: { lat: 55.6049, lng: 13.0038 } },
-    { name: "Uppsala", coordinates: { lat: 59.8586, lng: 17.6389 } },
-    { name: "Västerås", coordinates: { lat: 59.6091, lng: 16.5448 } },
-    { name: "Örebro", coordinates: { lat: 59.2741, lng: 15.2066 } },
-    { name: "Linköping", coordinates: { lat: 58.4108, lng: 15.6214 } },
-    { name: "Helsingborg", coordinates: { lat: 56.0465, lng: 12.6944 } },
-    { name: "Jönköping", coordinates: { lat: 57.7826, lng: 14.1618 } },
-    { name: "Norrköping", coordinates: { lat: 58.5877, lng: 16.1924 } },
-    { name: "Lund", coordinates: { lat: 55.7047, lng: 13.1910 } },
-    { name: "Umeå", coordinates: { lat: 63.8258, lng: 20.2630 } },
-    { name: "Gävle", coordinates: { lat: 60.6749, lng: 17.1419 } },
-    { name: "Borlänge", coordinates: { lat: 60.4857, lng: 15.4371 } },
-    { name: "Sundsvall", coordinates: { lat: 62.3908, lng: 17.3069 } },
-    { name: "Eskilstuna", coordinates: { lat: 59.3713, lng: 16.5077 } },
-    { name: "Södertälje", coordinates: { lat: 59.1952, lng: 17.6256 } },
-    { name: "Karlstad", coordinates: { lat: 59.3793, lng: 13.5036 } }
-];
 
-// use göteborg as default fow now
-getClinicsByCity("Göteborg");
 
 
 </script>

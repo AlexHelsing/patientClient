@@ -48,7 +48,7 @@
                     class="w-full px-5 py-2.5 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                     Book appointment
                 </button> -->
-                <Button @click="handleBooking" class="w-full"> Book appointment</Button>
+                <Button @click="handleSubmit" class="w-full"> Book appointment</Button>
             </div>
 
             <!-- Right Section - Appointment Details -->
@@ -94,61 +94,49 @@ const bookingStore = useBookingStore();
 const userStore = useUserStore();
 
 import { useToast } from '@/components/ui/toast/use-toast'
-import { ToastAction } from '@/components/ui/toast'
 import { PATIENT_API } from '@/utils/apiConfig';
 import axios from 'axios';
-import { h } from 'vue';
+
 import router from '@/router';
+import { InvalidateQueryFilters, useMutation, useQueryClient } from '@tanstack/vue-query';
+import { MaybeRefDeep } from 'node_modules/@tanstack/vue-query/build/modern/types';
 const { toast } = useToast()
 
-async function handleBooking() {
-    axios.post(`${PATIENT_API}/patients/${userStore.user?._id}/appointments`, {
-        appointment_id: bookingStore.bookingData?.data._id
-    }, {
-        headers: {
-            "x-access-token": `${userStore.jwt}`
-        }
-    }).then(res => {
-        console.log(res.data);
-        // start counter 
+const queryClient = useQueryClient()
 
-        toast({
-            title: 'Appointment Scheduled',
-            description: `Your appointment has been scheduled for ${bookingStore.bookingData?.data.date} at ${bookingStore.bookingData?.data.startTime} - ${bookingStore.bookingData?.data.endTime}`,
-            variant: 'success',
-            action: h(ToastAction, {
-                altText: 'OK',
-                onClick: () => {
-                    router.push('/dashboard');
-                },
-            }, {
-                default: () => 'OK',
-            }),
+const handleBooking = async () => {
+    try {
+        const response = await axios.post(`${PATIENT_API}/patients/${userStore.user?._id}/appointments`, {
+            appointment_id: bookingStore.bookingData?.data._id
+        }, {
+            headers: { "x-access-token": `${userStore.jwt}` }
         });
-        // Display the initial toast
-
-        // go back to dashboard within 5 seconds if no actions are taken
-        setTimeout(() => {
-            router.push('/dashboard');
-        }, 5000);
-
+        console.log(response.data);
+        return response.data;
+    } catch (error) {
+        console.error(error);
+        throw new Error('Error booking appointment');
     }
-    ).catch(err => {
-        console.log(err);
-        toast({
-            title: 'Uh oh! Something went wrong.',
-            description: 'There was a problem with your request.',
-            variant: 'destructive',
-            action: h(ToastAction, {
-                altText: 'Try again',
-            }, {
-                default: () => 'Try again',
-            }),
-        });
-    });
+};
 
-}
+const mutation = useMutation({
+    mutationFn: handleBooking,
+    onSuccess: () => {
+        console.log('success');
+        queryClient.invalidateQueries(['appointments'] as MaybeRefDeep<InvalidateQueryFilters>);
+        queryClient.invalidateQueries(['timeslots'] as MaybeRefDeep<InvalidateQueryFilters>);
+        toast({ title: 'Appointment booked successfully', variant: 'success' });
+        router.push('/dashboard');
 
+    },
+    onError: (error) => {
+        console.log(error);
+    }
+});
+
+const handleSubmit = () => {
+    mutation.mutate();
+};
 
 
 </script>

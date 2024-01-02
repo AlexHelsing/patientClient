@@ -5,6 +5,7 @@
             <div>
                 <h3 class="text-xl font-semibold text-gray-800 dark:text-white">Doctor {{ Appointment.dentistId }}</h3>
                 <p class="text-gray-500 dark:text-gray-300 mt-1">Lorem ipsum dolor sit amet.</p>
+                <p>{{ Appointment._id }}</p>
             </div>
             <div class="text-right">
                 <p class="text-sm text-gray-600 dark:text-gray-400">{{ Appointment.date }}</p>
@@ -63,6 +64,9 @@ const handleContinue = () => {
     isOpen.value = false;
     emit('handleCancelAppointment', props.Appointment._id); // Emitting the event with the appointment as payload
 };
+
+
+
 
 const props = defineProps({
     Appointment: {

@@ -12,6 +12,7 @@ import {
   BiCalendarCheck,
   FaLocationArrow,
 } from 'oh-vue-icons/icons';
+import { VueQueryPlugin } from '@tanstack/vue-query';
 
 addIcons(
   MdKeyboardarrowright,
@@ -22,6 +23,7 @@ addIcons(
 );
 
 const app = createApp(App);
+app.use(VueQueryPlugin);
 app.use(router);
 app.use(createPinia());
 app.use(PrimeVue, {

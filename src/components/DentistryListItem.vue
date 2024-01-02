@@ -14,7 +14,8 @@
             </div>
         </div>
         <div class="flex-none py-2">
-            <DentistryCardTimePicker :time-slots="dentistry.slots" @time-selected="onTimeSelected" />
+            <DentistryCardTimePicker :dentistry-id="dentistry._id" :time-slots="dentistry.slots"
+                @time-selected="onTimeSelected" />
         </div>
     </div>
 </template>
@@ -22,6 +23,8 @@
 <script setup lang="ts">
 import { PropType } from 'vue';
 import DentistryCardTimePicker from './DentistryCardTimePicker.vue';
+
+
 
 const emit = defineEmits(['time-selected']);
 
@@ -35,6 +38,7 @@ const props = defineProps({
         required: false
     },
 });
+
 
 function onTimeSelected(data: unknown) {
     // add dentistry data to the payload and re-emit
