@@ -4,7 +4,7 @@
             <div class="flex gap-20 items-center">
                 <span class="flex gap-2 items-center cursor-pointer">
                     <img class="h-12 w-12" src="../assets/tooth.svg" alt="tooth logo">
-                    <h1 class="text-3xl font-bold">NAME</h1>
+                    <h1 class="text-3xl font-bold">Dentist App</h1>
                 </span>
 
                 <nav class="md:flex gap-8 items-center hidden">
@@ -14,9 +14,7 @@
                     <RouterLink to="/mapview"
                         class="text-gray-600 hover:text-cyan-700 font-semibold dark:text-gray-200 dark:hover:text-gray-100   relative text-2xl w-fit block after:block after:content-[''] after:absolute after:h-[3px] after:bg-black dark:after:bg-cyan-400 after:w-full after:scale-x-0 after:hover:scale-x-100 after:transition after:duration-300 after:origin-center">
                         Dentistries</RouterLink>
-                    <RouterLink to="/Settings"
-                        class="text-gray-600 hover:text-cyan-700 font-semibold dark:text-gray-200 dark:hover:text-gray-100   relative text-2xl w-fit block after:block after:content-[''] after:absolute after:h-[3px] after:bg-black after:w-full dark:after:bg-cyan-400 after:scale-x-0 after:hover:scale-x-100 after:transition after:duration-300 after:origin-center">
-                        Settings</RouterLink>
+
 
                 </nav>
 
@@ -61,9 +59,6 @@
             <RouterLink to="/mapview"
                 class="text-gray-600 hover:text-cyan-700 font-semibold   relative text-2xl w-fit block after:block after:content-[''] after:absolute after:h-[3px] after:bg-black after:w-full after:scale-x-0 after:hover:scale-x-100 after:transition after:duration-300 after:origin-center">
                 Dentistries</RouterLink>
-            <RouterLink to="/settings"
-                class="text-gray-600 hover:text-cyan-700 font-semibold   relative text-2xl w-fit block after:block after:content-[''] after:absolute after:h-[3px] after:bg-black after:w-full after:scale-x-0 after:hover:scale-x-100 after:transition after:duration-300 after:origin-center">
-                Settings</RouterLink>
             <button class="bg-gray-800 text-white font-bold p-2 rounded-lg hover:bg-gray-700"
                 @click="logout">LOGOUT</button>
             <!-- <h1 class="text-blue-600 hover:text-blue-700 font-semibold">Payments</h1>
