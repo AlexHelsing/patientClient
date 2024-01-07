@@ -40,10 +40,10 @@
             <div class="space-y-2 px-4">
                 <div class="flex flex-col space-y-2" v-if="selectedTimes.length > 0">
                     <div v-for="(time, index) in selectedTimes" v-show="index < 4 || showAllTimes"
-                        @click="time.isBooked ? null : setActiveTime(time)" :class="{
-                            'bg-cyan-700 text-white border-cyan-700': bookingStore.$state.activeTime === time && !time.isBooked,
-                            'bg-gray-400 text-gray-500 cursor-not-allowed border-gray-400': time.isBooked,
-                            'hover:border-cyan-700': !time.isBooked
+                        @click="time.booked ? null : setActiveTime(time)" :class="{
+                            'bg-cyan-700 text-white border-cyan-700': bookingStore.$state.activeTime === time && !time.booked,
+                            'bg-gray-400 text-gray-500 cursor-not-allowed border-gray-400': time.booked,
+                            'hover:border-cyan-700': !time.booked
                         }"
                         class="flex border-gray-300 items-center justify-center font-semibold rounded-md p-3 cursor-pointer border-2 transition-all duration-300">
                         {{ time.startTime }} - {{ time.endTime }}
@@ -70,7 +70,7 @@
 <script setup lang="ts">
 
 const bookingStore = useBookingStore();
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useBookingStore } from '../stateStores/bookingStore';
 import { DENTIST_API } from '../utils/apiConfig';
 import { useQuery } from '@tanstack/vue-query';
@@ -82,7 +82,7 @@ type TimeSlot = {
     startTime: string;
     endTime: string;
     date: string;
-    isBooked: boolean;
+    booked: boolean;
 };
 
 type DayTimes = {
@@ -124,6 +124,7 @@ async function fetchTimes() {
     });
     return dayTimes;
 }
+
 
 
 
@@ -203,6 +204,31 @@ const displayDate = computed(() => {
 
 const isEarliestWeek = computed(() => {
     return displayedDates.value[0].getTime() <= initialDate.getTime();
+});
+
+watch(timesData, (newVal) => {
+    console.log("timesData changed)")
+    console.log(newVal)
+
+    if (newVal) {
+        const dateString = selectedDate.value.toLocaleDateString('en-CA', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+        });
+        selectedTimes.value = newVal[dateString] || [];
+    }
+    // console.log("timesData changed)")
+
+
+
+    // const dateString = selectedDate.value.toLocaleDateString('en-CA', {
+    //     year: 'numeric',
+    //     month: '2-digit',
+    //     day: '2-digit',
+    // });
+    // selectedTimes.value = newVal[dateString];
+
 });
 
 </script>

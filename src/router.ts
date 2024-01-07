@@ -2,7 +2,7 @@ import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import AuthPage from './views/AuthPage.vue';
 import DashboardPage from './views/DashboardPage.vue';
 import MapViewPage from './views/MapViewPage.vue';
-import DentistryPageVue from './views/DentistryPage.vue';
+
 import { useUserStore } from './stateStores/userStore';
 import { useToast } from '@/components/ui/toast/use-toast';
 
