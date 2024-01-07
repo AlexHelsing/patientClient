@@ -34,12 +34,6 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('./views/ConfirmationPage.vue'),
     meta: { requiresAuth: true },
   },
-  {
-    path: '/dentistry/:id',
-    name: 'Dentistry',
-    component: DentistryPageVue,
-    meta: { requiresAuth: true },
-  },
   // fallback route
   {
     path: '/:pathMatch(.*)*',
