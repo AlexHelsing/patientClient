@@ -3,7 +3,7 @@
         class="border cursor-pointer border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow duration-300">
         <div class="flex justify-between items-start">
             <div>
-                <h3 class="text-xl font-semibold text-gray-800 dark:text-white">Doctor {{ Appointment.dentistId }}</h3>
+                <h3 class="text-xl font-semibold text-gray-800 dark:text-white">{{ Appointment.clinicName }}</h3>
                 <p class="text-gray-500 dark:text-gray-300 mt-1">Lorem ipsum dolor sit amet.</p>
                 <p>{{ Appointment._id }}</p>
             </div>

@@ -12,6 +12,7 @@
     "@heroicons/vue": "^2.0.18",
     "@tanstack/vue-query": "^5.17.0",
     "@vueuse/core": "^10.7.0",
+    "all": "^0.0.0",
     "axios": "^1.6.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
