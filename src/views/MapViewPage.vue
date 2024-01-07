@@ -1,5 +1,5 @@
 <template>
-    <div class="md:flex flex-1 border-t dark:border-none   md:overflow-auto flex-row ">
+    <div class="md:flex flex-1 border-t dark:border-none   md:overflow-auto md:flex-row flex-col ">
 
         <div
             class="md:w-[45%] flex flex-col  max-h-screen overflow-y-scroll scrollbar  scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-100 scrollbar-thumb-rounded-full  ">
@@ -51,7 +51,7 @@
             <!-- <Paginator :rows="2" :totalRecords="dentistries.length" class="p-4   " /> -->
         </div>
 
-        <div class="md:w-[65%] z-0  ">
+        <div class="md:w-[65%] z-0   ">
             <DentistryMap :users-location="usersLocation" :using-current-location="usingCurrentLocation" :dentistries="data"
                 :selectedCityCoordinates="selectedCityCoordinates" />
         </div>

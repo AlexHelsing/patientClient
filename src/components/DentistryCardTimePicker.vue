@@ -3,7 +3,7 @@
         <div class="rounded-md h-12 w-12 border-4 border-t-4 dark:border-slate-200 border-cyan-600 animate-spin "></div>
     </div>
     <div v-else-if="isError" class="">error</div>
-    <div v-else class="flex flex-col h-full">
+    <div v-else class="flex flex-col h-full  ">
         <div class="flex  flex-col space-y-4">
             <!-- Calendar Navigation -->
             <div class="flex items-center justify-between px-4 gap-7">
