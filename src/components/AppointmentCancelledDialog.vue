@@ -31,15 +31,14 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
-import { MaybeRefDeep } from 'node_modules/@tanstack/vue-query/build/modern/types';
 
 const queryClient = useQueryClient();
 
 // @ts-expect-error idk why this says its unused .
 const handleOkClick = () => {
   console.log('OK clicked')
-  queryClient.invalidateQueries(['appointments'] as MaybeRefDeep<InvalidateQueryFilters>);
-  queryClient.invalidateQueries(['timeslots'] as MaybeRefDeep<InvalidateQueryFilters>);
+  queryClient.invalidateQueries(['appointments'] as InvalidateQueryFilters);
+  queryClient.invalidateQueries(['timeslots'] as InvalidateQueryFilters);
   closeDialog();
 };
 </script>

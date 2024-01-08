@@ -2,7 +2,7 @@ import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import AuthPage from './views/AuthPage.vue';
 import DashboardPage from './views/DashboardPage.vue';
 import MapViewPage from './views/MapViewPage.vue';
-import DentistryPageVue from './views/DentistryPage.vue';
+
 import { useUserStore } from './stateStores/userStore';
 import { useToast } from '@/components/ui/toast/use-toast';
 
@@ -32,12 +32,6 @@ const routes: Array<RouteRecordRaw> = [
     path: '/Confirmation/',
     name: 'Confirmation',
     component: () => import('./views/ConfirmationPage.vue'),
-    meta: { requiresAuth: true },
-  },
-  {
-    path: '/dentistry/:id',
-    name: 'Dentistry',
-    component: DentistryPageVue,
     meta: { requiresAuth: true },
   },
   // fallback route

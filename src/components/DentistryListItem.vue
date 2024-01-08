@@ -1,6 +1,6 @@
 <template>
     <div :id="`dentistry-${dentistry._id}`"
-        class="mx-auto bg-white dark:bg-gray-800 shadow-sm hover:shadow-md rounded-lg p-4 flex flex-col lg:flex-row justify-between transition-shadow max-w-6xl">
+        class="mx-auto bg-white dark:bg-gray-800 shadow-sm hover:shadow-md rounded-lg p-4 flex flex-col lg:flex-row justify-between transition-shadow max-w-6xl ">
         <div class="flex flex-1 gap-3">
 
             <div class="flex flex-col space-y-2">
@@ -13,7 +13,7 @@
                 </span>
             </div>
         </div>
-        <div class="flex-none py-2">
+        <div class="flex-none py-2 w-auto xl:w-1/2">
             <DentistryCardTimePicker :dentistry-id="dentistry._id" :time-slots="dentistry.slots"
                 @time-selected="onTimeSelected" />
         </div>

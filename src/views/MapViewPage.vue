@@ -1,5 +1,5 @@
 <template>
-    <div class="md:flex flex-1 border-t dark:border-none   md:overflow-auto flex-row ">
+    <div class="md:flex flex-1 border-t dark:border-none   md:overflow-auto md:flex-row flex-col ">
 
         <div
             class="md:w-[45%] flex flex-col  max-h-screen overflow-y-scroll scrollbar  scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-100 scrollbar-thumb-rounded-full  ">
@@ -51,7 +51,7 @@
             <!-- <Paginator :rows="2" :totalRecords="dentistries.length" class="p-4   " /> -->
         </div>
 
-        <div class="md:w-[65%] z-0  ">
+        <div class="md:w-[65%] z-0   ">
             <DentistryMap :users-location="usersLocation" :using-current-location="usingCurrentLocation" :dentistries="data"
                 :selectedCityCoordinates="selectedCityCoordinates" />
         </div>
@@ -117,7 +117,6 @@ import DentistryCardSkeleton from '../components/DentistryCardSkeleton.vue';
 import { useRoute } from 'vue-router';
 import { InvalidateQueryFilters, useQuery, useQueryClient } from '@tanstack/vue-query';
 import AfternoonMorningToggle from '@/components/AfternoonMorningToggle.vue';
-import { MaybeRefDeep } from 'node_modules/@tanstack/vue-query/build/modern/types';
 import { subscribeToGlobalTimeslotUpdates, unsubscribeFromGlobalTimeslotUpdates } from '@/lib/pusher';
 // city input is one of the sweedish cities in the array
 const cityInput = ref('');
@@ -152,7 +151,7 @@ const queryClient = useQueryClient();
 onMounted(() => {
     const handleTimeslotUpdate = () => {
         console.log('Timeslot updated in mappage');
-        queryClient.invalidateQueries(['timeslots'] as MaybeRefDeep<InvalidateQueryFilters>)
+        queryClient.invalidateQueries(['timeslots'] as InvalidateQueryFilters)
     };
 
     window.addEventListener('timeslot-updated', handleTimeslotUpdate);

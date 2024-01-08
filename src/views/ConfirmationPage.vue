@@ -87,6 +87,7 @@
 <script setup lang="ts">
 import Toaster from '@/components/ui/toast/Toaster.vue'
 
+
 import { useBookingStore } from '../stateStores/bookingStore';
 import { useUserStore } from '../stateStores/userStore';
 import { Button } from '@/components/ui/button'
@@ -99,8 +100,16 @@ import axios from 'axios';
 
 import router from '@/router';
 import { InvalidateQueryFilters, useMutation, useQueryClient } from '@tanstack/vue-query';
-import { MaybeRefDeep } from 'node_modules/@tanstack/vue-query/build/modern/types';
+import { h, onMounted } from 'vue';
+import { ToastAction } from '@/components/ui/toast';
 const { toast } = useToast()
+
+onMounted(function () {
+    if (!bookingStore.bookingData) {
+        router.push('/dentistry');
+    }
+});
+
 
 const queryClient = useQueryClient()
 
@@ -113,9 +122,9 @@ const handleBooking = async () => {
         });
         console.log(response.data);
         return response.data;
-    } catch (error) {
-        console.error(error);
-        throw new Error('Error booking appointment');
+    } catch (error: any) {
+        console.error(error.response.data.message);
+        throw new Error(error.response.data.message);
     }
 };
 
@@ -123,16 +132,28 @@ const mutation = useMutation({
     mutationFn: handleBooking,
     onSuccess: () => {
         console.log('success');
-        queryClient.invalidateQueries(['appointments'] as MaybeRefDeep<InvalidateQueryFilters>);
-        queryClient.invalidateQueries(['timeslots'] as MaybeRefDeep<InvalidateQueryFilters>);
+        queryClient.invalidateQueries(['appointments'] as InvalidateQueryFilters);
+        queryClient.invalidateQueries(['timeslots'] as InvalidateQueryFilters);
         toast({ title: 'Appointment booked successfully', variant: 'success' });
         router.push('/dashboard');
 
     },
     onError: (error) => {
-        console.log(error);
+        toast({
+            title: error.message,
+            variant: 'destructive',
+            action: h(ToastAction, {
+                altText: 'Go back to map',
+                onClick: () => router.push('/mapview'),
+            }, {
+                default: () => 'Go back to map',
+
+            }),
+        });
     }
-});
+
+}
+);
 
 const handleSubmit = () => {
     mutation.mutate();

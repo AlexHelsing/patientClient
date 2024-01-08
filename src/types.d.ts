@@ -29,7 +29,7 @@ interface Appointment {
   startTime: string;
   endTime: string;
   date: Date;
-  isBooked: boolean;
+  booked: boolean;
 }
 
 interface User {
@@ -47,7 +47,7 @@ type TimeSlot = {
   startTime: string;
   endTime: string;
   date: string;
-  isBooked: boolean;
+  booked: boolean;
 };
 
 interface Booking {
