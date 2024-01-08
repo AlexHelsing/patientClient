@@ -1,25 +1,67 @@
-# Team 11 Dentist Booking System frontend
+# Dentist Booking System frontend
 
 Welcome to our Frontend Dentist Booking System, an innovative and user-friendly application designed for efficient dental appointment management across Sweden. This system streamlines the process of finding and booking dental appointments, ensuring a seamless experience for users.
 
 ## Description
 
-## Stack
+This is the frontend for dentist appointment booking system which allows users to book appointments with dentists/clinics across sweden. Clinics can be viewed on a map where the user can see availible timeslots, the timeslots are updated in realtime if someone books an appointment, a dentist posts new slot or removes a slot.
 
+## Technologies used
+
+- Vite
 - Vue
 - Typescript
 - Tailwind CSS
-- pusher-js, for real-time updates
-- vite, for build and dev server
-- vue-router, for routing
-- shadcn, for ui components
-- zod, for form validation
+- Pusher-js
+- Tanstack Query
+- Vue-router
+- Shadcn
+- Zod
+
+## Interface and features
+
+|                  Mapview                   |                    Mapview dark                    |
+| :----------------------------------------: | :------------------------------------------------: |
+| ![image](/src/assets/mapviewscrenshot.png) | ![image](/src/assets/mapviewdarkmodescreenhot.png) |
+
+|              Dashboard              |             Dashboard dark              |
+| :---------------------------------: | :-------------------------------------: |
+| ![image](/src/assets/dashboard.png) | ![image](/src/assets/dashboarddark.png) |
+
+|             Edit account              |             Edit account dark             |
+| :-----------------------------------: | :---------------------------------------: |
+| ![image](/src/assets/editaccount.png) | ![image](/src/assets/editaccountdark.png) |
+
+|       Cancel notification from dentist       |  Cancel notification from dentist dark   |
+| :------------------------------------------: | :--------------------------------------: |
+| ![image](/src/assets/reltimecancellight.png) | ![image](/src/assets/realtimeCancel.png) |
+
+|             Confirm booking              |            Confirm booking dark            |
+| :--------------------------------------: | :----------------------------------------: |
+| ![image](/src/assets/confirm%20page.png) | ![image](/src/assets/confirmpagelight.png) |
+
+|            Sign in             |             Sign in dark             |
+| :----------------------------: | :----------------------------------: |
+| ![image](/src/assets/auth.png) | ![image](/src/assets/signindark.png) |
+
+|             Sign up              |                  Sign up dark                  |
+| :------------------------------: | :--------------------------------------------: |
+| ![image](/src/assets/signup.png) | ![image](/src/assets/auth%20signup%20dark.png) |
 
 ### Installation guide
 
-#### Vue 3 + TypeScript + Vite
+### 1. Set up each of the microservices and gateways
 
-The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+See information in the README.md files in each of the microservices and gateways.
+
+### 2. Set up the frontend
+
+```bash
+git clone 'repo link'
+cd 'repo name
+npm install
+npm run dev
+```
 
 ### Recommended IDE Setup
 
