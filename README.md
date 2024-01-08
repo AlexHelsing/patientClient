@@ -1,12 +1,31 @@
-# Vue 3 + TypeScript + Vite
+# Team 11 Dentist Booking System frontend
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+Welcome to our Frontend Dentist Booking System, an innovative and user-friendly application designed for efficient dental appointment management across Sweden. This system streamlines the process of finding and booking dental appointments, ensuring a seamless experience for users.
 
-## Recommended IDE Setup
+## Description
+
+## Stack
+
+- Vue
+- Typescript
+- Tailwind CSS
+- pusher-js, for real-time updates
+- vite, for build and dev server
+- vue-router, for routing
+- shadcn, for ui components
+- zod, for form validation
+
+### Installation guide
+
+#### Vue 3 + TypeScript + Vite
+
+The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+
+### Recommended IDE Setup
 
 - [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
 
-## Type Support For `.vue` Imports in TS
+### Type Support For `.vue` Imports in TS
 
 TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
 
@@ -16,5 +35,3 @@ If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has a
    1. Run `Extensions: Show Built-in Extensions` from VSCode's command palette
    2. Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
 2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
-
-
