@@ -125,8 +125,6 @@ import { PATIENT_API } from '../utils/apiConfig';
 import { getCookie } from '../utils/cookieHandler';
 import { InvalidateQueryFilters, useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
 import { ref } from "vue";
-import { MaybeRefDeep } from "node_modules/@tanstack/vue-query/build/modern/types";
-
 const queryClient = useQueryClient()
 // const date = ref(null);
 const showPast = ref(false);
@@ -289,8 +287,8 @@ const handleCancelEmit = (appointmentId: string) => {
     mutation.mutate(appointmentId, {
         onSuccess: () => {
             console.log('success');
-            queryClient.invalidateQueries(['appointments'] as MaybeRefDeep<InvalidateQueryFilters>)
-            queryClient.invalidateQueries(['timeslots'] as MaybeRefDeep<InvalidateQueryFilters>)
+            queryClient.invalidateQueries(['appointments'] as InvalidateQueryFilters)
+            queryClient.invalidateQueries(['timeslots'] as InvalidateQueryFilters)
         },
     })
 };

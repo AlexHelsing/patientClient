@@ -100,7 +100,6 @@ import axios from 'axios';
 
 import router from '@/router';
 import { InvalidateQueryFilters, useMutation, useQueryClient } from '@tanstack/vue-query';
-import { MaybeRefDeep } from 'node_modules/@tanstack/vue-query/build/modern/types';
 import { h, onMounted } from 'vue';
 import { ToastAction } from '@/components/ui/toast';
 const { toast } = useToast()
@@ -133,8 +132,8 @@ const mutation = useMutation({
     mutationFn: handleBooking,
     onSuccess: () => {
         console.log('success');
-        queryClient.invalidateQueries(['appointments'] as MaybeRefDeep<InvalidateQueryFilters>);
-        queryClient.invalidateQueries(['timeslots'] as MaybeRefDeep<InvalidateQueryFilters>);
+        queryClient.invalidateQueries(['appointments'] as InvalidateQueryFilters);
+        queryClient.invalidateQueries(['timeslots'] as InvalidateQueryFilters);
         toast({ title: 'Appointment booked successfully', variant: 'success' });
         router.push('/dashboard');
 

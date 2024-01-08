@@ -117,7 +117,6 @@ import DentistryCardSkeleton from '../components/DentistryCardSkeleton.vue';
 import { useRoute } from 'vue-router';
 import { InvalidateQueryFilters, useQuery, useQueryClient } from '@tanstack/vue-query';
 import AfternoonMorningToggle from '@/components/AfternoonMorningToggle.vue';
-import { MaybeRefDeep } from 'node_modules/@tanstack/vue-query/build/modern/types';
 import { subscribeToGlobalTimeslotUpdates, unsubscribeFromGlobalTimeslotUpdates } from '@/lib/pusher';
 // city input is one of the sweedish cities in the array
 const cityInput = ref('');
@@ -152,7 +151,7 @@ const queryClient = useQueryClient();
 onMounted(() => {
     const handleTimeslotUpdate = () => {
         console.log('Timeslot updated in mappage');
-        queryClient.invalidateQueries(['timeslots'] as MaybeRefDeep<InvalidateQueryFilters>)
+        queryClient.invalidateQueries(['timeslots'] as InvalidateQueryFilters)
     };
 
     window.addEventListener('timeslot-updated', handleTimeslotUpdate);
